@@ -8,6 +8,11 @@
   },
   "author": "yelo",
   "license": "MIT",
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  },
   "devDependencies": {
     "@babel/preset-env": "^7.0.0-beta.31",
     "ava": "^0.23.0",
