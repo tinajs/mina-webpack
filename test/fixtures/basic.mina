@@ -7,6 +7,7 @@
 <style>
 comp-a h2 {
   color: #f00;
+  background: url(logo.png);
 }
 </style>
 
