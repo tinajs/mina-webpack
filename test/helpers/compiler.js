@@ -10,13 +10,29 @@ export default (fixture, options = {}) => {
     entry: `./${fixture}`,
     output: {
       path: '/',
-      filename: 'test.build.js',
+      filename: 'test.build.js'
     },
     module: {
-      rules: [{
-        test: /\.mina$/,
-        loader: path.resolve(root, '../lib/loader.js'),
-      }],
+      rules: [
+        {
+          test: /\.mina$/,
+          use: {
+            loader: require.resolve('../..'),
+            options: {
+
+            },
+          },
+        },
+        {
+          test: /\.png$/,
+          use: {
+            loader: "file-loader",
+            options: {
+              name: '[name].[hash:6].[ext]'
+            },
+          },
+        },
+      ],
     },
   })
 

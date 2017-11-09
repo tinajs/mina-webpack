@@ -2,7 +2,7 @@
   "name": "@tinajs/mina-loader",
   "version": "0.0.1",
   "description": "",
-  "main": "lib/loader.js",
+  "main": "lib/index.js",
   "scripts": {
     "test": "ava test/test.js"
   },
@@ -18,11 +18,18 @@
     "ava": "^0.23.0",
     "babel": "^6.23.0",
     "babel-core": "^6.26.0",
+    "css-loader": "^0.28.7",
+    "extract-loader": "^1.0.1",
+    "file-loader": "^1.1.5",
+    "html-loader": "^0.5.1",
     "memory-fs": "^0.4.1",
+    "raw-loader": "^0.5.1",
+    "style-loader": "^0.19.0",
     "webpack": "^3.8.1"
   },
   "dependencies": {
     "loader-utils": "^1.1.0",
-    "vue-template-compiler": "^2.5.3"
+    "vue-template-compiler": "^2.5.3",
+    "wxml-loader": "^0.1.0"
   }
 }
