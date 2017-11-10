@@ -19,6 +19,7 @@ comp-a h2 {
 </template>
 
 <script>
+require('./dependency.js')
 export default {
   data () {
     return {

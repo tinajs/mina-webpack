@@ -1,12 +1,11 @@
 {
   "presets": [
     [
-      "@babel/env",
+      "env",
       {
         "target": {
           "node": "7"
-        },
-        "modules": false
+        }
       }
     ]
   ]
