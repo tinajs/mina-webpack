@@ -10,7 +10,8 @@ export default (fixture, options = {}) => {
     entry: `./${fixture}`,
     output: {
       path: '/',
-      filename: 'test.build.js'
+      filename: 'test.build.js',
+      chunkFilename: '[name]',
     },
     module: {
       rules: [

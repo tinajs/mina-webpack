@@ -14,10 +14,11 @@
     }
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.0.0-beta.31",
     "ava": "^0.23.0",
     "babel": "^6.23.0",
     "babel-core": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "chai": "^4.1.2",
     "file-loader": "^1.1.5",
     "html-loader": "^0.5.1",
     "memory-fs": "^0.4.1",
@@ -26,6 +27,8 @@
     "webpack": "^3.8.1"
   },
   "dependencies": {
+    "babel-loader": "^7.1.2",
+    "bundle-loader": "^0.5.5",
     "css-loader": "^0.28.7",
     "extract-loader": "^1.0.1",
     "loader-utils": "^1.1.0",
