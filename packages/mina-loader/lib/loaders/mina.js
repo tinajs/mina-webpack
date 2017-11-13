@@ -3,6 +3,7 @@ const loaderUtils = require('loader-utils')
 
 const selectorLoaderPath = require.resolve('./selector')
 const parserLoaderPath = require.resolve('./parser')
+const minaJSONFileLoaderPath = require.resolve('./mina-json-file')
 
 const helpers = require('../helpers')
 
@@ -10,7 +11,7 @@ const defaultLoaders = {
   wxml: 'wxml-loader',
   wxss: 'extract-loader!css-loader',
   // js: 'babel-loader',
-  json: '',
+  json: minaJSONFileLoaderPath,
 }
 
 const TYPES_FOR_FILE_LOADER = ['wxml', 'wxss', 'json']
@@ -37,7 +38,9 @@ module.exports = function (source) {
       let parts = this.exec(source, parsedUrl)
 
       // compute output
-      let output = TYPES_FOR_OUTPUT.map((type) => `require(${loaderUtils.stringifyRequest(this, `!!${selectorLoaderPath}?type=js!${url}`)})`).join(';')
+      let output = parts.js && parts.js.content ?
+        TYPES_FOR_OUTPUT.map((type) => `require(${loaderUtils.stringifyRequest(this, `!!${selectorLoaderPath}?type=js!${url}`)})`).join(';') :
+        ''
 
       return Promise
         // emit files

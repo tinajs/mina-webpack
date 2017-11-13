@@ -11,6 +11,10 @@
     "prebuild": "run-s clean",
     "build": "webpack"
   },
+  "dependencies": {
+    "@tinajs/tina-logo.mina": "^0.0.1",
+    "resolve-from": "^4.0.0"
+  },
   "devDependencies": {
     "@tinajs/mina-entry-webpack-plugin": "^0.0.1",
     "@tinajs/mina-loader": "^0.0.1",

@@ -1,0 +1,13 @@
+<template>
+  <view>
+    <image src="./logo.png" />
+  </view>
+</template>
+
+<script>
+Page({
+  onLoad () {
+    console.log('hello from tina-logo.mina')
+  }
+})
+</script>

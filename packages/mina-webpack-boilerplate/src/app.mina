@@ -1,7 +1,8 @@
 <config>
 {
   "pages": [
-    "home.page"
+    "home.page",
+    "~@tinajs/tina-logo.mina/index"
   ]
 }
 </config>
