@@ -3,8 +3,18 @@
   "version": "0.0.1",
   "description": "",
   "main": "index.js",
-  "scripts": {
-  },
+  "scripts": {},
   "author": "yelo",
-  "license": "MIT"
+  "license": "MIT",
+  "peerDependencies": {
+    "webpack": "^3.8.1"
+  },
+  "devDependencies": {
+    "webpack": "^3.8.1"
+  },
+  "dependencies": {
+    "fs-extra": "^4.0.2",
+    "loader-utils": "^1.1.0",
+    "vue-template-compiler": "^2.5.3"
+  }
 }

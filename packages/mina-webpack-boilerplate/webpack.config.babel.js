@@ -1,11 +1,9 @@
 import path from 'path'
+import MinaEntryPlugin from '@tinajs/mina-entry-webpack-plugin'
 
 export default {
   context: path.resolve(__dirname, 'src'),
-  entry: {
-    app: './app.mina',
-    'home.page': './home.page.mina',
-  },
+  entry: './app.mina',
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].js',
@@ -31,4 +29,7 @@ export default {
       },
     ],
   },
+  plugins: [
+    new MinaEntryPlugin(),
+  ],
 }
