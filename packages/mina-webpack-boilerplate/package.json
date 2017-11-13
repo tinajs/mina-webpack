@@ -4,8 +4,21 @@
   "version": "0.0.1",
   "description": "",
   "main": "index.js",
-  "scripts": {
-  },
   "author": "yelo",
-  "license": "MIT"
+  "license": "MIT",
+  "scripts": {
+    "clean": "rimraf ./dist",
+    "prebuild": "run-s clean",
+    "build": "webpack"
+  },
+  "devDependencies": {
+    "@tinajs/mina-loader": "^0.0.1",
+    "babel": "^6.23.0",
+    "babel-core": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "file-loader": "^1.1.5",
+    "npm-run-all": "^4.1.2",
+    "rimraf": "^2.6.2",
+    "webpack": "^3.8.1"
+  }
 }
