@@ -8,11 +8,9 @@
 
 <script>
 require('./dependency.js')
-export default {
-  data () {
-    return {
-      msg: 'Hello from App!'
-    }
+App({
+  onLoad () {
+    console.log('Hello from App!')
   }
-}
+})
 </script>

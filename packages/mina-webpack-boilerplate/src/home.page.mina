@@ -5,14 +5,14 @@
 </config>
 
 <style>
-text {
-  color: #f00;
+text.blue {
+  color: #00f;
 }
 </style>
 
 <template>
   <view>
-    <text class="red">{{msg}}</text>
+    <text class="blue">{{msg}}</text>
     <image src="logo.png" />
   </view>
 </template>
@@ -21,7 +21,9 @@ text {
 require('./dependency.js')
 Page({
   onLoad () {
-    console.log('Hello from Home-Page!')
+    this.setData({
+      msg: 'Hello from Home-Page!'
+    })
   },
 })
 </script>
