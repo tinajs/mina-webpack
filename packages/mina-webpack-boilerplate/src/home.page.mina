@@ -1,0 +1,27 @@
+<config>
+{
+  "name": "mina"
+}
+</config>
+
+<style>
+text {
+  color: #f00;
+}
+</style>
+
+<template>
+  <view>
+    <text class="red">{{msg}}</text>
+    <image src="logo.png" />
+  </view>
+</template>
+
+<script>
+require('./dependency.js')
+Page({
+  onLoad () {
+    console.log('Hello from Home-Page!')
+  },
+})
+</script>

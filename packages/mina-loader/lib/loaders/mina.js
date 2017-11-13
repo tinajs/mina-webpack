@@ -42,7 +42,7 @@ module.exports = function (source) {
       return Promise
         // emit files
         .all(TYPES_FOR_FILE_LOADER.map((type) => {
-          if (!(type in parts)) {
+          if (!parts[type] || !parts[type].content) {
             return Promise.resolve()
           }
           let request = `!!file-loader?name=[path][name].${type}!${getPartLoader(type)}${selectorLoaderPath}?type=${type}!${url}`

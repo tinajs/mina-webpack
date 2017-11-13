@@ -1,0 +1,18 @@
+<config>
+{
+  "pages": [
+    "home.page"
+  ]
+}
+</config>
+
+<script>
+require('./dependency.js')
+export default {
+  data () {
+    return {
+      msg: 'Hello from App!'
+    }
+  }
+}
+</script>

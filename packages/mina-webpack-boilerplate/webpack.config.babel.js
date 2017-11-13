@@ -3,7 +3,8 @@ import path from 'path'
 export default {
   context: path.resolve(__dirname, 'src'),
   entry: {
-    basic: './basic.mina',
+    app: './app.mina',
+    'home.page': './home.page.mina',
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
