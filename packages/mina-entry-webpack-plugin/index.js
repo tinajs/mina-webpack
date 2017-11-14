@@ -106,8 +106,8 @@ module.exports = class MinaEntryWebpackPlugin {
   }
 
   apply (compiler) {
-    compiler.plugin('run', this.rewrite.bind(this))
-    compiler.plugin('watch-run', this.rewrite.bind(this))
+    compiler.plugin('run', (compiler, callback) => this.rewrite(compiler, callback))
+    compiler.plugin('watch-run', ({ compiler }, callback) => this.rewrite(compiler, callback))
 
     compiler.plugin('entry-option', () => true)
   }
