@@ -1,6 +1,9 @@
 <config>
 {
-  "name": "mina"
+  "name": "mina",
+  "usingComponents": {
+    "tina-logo": "~@tinajs/tina-logo.mina/index"
+  }
 }
 </config>
 
@@ -8,18 +11,27 @@
 text.blue {
   color: #00f;
 }
+image {
+  width: 20px;
+  height: 20px;
+}
 </style>
 
 <template>
   <view>
-    <text class="blue">{{msg}}</text>
+    <text class="blue">{{msg}} </text>
     <image src="logo.png" />
+    <tina-logo />
   </view>
 </template>
 
 <script>
 require('./dependency.js')
 Page({
+  data: {
+    msg: '',
+  },
+
   onLoad () {
     this.setData({
       msg: 'Hello from Home-Page!'

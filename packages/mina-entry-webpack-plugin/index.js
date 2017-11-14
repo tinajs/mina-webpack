@@ -1,5 +1,6 @@
 const path = require('path')
 const fs = require('fs-extra')
+const flatten = require('flatten')
 const resolveFrom = require('resolve-from')
 const { urlToRequest } = require('loader-utils')
 const { parseComponent } = require('vue-template-compiler')
@@ -42,10 +43,25 @@ function readConfig (fullpath) {
 }
 
 function getUrlsFromConfig (config) {
-  if (config && Array.isArray(config.pages)) {
-    return config.pages.map((page) => `${page}.mina`)
+  let urls = []
+  if (!config) {
+    return urls
   }
-  return []
+  if (Array.isArray(config.pages)) {
+    urls = [
+      ...urls,
+      ...config.pages.map((page) => `${page}.mina`),
+    ]
+  }
+  if (typeof config.usingComponents === 'object') {
+    urls = [
+      ...urls,
+      ...Object.keys(config.usingComponents).map((tag) => {
+        return `${config.usingComponents[tag]}.mina`
+      }),
+    ]
+  }
+  return urls
 }
 
 function getItems (context, url) {
@@ -65,6 +81,7 @@ function getItems (context, url) {
         return current
       }
       return Promise.all([ Promise.resolve(current), ...(urls.map((url) => getItems(context, url))) ])
+        .then(flatten)
     })
 }
 

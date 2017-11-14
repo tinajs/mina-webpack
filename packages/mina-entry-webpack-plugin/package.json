@@ -13,6 +13,7 @@
     "webpack": "^3.8.1"
   },
   "dependencies": {
+    "flatten": "^1.0.2",
     "fs-extra": "^4.0.2",
     "loader-utils": "^1.1.0",
     "resolve-from": "^4.0.0",

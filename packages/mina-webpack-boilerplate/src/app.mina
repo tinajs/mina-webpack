@@ -1,8 +1,7 @@
 <config>
 {
   "pages": [
-    "home.page",
-    "~@tinajs/tina-logo.mina/index"
+    "home.page"
   ]
 }
 </config>
@@ -10,7 +9,7 @@
 <script>
 require('./dependency.js')
 App({
-  onLoad () {
+  onLaunch () {
     console.log('Hello from App!')
   }
 })
