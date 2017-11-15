@@ -1,13 +1,13 @@
-import path from 'path'
+import { resolve } from 'path'
 import webpack from 'webpack'
 import MinaEntryPlugin from '@tinajs/mina-entry-webpack-plugin'
 import MinaRuntimePlugin from '@tinajs/mina-runtime-webpack-plugin'
 
 export default {
-  context: path.resolve(__dirname, 'src'),
+  context: resolve('src'),
   entry: './app.mina',
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: resolve('dist'),
     filename: '[name]',
     publicPath: '/',
   },
@@ -19,6 +19,17 @@ export default {
         use: [{
           loader: '@tinajs/mina-loader',
           options: {
+            loaders: {
+              js: 'babel-loader',
+              wxss: {
+                loader: 'postcss-loader',
+                options: {
+                  config: {
+                    path: resolve('./postcss.config.js'),
+                  },
+                },
+              },
+            },
           },
         }],
       },

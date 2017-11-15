@@ -32,6 +32,7 @@
     "css-loader": "^0.28.7",
     "extract-loader": "^1.0.1",
     "loader-utils": "^1.1.0",
+    "lodash.merge": "^4.6.0",
     "vue-template-compiler": "^2.5.3",
     "wxml-loader": "^0.1.0"
   }

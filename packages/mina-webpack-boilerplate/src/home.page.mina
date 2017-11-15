@@ -8,8 +8,10 @@
 </config>
 
 <style>
-text.blue {
-  color: #00f;
+text {
+  &.blue {
+    color: #00f;
+  }
 }
 image {
   width: 20px;
