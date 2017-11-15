@@ -7,18 +7,18 @@ const minaJSONFileLoaderPath = require.resolve('./mina-json-file')
 
 const helpers = require('../helpers')
 
-const defaultLoaders = {
-  wxml: 'wxml-loader',
-  wxss: 'extract-loader!css-loader',
-  // js: 'babel-loader',
-  json: minaJSONFileLoaderPath,
+const LOADERS = {
+  wxml: 'wxml-loader!',
+  wxss: 'extract-loader!css-loader!',
+  js: '',
+  json: `${minaJSONFileLoaderPath}!`,
 }
 
 const TYPES_FOR_FILE_LOADER = ['wxml', 'wxss', 'json']
 const TYPES_FOR_OUTPUT = ['js']
 
-function getPartLoader (type) {
-  return defaultLoaders[type] ? (defaultLoaders[type] + '!') : ''
+function getLoaderOf (type) {
+  return LOADERS[type] || ''
 }
 
 module.exports = function (source) {
@@ -26,7 +26,6 @@ module.exports = function (source) {
 
   const done = this.async()
   const options = loaderUtils.getOptions(this) || {}
-  const context = options.context || this.options.context
 
   const url = loaderUtils.getRemainingRequest(this)
   const parsedUrl = `!!${parserLoaderPath}!${url}`
@@ -48,7 +47,7 @@ module.exports = function (source) {
           if (!parts[type] || !parts[type].content) {
             return Promise.resolve()
           }
-          let request = `!!file-loader?name=[path][name].${type}!${getPartLoader(type)}${selectorLoaderPath}?type=${type}!${url}`
+          let request = `!!file-loader?name=[path][name].${type}!${getLoaderOf(type)}${selectorLoaderPath}?type=${type}!${url}`
           return loadModule(request)
         }))
         .then(() => done(null, output))
