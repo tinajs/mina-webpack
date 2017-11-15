@@ -40,6 +40,7 @@ export default {
   },
   plugins: [
     new MinaEntryPlugin({
+      map: (entry) => ['es6-promise/dist/es6-promise.auto.js', entry],
     }),
     new MinaRuntimePlugin({
       runtime: './common.js',

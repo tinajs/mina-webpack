@@ -87,18 +87,20 @@ function getItems (context, url) {
 
 module.exports = class MinaEntryWebpackPlugin {
   constructor (options = {}) {
-    this.module = options.module || 'mina_modules'
+    this.map = options.map || function (entry) {
+      return entry
+    }
   }
 
   rewrite (compiler, callback) {
     let { context, entry } = compiler.options
 
-    getItems(context, Array.isArray(entry) ? entry[entry.length - 1] : entry)
+    getItems(context, entry)
       .then((items) => {
         items.forEach(({ isModule, request, fullpath }) => {
           // replace '..' to '_'
           let name = extname(urlToRequest(path.relative(context, fullpath).replace(/\.\./g, '_')), '.js')
-          compiler.apply(addEntry(context, request, name))
+          compiler.apply(addEntry(context, this.map(request), name))
         })
         callback()
       })
