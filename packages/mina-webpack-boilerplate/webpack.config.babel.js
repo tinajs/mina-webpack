@@ -21,21 +21,6 @@ export default {
         use: [{
           loader: '@tinajs/mina-loader',
           options: {
-            // todo
-            name: '[path][name]',
-            // todo
-            module: MODULE_DIRNAME,
-          },
-        }],
-      },
-      {
-        test: /\.mina$/,
-        include: /node_modules/,
-        use: [{
-          loader: '@tinajs/mina-loader',
-          options: {
-            // todo
-            name: `${MODULE_DIRNAME}/[path][name]`
           },
         }],
       },
@@ -55,8 +40,6 @@ export default {
   },
   plugins: [
     new MinaEntryPlugin({
-      // todo
-      module: MODULE_DIRNAME,
     }),
     new MinaRuntimePlugin({
       runtime: './common.js',
