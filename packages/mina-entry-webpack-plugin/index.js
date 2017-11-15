@@ -93,7 +93,7 @@ module.exports = class MinaEntryWebpackPlugin {
   rewrite (compiler, callback) {
     let { context, entry } = compiler.options
 
-    getItems(context, entry)
+    getItems(context, Array.isArray(entry) ? entry[entry.length - 1] : entry)
       .then((items) => {
         items.forEach(({ isModule, request, fullpath }) => {
           // replace '..' to '_'

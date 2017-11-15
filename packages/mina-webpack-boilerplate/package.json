@@ -13,10 +13,14 @@
   },
   "dependencies": {
     "@tinajs/tina-logo.mina": "^0.0.1",
+    "cows": "^1.1.0",
+    "cowsay": "^1.2.1",
+    "es6-promise": "^4.1.1",
     "resolve-from": "^4.0.0"
   },
   "devDependencies": {
     "@tinajs/mina-entry-webpack-plugin": "^0.0.1",
+    "@tinajs/mina-runtime-webpack-plugin": "^0.0.1",
     "@tinajs/mina-loader": "^0.0.1",
     "babel": "^6.23.0",
     "babel-core": "^6.26.0",

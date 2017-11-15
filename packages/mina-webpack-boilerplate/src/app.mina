@@ -7,10 +7,11 @@
 </config>
 
 <script>
+const { say } = require('cowsay')
 require('./dependency.js')
 App({
   onLaunch () {
-    console.log('Hello from App!')
+    console.log(say({ text: 'Hello from App!' }))
   }
 })
 </script>

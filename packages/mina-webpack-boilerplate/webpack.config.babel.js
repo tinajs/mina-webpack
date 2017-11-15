@@ -1,5 +1,7 @@
 import path from 'path'
+import webpack from 'webpack'
 import MinaEntryPlugin from '@tinajs/mina-entry-webpack-plugin'
+import MinaRuntimePlugin from '@tinajs/mina-runtime-webpack-plugin'
 
 const MODULE_DIRNAME = 'mina_modules'
 
@@ -55,6 +57,12 @@ export default {
     new MinaEntryPlugin({
       // todo
       module: MODULE_DIRNAME,
+    }),
+    new MinaRuntimePlugin({
+      runtime: './common.js',
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'common.js',
     }),
   ],
 }
