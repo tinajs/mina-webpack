@@ -12,6 +12,8 @@ test('basic', async (t) => {
     })
     const stats = await compile()
 
+    // console.log(mfs.readFileSync('/fixtures/page.wxml', 'utf8'))
+
     // console.log(mfs.readFileSync('/fixtures/page.js', 'utf8'))
     // console.log(mfs.data)
 
@@ -20,8 +22,8 @@ test('basic', async (t) => {
     t.true(mfs.readFileSync('/fixtures/page.js', 'utf8').includes('onLoad () {'))
     t.true(mfs.readFileSync('/fixtures/page.js', 'utf8').includes('Hello from Page!'))
     t.true(mfs.readFileSync('/fixtures/page.js', 'utf8').includes('console.log(\'\\u2665\')'))
-    t.is(mfs.readFileSync('/fixtures/page.wxml', 'utf8'), '\n<view>\n  <text class="blue">{{msg}}</text>\n  <image src="assets/logo.7bd732.png" />\n</view>\n')
-    t.is(mfs.readFileSync('/fixtures/page.wxss', 'utf8'), '\ntext.blue {\n  color: #00f;\n  background: url(assets/logo.7bd732.png);\n}\n')
+    t.is(mfs.readFileSync('/fixtures/page.wxml', 'utf8'), '<view>\n  <text class="blue">{{msg}}</text>\n  <image src="assets/logo.7bd732.png" />\n</view>')
+    t.is(mfs.readFileSync('/fixtures/page.wxss', 'utf8'), 'text.blue {\n  color: #00f;\n  background: url(assets/logo.7bd732.png);\n}')
     t.is(mfs.readFileSync('/fixtures/page.json', 'utf8'), '{\n  "name": "mina"\n}')
 
     t.pass()
@@ -48,15 +50,15 @@ test('pack multiple files', async (t) => {
     t.true(mfs.readFileSync('/fixtures/page.js', 'utf8').includes('onLoad () {'))
     t.true(mfs.readFileSync('/fixtures/page.js', 'utf8').includes('Hello from Page!'))
     t.true(mfs.readFileSync('/fixtures/page.js', 'utf8').includes('console.log(\'\\u2665\')'))
-    t.is(mfs.readFileSync('/fixtures/page.wxml', 'utf8'), '\n<view>\n  <text class="blue">{{msg}}</text>\n  <image src="assets/logo.7bd732.png" />\n</view>\n')
-    t.is(mfs.readFileSync('/fixtures/page.wxss', 'utf8'), '\ntext.blue {\n  color: #00f;\n  background: url(assets/logo.7bd732.png);\n}\n')
+    t.is(mfs.readFileSync('/fixtures/page.wxml', 'utf8'), '<view>\n  <text class="blue">{{msg}}</text>\n  <image src="assets/logo.7bd732.png" />\n</view>')
+    t.is(mfs.readFileSync('/fixtures/page.wxss', 'utf8'), 'text.blue {\n  color: #00f;\n  background: url(assets/logo.7bd732.png);\n}')
     t.is(mfs.readFileSync('/fixtures/page.json', 'utf8'), '{\n  "name": "mina"\n}')
 
     t.true(mfs.readFileSync('/fixtures/app.js', 'utf8').includes('onLaunch () {'))
     t.true(mfs.readFileSync('/fixtures/app.js', 'utf8').includes('Hello from App!'))
     t.true(mfs.readFileSync('/fixtures/app.js', 'utf8').includes('console.log(\'\\u2665\')'))
-    t.false(mfs.existsSync('/fixtures/app.wxml', 'utf8'), '\n<view>\n  <text class="blue">{{msg}}</text>\n  <image src="assets/logo.7bd732.png" />\n</view>\n')
-    t.false(mfs.existsSync('/fixtures/app.wxss', 'utf8'), '\ntext.blue {\n  color: #00f;\n  background: url(assets/logo.7bd732.png);\n}\n')
+    t.false(mfs.existsSync('/fixtures/app.wxml', 'utf8'), '<view>\n  <text class="blue">{{msg}}</text>\n  <image src="assets/logo.7bd732.png" />\n</view>')
+    t.false(mfs.existsSync('/fixtures/app.wxss', 'utf8'), 'text.blue {\n  color: #00f;\n  background: url(assets/logo.7bd732.png);\n}')
     t.is(mfs.readFileSync('/fixtures/app.json', 'utf8'), '{\n  "pages": [\n    "page"\n  ]\n}')
 
     t.pass()
@@ -80,7 +82,7 @@ test('pack with options', async (t) => {
               loader: require.resolve('..'),
               options: {
                 loaders: {
-                  js: 'babel-loader',
+                  script: 'babel-loader',
                 },
               },
             },
@@ -96,8 +98,8 @@ test('pack with options', async (t) => {
     t.true(mfs.readFileSync('/fixtures/page.js', 'utf8').includes('onLoad: function onLoad() {'))
     t.true(mfs.readFileSync('/fixtures/page.js', 'utf8').includes('Hello from Page!'))
     t.true(mfs.readFileSync('/fixtures/page.js', 'utf8').includes('console.log(\'\\u2665\')'))
-    t.is(mfs.readFileSync('/fixtures/page.wxml', 'utf8'), '\n<view>\n  <text class="blue">{{msg}}</text>\n  <image src="assets/logo.7bd732.png" />\n</view>\n')
-    t.is(mfs.readFileSync('/fixtures/page.wxss', 'utf8'), '\ntext.blue {\n  color: #00f;\n  background: url(assets/logo.7bd732.png);\n}\n')
+    t.is(mfs.readFileSync('/fixtures/page.wxml', 'utf8'), '<view>\n  <text class="blue">{{msg}}</text>\n  <image src="assets/logo.7bd732.png" />\n</view>')
+    t.is(mfs.readFileSync('/fixtures/page.wxss', 'utf8'), 'text.blue {\n  color: #00f;\n  background: url(assets/logo.7bd732.png);\n}')
     t.is(mfs.readFileSync('/fixtures/page.json', 'utf8'), '{\n  "name": "mina"\n}')
 
     t.pass()

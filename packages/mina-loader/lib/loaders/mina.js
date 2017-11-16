@@ -1,4 +1,3 @@
-const { parseComponent } = require('vue-template-compiler')
 const loaderUtils = require('loader-utils')
 const merge = require('lodash.merge')
 const resolveFrom = require('resolve-from')
@@ -10,14 +9,21 @@ const minaJSONFileLoaderPath = require.resolve('./mina-json-file')
 const helpers = require('../helpers')
 
 const LOADERS = {
-  wxml: 'wxml-loader',
-  wxss: 'extract-loader!css-loader',
-  js: '',
-  json: `${minaJSONFileLoaderPath}`,
+  template: 'wxml-loader',
+  style: 'extract-loader!css-loader',
+  script: '',
+  config: `${minaJSONFileLoaderPath}`,
 }
 
-const TYPES_FOR_FILE_LOADER = ['wxml', 'wxss', 'json']
-const TYPES_FOR_OUTPUT = ['js']
+const EXTNAMES = {
+  template: 'wxml',
+  style: 'wxss',
+  script: 'js',
+  config: 'json',
+}
+
+const TYPES_FOR_FILE_LOADER = ['template', 'style', 'config']
+const TYPES_FOR_OUTPUT = ['script']
 
 module.exports = function (source) {
   this.cacheable()
@@ -56,8 +62,8 @@ module.exports = function (source) {
       let parts = this.exec(source, parsedUrl)
 
       // compute output
-      let output = parts.js && parts.js.content ?
-        TYPES_FOR_OUTPUT.map((type) => `require(${loaderUtils.stringifyRequest(this, `!!${getLoaderOf(type)}${selectorLoaderPath}?type=js!${url}`)})`).join(';') :
+      let output = parts.script && parts.script.content ?
+        TYPES_FOR_OUTPUT.map((type) => `require(${loaderUtils.stringifyRequest(this, `!!${getLoaderOf(type)}${selectorLoaderPath}?type=script!${url}`)})`).join(';') :
         ''
 
       return Promise
@@ -66,7 +72,7 @@ module.exports = function (source) {
           if (!parts[type] || !parts[type].content) {
             return Promise.resolve()
           }
-          let request = `!!file-loader?name=[path][name].${type}!${getLoaderOf(type)}${selectorLoaderPath}?type=${type}!${url}`
+          let request = `!!file-loader?name=[path][name].${EXTNAMES[type]}!${getLoaderOf(type)}${selectorLoaderPath}?type=${type}!${url}`
           return loadModule(request)
         }))
         .then(() => done(null, output))

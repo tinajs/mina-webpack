@@ -1,14 +1,13 @@
-const { parseComponent } = require('vue-template-compiler')
+const sfc = require('@tinajs/mina-sfc')
 
 function parse (source) {
-  const blocks = parseComponent(source)
-  const config = blocks.customBlocks.find((block) => block.type === 'config')
+  const blocks = sfc.parse(source)
 
   return {
-    js: blocks.script,
-    wxml: blocks.template,
-    wxss: blocks.styles[0],
-    json: config,
+    style: blocks.style,
+    config: blocks.config,
+    script: blocks.script,
+    template: blocks.template,
   }
 }
 
