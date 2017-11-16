@@ -17,11 +17,13 @@
     "ava": "^0.23.0",
     "babel": "^6.23.0",
     "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
     "babel-preset-env": "^1.6.1",
     "chai": "^4.1.2",
     "file-loader": "^1.1.5",
     "memory-fs": "^0.4.1",
-    "webpack": "^3.8.1"
+    "webpack": "^3.8.1",
+    "webpack-merge": "^4.1.1"
   },
   "dependencies": {
     "css-loader": "^0.28.7",

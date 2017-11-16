@@ -1,0 +1,16 @@
+<config>
+{
+  "pages": [
+    "page"
+  ]
+}
+</config>
+
+<script>
+require('./dependency.js')
+App({
+  onLaunch () {
+    console.log(say({ text: 'Hello from App!' }))
+  }
+})
+</script>

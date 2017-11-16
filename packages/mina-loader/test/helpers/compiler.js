@@ -1,6 +1,7 @@
 import path from 'path'
 import webpack from 'webpack'
-import mfs from './mfs'
+import merge from 'webpack-merge'
+import MemoryFS from 'memory-fs'
 
 const root = path.resolve(__dirname, '..')
 
@@ -12,23 +13,21 @@ function extname (fullpath, ext) {
   })
 }
 
-export default (fixture, options = {}) => {
-  const compiler = webpack({
+export default (options = {}) => {
+  const mfs = new MemoryFS()
+
+  options = merge.smart({
     context: root,
-    entry: `./${fixture}`,
     output: {
       path: '/',
-      filename: extname(fixture, '.js'),
     },
     module: {
       rules: [
         {
           test: /\.mina$/,
-          use: [{
+          use: {
             loader: require.resolve('../..'),
-            options: {
-            },
-          }],
+          },
         },
         {
           test: /\.png$/,
@@ -41,15 +40,20 @@ export default (fixture, options = {}) => {
         },
       ],
     },
-  })
+  }, options)
 
-  compiler.outputFileSystem = mfs
+  return {
+    mfs,
+    compile () {
+      const compiler = webpack(options)
+      compiler.outputFileSystem = mfs
+      return new Promise((resolve, reject) => {
+        compiler.run((err, stats) => {
+          if (err) reject(err)
 
-  return new Promise((resolve, reject) => {
-    compiler.run((err, stats) => {
-      if (err) reject(err)
-
-      resolve(stats)
-    })
-  })
+          resolve(stats)
+        })
+      })
+    },
+  }
 }
