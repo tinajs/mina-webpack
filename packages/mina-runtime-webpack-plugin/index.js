@@ -1,5 +1,5 @@
 /*
- * forked from https://github.com/Cap32/wxapp-webpack-plugin/blob/master/src/index.js
+ * forked from https://github.com/Cap32/wxapp-webpack-plugin/
  */
 
 const path = require('path')
