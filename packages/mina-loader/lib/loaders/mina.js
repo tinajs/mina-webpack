@@ -75,7 +75,6 @@ module.exports = function (source) {
             return Promise.resolve()
           }
           let request = `!!${resolve('file-loader')}?name=[path][name].${EXTNAMES[type]}!${getLoaderOf(type)}${selectorLoaderPath}?type=${type}!${url}`
-          console.log(request)
           return loadModule(request)
         }))
         .then(() => done(null, output))

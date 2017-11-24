@@ -10,11 +10,12 @@ function mapObject (object, iteratee) {
   return result
 }
 
-function resolveFile (context, file) {
-  if (file.match(/^~/)) {
-    return resolveFromModule(context, file)
+function resolveFile (dirname, target, context) {
+  let relative = (target) => path.join(path.relative(dirname, context), target)
+  if (target.match(/^~/)) {
+    return relative(resolveFromModule(context, target))
   }
-  return file
+  return relative(target)
 }
 
 function resolveFromModule (context, filename) {
@@ -25,17 +26,18 @@ function resolveFromModule (context, filename) {
 
 module.exports = function (source) {
   let config = JSON.parse(source)
+  let relativeToRoot = path.relative(path.dirname(this.resource), this.options.context)
 
   if (!config) {
     return ''
   }
 
   if (Array.isArray(config.pages)) {
-    config.pages = config.pages.map((page) => resolveFile(this.context, page))
+    config.pages = config.pages.map((page) => resolveFile(this.context, page, this.options.context))
   }
 
   if (typeof config.usingComponents === 'object') {
-    config.usingComponents = mapObject(config.usingComponents, (file) => resolveFile(this.context, file))
+    config.usingComponents = mapObject(config.usingComponents, (file) => resolveFile(this.context, file, this.options.context))
   }
 
   return JSON.stringify(config, null, 2)
