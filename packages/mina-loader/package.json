@@ -26,7 +26,7 @@
     "webpack-merge": "^4.1.1"
   },
   "dependencies": {
-    "@tinajs/mina-sfc": "^0.1.0",
+    "@tinajs/mina-sfc": "^0.2.0",
     "css-loader": "^0.28.7",
     "extract-loader": "^1.0.1",
     "loader-utils": "^1.1.0",
