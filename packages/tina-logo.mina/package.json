@@ -2,9 +2,26 @@
   "name": "@tinajs/tina-logo.mina",
   "version": "0.0.1",
   "description": "",
-  "main": "index.mina",
+  "main": "dist/index.mina",
   "scripts": {
+    "build": "gulp"
   },
+  "files": [
+    "dist"
+  ],
   "author": "yelo",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@tinajs/gulp-mina": "^0.0.1",
+    "babel-preset-env": "^1.6.1",
+    "del": "^3.0.0",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^7.0.0",
+    "gulp-clean-css": "^3.9.0",
+    "gulp-json-minify": "^1.2.0",
+    "gulp-postcss": "^7.0.0",
+    "gulp-uglify": "^3.0.0",
+    "merge2": "^1.2.0",
+    "precss": "^2.0.0"
+  }
 }
