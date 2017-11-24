@@ -90,9 +90,15 @@ module.exports = class MinaEntryWebpackPlugin {
     this.map = options.map || function (entry) {
       return entry
     }
+    this.rewrited = false
   }
 
   rewrite (compiler, callback) {
+    if (this.rewrited) {
+      return callback()
+    }
+    this.rewrited = true
+
     let { context, entry } = compiler.options
 
     getItems(context, entry)
