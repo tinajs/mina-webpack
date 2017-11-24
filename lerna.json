@@ -2,7 +2,8 @@
   "lerna": "2.2.0",
   "packages": [
     "packages/*",
-    "../mina-sfc"
+    "../mina-sfc",
+    "../gulp-mina"
   ],
   "version": "independent"
 }
