@@ -6,11 +6,13 @@ const selectorLoaderPath = require.resolve('./selector')
 const parserLoaderPath = require.resolve('./parser')
 const minaJSONFileLoaderPath = require.resolve('./mina-json-file')
 
+const resolve = (module) => require.resolve(module)
+
 const helpers = require('../helpers')
 
 const LOADERS = {
-  template: 'wxml-loader',
-  style: 'extract-loader!css-loader',
+  template: resolve('wxml-loader'),
+  style: `${resolve('extract-loader')}!${resolve('css-loader')}`,
   script: '',
   config: `${minaJSONFileLoaderPath}`,
 }
@@ -72,7 +74,8 @@ module.exports = function (source) {
           if (!parts[type] || !parts[type].content) {
             return Promise.resolve()
           }
-          let request = `!!file-loader?name=[path][name].${EXTNAMES[type]}!${getLoaderOf(type)}${selectorLoaderPath}?type=${type}!${url}`
+          let request = `!!${resolve('file-loader')}?name=[path][name].${EXTNAMES[type]}!${getLoaderOf(type)}${selectorLoaderPath}?type=${type}!${url}`
+          console.log(request)
           return loadModule(request)
         }))
         .then(() => done(null, output))
