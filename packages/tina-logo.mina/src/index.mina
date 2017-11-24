@@ -4,15 +4,20 @@
 }
 </config>
 
-<style>
-.logo {
-  width: 80px;
-  height: 80px;
+/*
+  set ``lang`` attribute of ``style`` just for the IDE syntax highlighting
+*/
+<style lang="postcss">
+.component {
+  .logo {
+    width: 80px;
+    height: 80px;
+  }
 }
 </style>
 
 <template>
-  <view>
+  <view class="component">
     <image class="logo" src="./logo.png" />
   </view>
 </template>
