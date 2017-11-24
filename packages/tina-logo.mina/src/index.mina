@@ -9,23 +9,27 @@
 */
 <style lang="postcss">
 .component {
-  .logo {
-    width: 80px;
-    height: 80px;
+  &.logo {
+    margin: auto;
+    display: block;
   }
 }
 </style>
 
 <template>
-  <view class="component">
-    <image class="logo" src="./logo.png" />
-  </view>
+  <image class="component logo" style="height: {{ size }}; width: {{ size }};" src="./logo.png" />
 </template>
 
 <script>
 Component({
+  properties: {
+    size: {
+      type: String,
+      value: '80px',
+    },
+  },
   ready () {
     console.log('hello from tina-logo.mina')
-  }
+  },
 })
 </script>
