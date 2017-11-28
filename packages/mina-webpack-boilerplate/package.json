@@ -1,7 +1,7 @@
 {
   "name": "@tinajs/mina-boilerplate",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "",
   "main": "index.js",
   "author": "yelo",
@@ -18,8 +18,8 @@
   },
   "devDependencies": {
     "@tinajs/mina-entry-webpack-plugin": "^0.1.1",
-    "@tinajs/mina-loader": "^0.1.0",
-    "@tinajs/mina-runtime-webpack-plugin": "^0.1.0",
+    "@tinajs/mina-loader": "^0.1.1",
+    "@tinajs/mina-runtime-webpack-plugin": "^0.1.1",
     "babel": "^6.23.0",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
