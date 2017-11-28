@@ -1,6 +1,9 @@
 {
   "name": "@tinajs/mina-loader",
   "version": "0.0.1",
+  "publishConfig": {
+    "access": "public"
+  },
   "description": "",
   "main": "lib/index.js",
   "scripts": {
@@ -8,11 +11,6 @@
   },
   "author": "yelo",
   "license": "MIT",
-  "config": {
-    "commitizen": {
-      "path": "cz-conventional-changelog"
-    }
-  },
   "devDependencies": {
     "ava": "^0.23.0",
     "babel": "^6.23.0",
