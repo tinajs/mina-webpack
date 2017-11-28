@@ -3,6 +3,7 @@
  */
 
 const path = require('path')
+const ensurePosix = require('ensure-posix-path')
 const { ConcatSource } = require('webpack-sources')
 
 const GLOBAL_VARIABLE = 'wx'
@@ -34,7 +35,7 @@ module.exports = class MinaRuntimeWebpackPlugin {
           throw new Error('options.runtime is required.')
         }
         // assume output.filename is chunk.name here
-        let runtime = path.relative(path.dirname(chunk.name), this.runtime)
+        let runtime = ensurePosix(path.relative(path.dirname(chunk.name), this.runtime))
         let source = new ConcatSource(script({ runtime, namespace: GLOBAL_VARIABLE }), core)
         return source
       })

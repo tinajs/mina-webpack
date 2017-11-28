@@ -10,6 +10,7 @@
   "author": "yelo",
   "license": "MIT",
   "dependencies": {
+    "ensure-posix-path": "^1.0.2",
     "webpack-sources": "^1.0.2"
   }
 }

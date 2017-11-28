@@ -25,6 +25,7 @@
   "dependencies": {
     "@tinajs/mina-sfc": "^0.2.0",
     "css-loader": "^0.28.7",
+    "ensure-posix-path": "^1.0.2",
     "extract-loader": "^1.0.1",
     "file-loader": "^1.1.5",
     "loader-utils": "^1.1.0",
