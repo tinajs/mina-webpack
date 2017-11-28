@@ -1,5 +1,13 @@
 {
   "lerna": "2.2.0",
+  "commands": {
+    "publish": {
+      "ignore": [
+        "@tinajs/mina-sfc",
+        "@tinajs/gulp-mina"
+      ]
+    }
+  },
   "packages": [
     "packages/*",
     "../mina-sfc",
