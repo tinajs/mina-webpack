@@ -34,6 +34,11 @@ export default {
         }],
       },
       {
+        test: /\.mina$/,
+        include: /node_modules/,
+        use: '@tinajs/mina-loader',
+      },
+      {
         test: /\.png$/,
         use: {
           loader: "file-loader",
