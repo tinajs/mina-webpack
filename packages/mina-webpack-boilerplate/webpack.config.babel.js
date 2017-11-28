@@ -20,8 +20,8 @@ export default {
           loader: '@tinajs/mina-loader',
           options: {
             loaders: {
-              js: 'babel-loader',
-              wxss: {
+              script: 'babel-loader',
+              style: {
                 loader: 'postcss-loader',
                 options: {
                   config: {
