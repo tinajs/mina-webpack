@@ -31,15 +31,13 @@ function addEntry (context, item, name) {
 }
 
 function readConfig (fullpath) {
-  return fs.readFile(fullpath)
-    .then((buffer) => {
-      let blocks = parseComponent(buffer.toString()).customBlocks
-      let matched = blocks.find((block) => block.type === 'config')
-      if (!matched || !matched.content || !matched.content.trim()) {
-        return {}
-      }
-      return JSON.parse(matched.content)
-    })
+  let buffer = fs.readFileSync(fullpath)
+  let blocks = parseComponent(buffer.toString()).customBlocks
+  let matched = blocks.find((block) => block.type === 'config')
+  if (!matched || !matched.content || !matched.content.trim()) {
+    return {}
+  }
+  return JSON.parse(matched.content)
 }
 
 function getUrlsFromConfig (config) {
@@ -73,16 +71,11 @@ function getItems (context, url) {
     isModule: isModule,
     fullpath: isModule ? resolveFrom(context, request) : path.resolve(context, url),
   }
-  return Promise.resolve(current.fullpath)
-    .then(readConfig)
-    .then(getUrlsFromConfig)
-    .then((urls) => {
-      if (urls.length === 0) {
-        return current
-      }
-      return Promise.all([ Promise.resolve(current), ...(urls.map((url) => getItems(context, url))) ])
-        .then(flatten)
-    })
+  let urls = getUrlsFromConfig(readConfig(current.fullpath))
+  if (urls.length === 0) {
+    return current
+  }
+  return flatten([ current, ...(urls.map((url) => getItems(context, url))) ])
 }
 
 module.exports = class MinaEntryWebpackPlugin {
@@ -90,33 +83,22 @@ module.exports = class MinaEntryWebpackPlugin {
     this.map = options.map || function (entry) {
       return entry
     }
-    this.rewrited = false
   }
 
-  rewrite (compiler, callback) {
-    if (this.rewrited) {
-      return callback()
-    }
-    this.rewrited = true
-
+  rewrite (compiler) {
     let { context, entry } = compiler.options
 
-    getItems(context, entry)
-      .then((items) => {
-        items.forEach(({ isModule, request, fullpath }) => {
-          // replace '..' to '_'
-          let name = extname(urlToRequest(path.relative(context, fullpath).replace(/\.\./g, '_')), '.js')
-          compiler.apply(addEntry(context, this.map(request), name))
-        })
-        callback()
-      })
-      .catch(callback)
+    let items = getItems(context, entry[1])
+    items.forEach(({ isModule, request, fullpath }) => {
+      // replace '..' to '_'
+      let name = extname(urlToRequest(path.relative(context, fullpath).replace(/\.\./g, '_')), '.js')
+      compiler.apply(addEntry(context, this.map(request), name))
+    })
+
+    return true
   }
 
   apply (compiler) {
-    compiler.plugin('run', (compiler, callback) => this.rewrite(compiler, callback))
-    compiler.plugin('watch-run', ({ compiler }, callback) => this.rewrite(compiler, callback))
-
-    compiler.plugin('entry-option', () => true)
+    compiler.plugin('entry-option', () => this.rewrite(compiler))
   }
 }
