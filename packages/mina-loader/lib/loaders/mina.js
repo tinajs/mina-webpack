@@ -1,3 +1,4 @@
+const path = require('path')
 const loaderUtils = require('loader-utils')
 const merge = require('lodash.merge')
 const resolveFrom = require('resolve-from')
@@ -74,7 +75,8 @@ module.exports = function (source) {
           if (!parts[type] || !parts[type].content) {
             return Promise.resolve()
           }
-          let request = `!!${resolve('file-loader')}?name=[path][name].${EXTNAMES[type]}!${getLoaderOf(type)}${selectorLoaderPath}?type=${type}!${url}`
+          let dirname = helpers.toSafeOutputPath(path.dirname(path.relative(this.options.context, url)))
+          let request = `!!${resolve('file-loader')}?name=${dirname}/[name].${EXTNAMES[type]}!${getLoaderOf(type)}${selectorLoaderPath}?type=${type}!${url}`
           return loadModule(request)
         }))
         .then(() => done(null, output))

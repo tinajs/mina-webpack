@@ -1,7 +1,8 @@
 const path = require('path')
 const loaderUtils = require('loader-utils')
 const resolveFrom = require('resolve-from')
-const ensurePosix = require('ensure-posix-path')
+
+const helpers = require('../helpers')
 
 function mapObject (object, iteratee) {
   let result = {}
@@ -12,7 +13,7 @@ function mapObject (object, iteratee) {
 }
 
 function resolveFile (dirname, target, context) {
-  let relative = (target) => ensurePosix(path.join(path.relative(dirname, context), target))
+  let relative = (target) => helpers.toSafeOutputPath(path.join(path.relative(dirname, context), target))
   if (target.match(/^~/)) {
     return relative(resolveFromModule(context, target))
   }
@@ -21,7 +22,6 @@ function resolveFile (dirname, target, context) {
 
 function resolveFromModule (context, filename) {
   return path.relative(context, resolveFrom(context, loaderUtils.urlToRequest(`${filename}.mina`)))
-    .replace(/\.\./g, '_')
     .replace(/\.mina$/, '')
 }
 

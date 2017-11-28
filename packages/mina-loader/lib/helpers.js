@@ -1,4 +1,5 @@
 const loaderUtils = require('loader-utils')
+const ensurePosix = require('ensure-posix-path')
 
 exports.loadModule = function loadModule (request) {
   return new Promise((resolve, reject) => {
@@ -49,4 +50,10 @@ exports.parseLoaders = function parseLoaders (loaders) {
     options = loaderUtils.getOptions({ query: `?${options || ''}` })
     return { loader, options }
   })
+}
+
+exports.toSafeOutputPath = function (original) {
+  return ensurePosix(original || '')
+    .replace(/\.\./g, '_')
+    .replace(/node_modules([\/\\])/g, '_node_modules_$1')
 }

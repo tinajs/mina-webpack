@@ -89,8 +89,12 @@ module.exports = class MinaEntryWebpackPlugin {
     let { context, entry } = compiler.options
 
     getItems(context, entry).forEach(({ isModule, request, fullpath }) => {
-      // replace '..' to '_'
-      let name = extname(urlToRequest(path.relative(context, fullpath).replace(/\.\./g, '_')), '.js')
+      let url = path.relative(context, fullpath)
+        // replace '..' to '_'
+        .replace(/\.\./g, '_')
+        // replace 'node_modules' to '_node_modules_'
+        .replace(/node_modules([\/\\])/g, '_node_modules_$1')
+      let name = extname(urlToRequest(url), '.js')
       compiler.apply(addEntry(context, this.map(request), name))
     })
 
