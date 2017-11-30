@@ -1,7 +1,9 @@
 const path = require('path')
-const loaderUtils = require('loader-utils')
 const merge = require('lodash.merge')
+const compose = require('compose-function')
+const loaderUtils = require('loader-utils')
 const resolveFrom = require('resolve-from')
+const ensurePosix = require('ensure-posix-path')
 
 const selectorLoaderPath = require.resolve('./selector')
 const parserLoaderPath = require.resolve('./parser')
@@ -75,7 +77,7 @@ module.exports = function (source) {
           if (!parts[type] || !parts[type].content) {
             return Promise.resolve()
           }
-          let dirname = helpers.toSafeOutputPath(path.dirname(path.relative(this.options.context, url)))
+          let dirname = compose(ensurePosix, helpers.toSafeOutputPath, path.dirname)(path.relative(this.options.context, url))
           let request = `!!${resolve('file-loader')}?name=${dirname}/[name].${EXTNAMES[type]}!${getLoaderOf(type)}${selectorLoaderPath}?type=${type}!${url}`
           return loadModule(request)
         }))

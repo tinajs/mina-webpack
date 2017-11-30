@@ -1,6 +1,8 @@
 const path = require('path')
+const compose = require('compose-function')
 const loaderUtils = require('loader-utils')
 const resolveFrom = require('resolve-from')
+const ensurePosix = require('ensure-posix-path')
 
 const helpers = require('../helpers')
 
@@ -13,11 +15,11 @@ function mapObject (object, iteratee) {
 }
 
 function resolveFile (dirname, target, context) {
-  let relative = (target) => helpers.toSafeOutputPath(path.join(path.relative(dirname, context), target))
+  let relative = (target) => path.join(path.relative(dirname, context), helpers.toSafeOutputPath(target))
   if (target.match(/^~/)) {
-    return relative(resolveFromModule(context, target))
+    return compose(ensurePosix, relative)(resolveFromModule(context, target))
   }
-  return relative(target)
+  return compose(ensurePosix, relative)(target)
 }
 
 function resolveFromModule (context, filename) {
