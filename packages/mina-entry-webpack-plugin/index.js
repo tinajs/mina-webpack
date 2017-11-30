@@ -2,6 +2,7 @@ const path = require('path')
 const fs = require('fs-extra')
 const flatten = require('flatten')
 const resolveFrom = require('resolve-from')
+const ensurePosix = require('ensure-posix-path')
 const { urlToRequest } = require('loader-utils')
 const { parseComponent } = require('vue-template-compiler')
 const SingleEntryPlugin = require('webpack/lib/SingleEntryPlugin')
@@ -104,7 +105,7 @@ module.exports = class MinaEntryWebpackPlugin {
           // replace 'node_modules' to '_node_modules_'
           .replace(/node_modules([\/\\])/g, '_node_modules_$1')
         let name = extname(urlToRequest(url), '.js')
-        compiler.apply(addEntry(context, this.map(request), name))
+        compiler.apply(addEntry(context, this.map(ensurePosix(request)), ensurePosix(name)))
       })
 
     return true
