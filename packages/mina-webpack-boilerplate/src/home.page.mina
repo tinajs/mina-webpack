@@ -2,7 +2,8 @@
 {
   "name": "mina",
   "usingComponents": {
-    "tina-logo": "~@tinajs/tina-logo.mina/dist/index"
+    "tina-logo": "~@tinajs/tina-logo.mina/dist/index",
+    "circular": "circular.component"
   }
 }
 </config>

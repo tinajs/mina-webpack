@@ -63,19 +63,27 @@ function getUrlsFromConfig (config) {
 }
 
 function getItems (context, url) {
-  let isModule = isModuleUrl(url)
-  let request = urlToRequest(url)
-  let current = {
-    url,
-    request,
-    isModule: isModule,
-    fullpath: isModule ? resolveFrom(context, request) : path.resolve(context, url),
+  let memory = []
+
+  function search (context, url) {
+    let isModule = isModuleUrl(url)
+    let request = urlToRequest(url)
+    let current = {
+      url,
+      request,
+      isModule: isModule,
+      fullpath: isModule ? resolveFrom(context, request) : path.resolve(context, url),
+    }
+    memory.push(current)
+
+    let urls = getUrlsFromConfig(readConfig(current.fullpath))
+    if (urls.length > 0) {
+      urls.filter((url) => !memory.some((item) => item.url === url)).forEach((url) => search(context, url))
+    }
   }
-  let urls = getUrlsFromConfig(readConfig(current.fullpath))
-  if (urls.length === 0) {
-    return current
-  }
-  return flatten([ current, ...(urls.map((url) => getItems(context, url))) ])
+
+  search(context, url)
+  return memory
 }
 
 module.exports = class MinaEntryWebpackPlugin {
@@ -88,15 +96,16 @@ module.exports = class MinaEntryWebpackPlugin {
   rewrite (compiler) {
     let { context, entry } = compiler.options
 
-    getItems(context, entry).forEach(({ isModule, request, fullpath }) => {
-      let url = path.relative(context, fullpath)
-        // replace '..' to '_'
-        .replace(/\.\./g, '_')
-        // replace 'node_modules' to '_node_modules_'
-        .replace(/node_modules([\/\\])/g, '_node_modules_$1')
-      let name = extname(urlToRequest(url), '.js')
-      compiler.apply(addEntry(context, this.map(request), name))
-    })
+    getItems(context, entry)
+      .forEach(({ isModule, request, fullpath }) => {
+        let url = path.relative(context, fullpath)
+          // replace '..' to '_'
+          .replace(/\.\./g, '_')
+          // replace 'node_modules' to '_node_modules_'
+          .replace(/node_modules([\/\\])/g, '_node_modules_$1')
+        let name = extname(urlToRequest(url), '.js')
+        compiler.apply(addEntry(context, this.map(request), name))
+      })
 
     return true
   }

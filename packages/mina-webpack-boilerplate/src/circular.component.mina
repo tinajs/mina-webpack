@@ -1,0 +1,17 @@
+<config>
+{
+  "usingComponents": {
+    "hn-comment": "circular.component"
+  },
+  "component": true
+}
+</config>
+
+<template>
+  <view> Circular </view>
+</template>
+
+<script>
+Component({
+})
+</script>
