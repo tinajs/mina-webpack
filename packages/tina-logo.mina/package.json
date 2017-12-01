@@ -16,6 +16,7 @@
   "license": "MIT",
   "devDependencies": {
     "@tinajs/gulp-mina": "^0.1.0",
+    "babel-core": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "del": "^3.0.0",
     "gulp": "^3.9.1",
