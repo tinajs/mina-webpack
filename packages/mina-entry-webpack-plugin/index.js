@@ -97,6 +97,11 @@ module.exports = class MinaEntryWebpackPlugin {
   rewrite (compiler) {
     let { context, entry } = compiler.options
 
+    // assume the latest file in array is the app.mina
+    if (Array.isArray(entry)) {
+      entry = entry[entry.length - 1]
+    }
+
     getItems(context, entry)
       .forEach(({ isModule, request, fullpath }) => {
         let url = path.relative(context, fullpath)
