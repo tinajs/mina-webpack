@@ -10,6 +10,7 @@
   },
   "packages": [
     "packages/*",
+    "example",
     "../mina-sfc",
     "../gulp-mina"
   ],
