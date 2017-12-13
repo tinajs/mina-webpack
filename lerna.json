@@ -3,16 +3,14 @@
   "commands": {
     "publish": {
       "ignore": [
-        "@tinajs/mina-sfc",
-        "@tinajs/gulp-mina"
+        "@tinajs/mina-sfc"
       ]
     }
   },
   "packages": [
     "packages/*",
     "example",
-    "../mina-sfc",
-    "../gulp-mina"
+    "../mina-sfc"
   ],
   "version": "independent"
 }
