@@ -7,7 +7,7 @@
   "description": "",
   "main": "index.js",
   "author": "yelo",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "peerDependencies": {
     "webpack": "^3.8.1"
   },

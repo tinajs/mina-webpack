@@ -10,7 +10,7 @@
     "test": "ava test/test.js"
   },
   "author": "yelo",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "devDependencies": {
     "ava": "^0.23.0",
     "babel": "^6.23.0",
