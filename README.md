@@ -1,5 +1,6 @@
-# mina-webpack
-> MINA single-file-component meets [Webpack](https://webpack.js.org/).
+<h1 align="center">mina-webpack</h1>
+<p align="center"> Mina single-file-component meets Webpack</p>
+<p align="center"><img src="https://github.com/tinajs/assets/raw/master/images/mina-webpack/equation.png" /></p>
 
 ## Get Started
 We recommend you to get started with [template-mina](https://github.com/tinajs/template-mina):
