@@ -10,7 +10,15 @@
   "author": "yelo",
   "license": "MIT",
   "dependencies": {
+    "ejs": "^2.5.7",
     "ensure-posix-path": "^1.0.2",
+    "virtual-module-webpack-plugin": "^0.3.0",
     "webpack-sources": "^1.0.2"
+  },
+  "devDependencies": {
+    "core-js": "^2.5.3"
+  },
+  "peerDependencies": {
+    "core-js": "2.x"
   }
 }

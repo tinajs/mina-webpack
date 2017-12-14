@@ -1,0 +1,10 @@
+;(function core () {
+  if (typeof global !== 'undefined') {
+    <% globals.forEach(function (key) { %>
+    if (typeof <%- key %> !== 'undefined') {
+      global.<%- key %> = <%- key %>
+      console.log('<%- key %> loaded')
+    }
+    <% }) %>
+  }
+})();

@@ -5,6 +5,8 @@
 const path = require('path')
 const ensurePosix = require('ensure-posix-path')
 const { ConcatSource } = require('webpack-sources')
+const VirtualModule = require('virtual-module-webpack-plugin')
+const script = require('./script')
 
 const GLOBAL_VARIABLE = 'wx'
 
@@ -14,10 +16,6 @@ function isRuntimeExtracted (compilation) {
 
 function runtimeChunk (compilation) {
   return compilation.chunks.find((chunk) => chunk.isInitial() && chunk.hasRuntime())
-}
-
-function script ({ runtime, namespace }) {
-  return `; require('${runtime}'); var webpackJsonp = ${namespace}.webpackJsonp;`
 }
 
 module.exports = class MinaRuntimeWebpackPlugin {
