@@ -48,7 +48,7 @@ module.exports = {
 
 ## Example
 - [mina-webpack - Full Example](https://github.com/tinajs/mina-webpack/example)
-- [TinaJS - HackerNews Client](https://github.com/tinajs/tina-hackernews)
+- [TinaJS - HackerNews Reader](https://github.com/tinajs/tina-hackernews)
 
 ## License
 Apache-2.0 &copy; [yelo](https://github.com/imyelo), 2017 - present

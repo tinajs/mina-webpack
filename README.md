@@ -131,7 +131,7 @@ Page({
 ## Examples
 - [mina-webpack - Full Example](./example)
 - [mina-loader - test](./packages/mina-loader/test)
-- [TinaJS - HackerNews Client](https://github.com/tinajs/tina-hackernews)
+- [TinaJS - HackerNews Reader](https://github.com/tinajs/tina-hackernews)
 
 ## Related Projects
 - [TinaJS](https://github.com/tinajs/tina)
