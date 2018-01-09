@@ -75,22 +75,34 @@ module.exports = function (source) {
       if (!config.tabBar || !Array.isArray(config.tabBar.list)) {
         return config
       }
-      const extract = (source) => helpers.extract(source, options.publicPath)
+
+      function loadAndReplace (tab, field) {
+        return loadModule(tab[field])
+          .then((source) => helpers.extract(source, options.publicPath))
+          .then((outputPath) => Object.assign(tab, {
+            [field]: outputPath,
+          }))
+      }
+
       return pMap(config.tabBar.list, (tab) => {
-        let files = []
-        if (tab.iconPath) {
-          files.push(() => loadModule(tab.iconPath).then(extract))
-        }
-        if (tab.selectedIconPath) {
-          files.push(() => loadModule(tab.selectedIconPath).then(extract))
-        }
-        return pAll(files)
-      })
-        .then((files) => {
-          console.log(files)
-          // TODO: flatten
-          return config
-        })
+        return Promise.resolve(tab)
+          .then((tab) => {
+            if (!tab.iconPath) {
+              return tab
+            }
+            return loadAndReplace(tab, 'iconPath')
+          })
+          .then((tab) => {
+            if (!tab.selectedIconPath) {
+              return tab
+            }
+            return loadAndReplace(tab, 'selectedIconPath')
+          })
+      }).then((list) => Object.assign(config, {
+        tabBar: Object.assign(config.tabBar, {
+          list,
+        }),
+      }))
     })
     .then((config) => done(null, JSON.stringify(config, null, 2)))
     .catch((error) => done(error))
