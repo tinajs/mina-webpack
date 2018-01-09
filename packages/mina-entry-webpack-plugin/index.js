@@ -94,7 +94,7 @@ module.exports = class MinaEntryWebpackPlugin {
     }
   }
 
-  rewrite (compiler) {
+  rewrite (compiler, done) {
     let { context, entry } = compiler.options
 
     // assume the latest file in array is the app.mina
@@ -113,10 +113,15 @@ module.exports = class MinaEntryWebpackPlugin {
         compiler.apply(addEntry(context, this.map(ensurePosix(request)), ensurePosix(name)))
       })
 
+    if (typeof done === 'function') {
+      done()
+    }
+
     return true
   }
 
   apply (compiler) {
     compiler.plugin('entry-option', () => this.rewrite(compiler))
+    compiler.plugin('watch-run', ({ compiler }, done) => this.rewrite(compiler, done))
   }
 }
