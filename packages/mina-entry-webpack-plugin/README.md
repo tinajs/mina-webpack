@@ -41,6 +41,8 @@ module.exports = {
 }
 ```
 
+For the best particle, you might also be interested in [mina-webpack](https://github.com/tinajs/mina-webpack/).
+
 ## Options
 | Name | Default  |                             Description                             |
 | ---- | -------- | ------------------------------------------------------------------- |
