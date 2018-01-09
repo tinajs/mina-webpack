@@ -1,6 +1,6 @@
 {
   "name": "@tinajs/mina-entry-webpack-plugin",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "publishConfig": {
     "access": "public"
   },
