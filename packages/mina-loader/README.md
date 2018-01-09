@@ -54,13 +54,14 @@ module.exports = {
 For the best particle, you might also be interested in [mina-webpack](https://github.com/tinajs/mina-webpack/).
 
 ## Options
-|       Name       | Default |                                        Description                                         |
-| ---------------- | ------- | ------------------------------------------------------------------------------------------ |
-| loaders          | {}      | A map of *Rules.use*. See [Webpack - Module - Rule.use](https://webpack.js.org/configuration/module/#rule-use) for details. |
-| loaders.config   | undefined      | The *Rules.use* for ``<config>``.                                                   |
-| loaders.template | undefined      | The *Rules.use* for ``<template>``                                                  |
-| loaders.script   | undefined      | The *Rules.use* for ``<script>``                                                    |
-| loaders.style    | undefined      | The *Rules.use* for ``<style>``                                                     |
+|       Name       |                                       Default                                       |                                                         Description                                                         |
+| ---------------- | ----------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| loaders          | ``{}``                                                                              | A map of *Rules.use*. See [Webpack - Module - Rule.use](https://webpack.js.org/configuration/module/#rule-use) for details. |
+| loaders.config   | ``undefined``                                                                       | The *Rules.use* for ``<config>``.                                                                                           |
+| loaders.template | ``undefined``                                                                       | The *Rules.use* for ``<template>``                                                                                          |
+| loaders.script   | ``undefined``                                                                       | The *Rules.use* for ``<script>``                                                                                            |
+| loaders.style    | ``undefined``                                                                       | The *Rules.use* for ``<style>``                                                                                             |
+| publicPath       | [output.publicPath](https://webpack.js.org/configuration/output/#output-publicpath) | Useful for relative ``publicPath``, see [extract-loader - options](https://github.com/peerigon/extract-loader#options)      |
 
 ## Example
 - [mina-webpack - Full Example](https://github.com/tinajs/mina-webpack/example)
