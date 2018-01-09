@@ -14,10 +14,10 @@ const resolve = (module) => require.resolve(module)
 const helpers = require('../helpers')
 
 const LOADERS = {
-  template: resolve('wxml-loader'),
-  style: `${resolve('extract-loader')}!${resolve('css-loader')}`,
-  script: '',
-  config: `${minaJSONFileLoaderPath}`,
+  template: ({ publicPath }) => `${resolve('wxml-loader')}?${JSON.stringify({ publicPath })}`,
+  style: ({ publicPath }) => `${resolve('extract-loader')}?${JSON.stringify({ publicPath })}!${resolve('css-loader')}`,
+  script: () => '',
+  config: ({ publicPath }) => `${minaJSONFileLoaderPath}?${JSON.stringify({ publicPath })}`,
 }
 
 const EXTNAMES = {
@@ -36,6 +36,7 @@ module.exports = function (source) {
   const done = this.async()
   const options = merge({}, {
     loaders: {},
+    publicPath: this.options.output.publicPath,
   }, loaderUtils.getOptions(this) || {})
 
   const url = loaderUtils.getRemainingRequest(this)
@@ -43,8 +44,8 @@ module.exports = function (source) {
 
   const loadModule = helpers.loadModule.bind(this)
 
-  const getLoaderOf = (type) => {
-    let loader = LOADERS[type] || ''
+  const getLoaderOf = (type, options) => {
+    let loader = LOADERS[type](options) || ''
     // append custom loader
     let custom = options.loaders[type] || ''
     if (custom) {
@@ -68,7 +69,7 @@ module.exports = function (source) {
 
       // compute output
       let output = parts.script && parts.script.content ?
-        TYPES_FOR_OUTPUT.map((type) => `require(${loaderUtils.stringifyRequest(this, `!!${getLoaderOf(type)}${selectorLoaderPath}?type=script!${url}`)})`).join(';') :
+        TYPES_FOR_OUTPUT.map((type) => `require(${loaderUtils.stringifyRequest(this, `!!${getLoaderOf(type, options)}${selectorLoaderPath}?type=script!${url}`)})`).join(';') :
         ''
 
       return Promise
@@ -78,7 +79,7 @@ module.exports = function (source) {
             return Promise.resolve()
           }
           let dirname = compose(ensurePosix, helpers.toSafeOutputPath, path.dirname)(path.relative(this.options.context, url))
-          let request = `!!${resolve('file-loader')}?name=${dirname}/[name].${EXTNAMES[type]}!${getLoaderOf(type)}${selectorLoaderPath}?type=${type}!${url}`
+          let request = `!!${resolve('file-loader')}?name=${dirname}/[name].${EXTNAMES[type]}!${getLoaderOf(type, options)}${selectorLoaderPath}?type=${type}!${url}`
           return loadModule(request)
         }))
         .then(() => done(null, output))
