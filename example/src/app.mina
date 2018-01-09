@@ -1,22 +1,22 @@
 <config>
 {
   "pages": [
-    "home.page",
-    "message.page"
+    "pages/home",
+    "pages/message"
   ],
   "tabBar": {
     "list": [
       {
-        "pagePath": "home.page",
+        "pagePath": "pages/home",
         "text": "Home",
-        "iconPath": "./tabs/home.png",
-        "selectedIconPath": "./tabs/home-active.png"
+        "iconPath": "./images/tabs/home.png",
+        "selectedIconPath": "./images/tabs/home-active.png"
       },
       {
-        "pagePath": "message.page",
+        "pagePath": "pages/message",
         "text": "Message",
-        "iconPath": "./tabs/bell.png",
-        "selectedIconPath": "./tabs/bell-active.png"
+        "iconPath": "./images/tabs/bell.png",
+        "selectedIconPath": "./images/tabs/bell-active.png"
       }
     ]
   }
@@ -25,7 +25,7 @@
 
 <script>
 const { say } = require('cowsay')
-require('./dependency.js')
+require('./utils/dependency.js')
 App({
   onLaunch () {
     console.log(say({ text: 'Hello from App!' }))
