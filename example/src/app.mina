@@ -1,8 +1,25 @@
 <config>
 {
   "pages": [
-    "home.page"
-  ]
+    "home.page",
+    "message.page"
+  ],
+  "tabBar": {
+    "list": [
+      {
+        "pagePath": "home.page",
+        "text": "Home",
+        "iconPath": "./tabs/home.png",
+        "selectedIconPath": "./tabs/home-active.png"
+      },
+      {
+        "pagePath": "message.page",
+        "text": "Message",
+        "iconPath": "./tabs/bell.png",
+        "selectedIconPath": "./tabs/bell-active.png"
+      }
+    ]
+  }
 }
 </config>
 

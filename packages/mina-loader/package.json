@@ -31,6 +31,9 @@
     "file-loader": "^1.1.5",
     "loader-utils": "^1.1.0",
     "lodash.merge": "^4.6.0",
+    "object-path": "^0.11.4",
+    "p-all": "^1.0.0",
+    "p-map": "^1.2.0",
     "style-loader": "^0.19.0",
     "vue-template-compiler": "^2.5.3",
     "wxml-loader": "^0.1.0"

@@ -5,7 +5,8 @@
       "path": "cz-conventional-changelog"
     }
   },
-	"devDependencies": {
-		"lerna": "^2.2.0"
-	}
+  "devDependencies": {
+    "lerna": "^2.2.0"
+  },
+  "dependencies": {}
 }

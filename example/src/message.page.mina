@@ -1,0 +1,9 @@
+<template>
+  <view>
+    Empty
+  </view>
+</template>
+
+<script>
+Page({})
+</script>
