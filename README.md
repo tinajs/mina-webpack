@@ -79,7 +79,7 @@ module.exports = {
 <config>
 {
   "pages": [
-    "page"
+    "page.mina"
   ]
 }
 </config>
