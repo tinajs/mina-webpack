@@ -63,12 +63,12 @@ function getUrlsFromConfig (config) {
   return urls
 }
 
-function getItems (context, url) {
+function getItems (rootContext, url) {
   let memory = []
 
   function search (context, url) {
     let isModule = isModuleUrl(url)
-    let request = urlToRequest(url)
+    let request = urlToRequest(path.relative(rootContext, path.resolve(context, url)))
     let current = {
       url,
       request,
@@ -79,11 +79,17 @@ function getItems (context, url) {
 
     let urls = getUrlsFromConfig(readConfig(current.fullpath))
     if (urls.length > 0) {
-      urls.filter((url) => !memory.some((item) => item.url === url)).forEach((url) => search(context, url))
+      urls.filter((url) => !memory.some((item) => item.url === url)).forEach((url) => {
+        // relative url
+        if (/^\./.test(url)) {
+          return search(path.dirname(current.fullpath), url)
+        }
+        return search(rootContext, url)
+      })
     }
   }
 
-  search(context, url)
+  search(rootContext, url)
   return memory
 }
 

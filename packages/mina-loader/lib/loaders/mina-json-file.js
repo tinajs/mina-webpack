@@ -18,11 +18,13 @@ function mapObject (object, iteratee) {
 }
 
 function resolveFile (dirname, target, context) {
-  let relative = (target) => path.join(path.relative(dirname, context), helpers.toSafeOutputPath(target))
-  if (target.match(/^~/)) {
-    return compose(ensurePosix, relative)(resolveFromModule(context, target))
+  let relativeFromContext = (target) => path.join(path.relative(dirname, context), helpers.toSafeOutputPath(target))
+  let resolve = (target) => compose(ensurePosix, relativeFromContext)(resolveFromModule(context, target))
+  // relative url
+  if (target.match(/^\./)) {
+    return resolve(path.relative(context, path.resolve(dirname, target)))
   }
-  return compose(ensurePosix, relative)(target)
+  return resolve(target)
 }
 
 function resolveFromModule (context, filename) {
