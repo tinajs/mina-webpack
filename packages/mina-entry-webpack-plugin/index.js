@@ -49,15 +49,13 @@ function getUrlsFromConfig (config) {
   if (Array.isArray(config.pages)) {
     urls = [
       ...urls,
-      ...config.pages.map((page) => `${page}.mina`),
+      ...config.pages,
     ]
   }
   if (typeof config.usingComponents === 'object') {
     urls = [
       ...urls,
-      ...Object.keys(config.usingComponents).map((tag) => {
-        return `${config.usingComponents[tag]}.mina`
-      }),
+      ...Object.keys(config.usingComponents).map((tag) => config.usingComponents[tag]),
     ]
   }
   return urls

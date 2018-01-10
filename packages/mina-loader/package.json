@@ -34,6 +34,7 @@
     "object-path": "^0.11.4",
     "p-all": "^1.0.0",
     "p-map": "^1.2.0",
+    "replace-ext": "^1.0.0",
     "style-loader": "^0.19.0",
     "vue-template-compiler": "^2.5.3",
     "wxml-loader": "^0.1.0"

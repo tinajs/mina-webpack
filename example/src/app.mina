@@ -1,19 +1,19 @@
 <config>
 {
   "pages": [
-    "pages/home",
-    "pages/message"
+    "pages/home.mina",
+    "pages/message.mina"
   ],
   "tabBar": {
     "list": [
       {
-        "pagePath": "pages/home",
+        "pagePath": "pages/home.mina",
         "text": "Home",
         "iconPath": "./images/tabs/home.png",
         "selectedIconPath": "./images/tabs/home-active.png"
       },
       {
-        "pagePath": "pages/message",
+        "pagePath": "pages/message.mina",
         "text": "Message",
         "iconPath": "./images/tabs/bell.png",
         "selectedIconPath": "./images/tabs/bell-active.png"

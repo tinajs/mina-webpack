@@ -1,7 +1,7 @@
 <config>
 {
   "usingComponents": {
-    "circular": "components/circular"
+    "circular": "components/circular.mina"
   },
   "component": true
 }

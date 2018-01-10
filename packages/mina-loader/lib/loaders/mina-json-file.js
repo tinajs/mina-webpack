@@ -1,6 +1,7 @@
 const path = require('path')
 const merge = require('lodash.merge')
 const compose = require('compose-function')
+const replaceExt = require('replace-ext')
 const loaderUtils = require('loader-utils')
 const resolveFrom = require('resolve-from')
 const ensurePosix = require('ensure-posix-path')
@@ -8,6 +9,10 @@ const pMap = require('p-map')
 const pAll = require('p-all')
 
 const helpers = require('../helpers')
+
+function stripExt (path) {
+  return replaceExt(path, '')
+}
 
 function mapObject (object, iteratee) {
   let result = {}
@@ -28,8 +33,7 @@ function resolveFile (dirname, target, context) {
 }
 
 function resolveFromModule (context, filename) {
-  return path.relative(context, resolveFrom(context, loaderUtils.urlToRequest(`${filename}.mina`)))
-    .replace(/\.mina$/, '')
+  return stripExt(path.relative(context, resolveFrom(context, loaderUtils.urlToRequest(filename))))
 }
 
 module.exports = function (source) {
@@ -87,6 +91,11 @@ module.exports = function (source) {
       }
 
       return pMap(config.tabBar.list, (tab) => {
+        if (tab.pagePath) {
+          tab = Object.assign(tab, {
+            pagePath: stripExt(tab.pagePath),
+          })
+        }
         return Promise.resolve(tab)
           .then((tab) => {
             if (!tab.iconPath) {
