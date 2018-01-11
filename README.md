@@ -139,3 +139,5 @@ Page({
 - [gulp-mina](https://github.com/tinajs/gulp-mina)
 - [Cap32/wxapp-webpack-plugin](https://github.com/Cap32/wxapp-webpack-plugin)
 - [CantonJS/wxapp-boilerplate](https://github.com/cantonjs/wxapp-boilerplate)
+- [zezhipeng/mina-loader](https://github.com/zezhipeng/mina-loader)
+- [Vue - Single File Component](https://vuejs.org/v2/guide/single-file-components.html)

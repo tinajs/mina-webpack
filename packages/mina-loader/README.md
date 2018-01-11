@@ -1,6 +1,8 @@
 # mina-loader
 > [MINA single-file-component](https://tinajs.github.io/tina/#/guide/package-management-and-build-tools) loader for [Webpack](https://webpack.js.org/).
 
+*Inspired by [zezhipeng/mina-loader](https://github.com/zezhipeng/mina-loader).*
+
 ## Installation
 ```bash
 npm i --save-dev @tinajs/mina-loader
