@@ -1,13 +1,21 @@
 {
   "name": "@tinajs/mina-entry-webpack-plugin",
   "version": "0.5.0",
-  "publishConfig": {
-    "access": "public"
-  },
-  "description": "",
+  "description": "Automaticly generates entries-list from mina files for Webpack",
   "main": "index.js",
   "author": "yelo",
   "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "url": "tinajs/mina-webpack",
+    "type": "git"
+  },
+  "bugs": {
+    "url": "https://github.com/tinajs/mina-webpack/issues"
+  },
+  "homepage": "https://github.com/tinajs/mina-webpack/tree/master/packages/mina-entry-webpack-plugin#readme",
   "peerDependencies": {
     "webpack": "^3.8.1"
   },

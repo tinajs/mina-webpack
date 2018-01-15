@@ -1,14 +1,22 @@
 {
   "name": "@tinajs/mina-runtime-webpack-plugin",
   "version": "0.1.2",
-  "publishConfig": {
-    "access": "public"
-  },
-  "description": "",
+  "description": "A runtime patch for compiling mina project by Webpack",
   "main": "index.js",
   "scripts": {},
   "author": "yelo",
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "url": "tinajs/mina-webpack",
+    "type": "git"
+  },
+  "bugs": {
+    "url": "https://github.com/tinajs/mina-webpack/issues"
+  },
+  "homepage": "https://github.com/tinajs/mina-webpack/tree/master/packages/mina-runtime-webpack-plugin#readme",
   "dependencies": {
     "ensure-posix-path": "^1.0.2",
     "webpack-sources": "^1.0.2"
