@@ -49,7 +49,7 @@ For the best particle, you might also be interested in [mina-webpack](https://gi
 | map  | (e) => e | Mapper function for each entry. Useful for adding polyfill scripts. |
 
 ## Example
-- [mina-webpack - Full Example](https://github.com/tinajs/mina-webpack/example)
+- [mina-webpack - Full Example](https://github.com/tinajs/mina-webpack/tree/master/example)
 - [TinaJS - HackerNews Reader](https://github.com/tinajs/tina-hackernews)
 
 ## License

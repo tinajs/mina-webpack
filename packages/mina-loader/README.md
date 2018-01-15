@@ -66,8 +66,8 @@ For the best particle, you might also be interested in [mina-webpack](https://gi
 | publicPath       | [output.publicPath](https://webpack.js.org/configuration/output/#output-publicpath) | Useful for relative ``publicPath``, see [extract-loader - options](https://github.com/peerigon/extract-loader#options)      |
 
 ## Example
-- [mina-webpack - Full Example](https://github.com/tinajs/mina-webpack/example)
-- [mina-loader - test](https://github.com/tinajs/mina-webpack/packages/mina-loader/test)
+- [mina-webpack - Full Example](https://github.com/tinajs/mina-webpack/tree/master/example)
+- [mina-loader - test](https://github.com/tinajs/mina-webpack/tree/master/packages/mina-loader/test)
 - [TinaJS - HackerNews Reader](https://github.com/tinajs/tina-hackernews)
 
 ## License

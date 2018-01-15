@@ -59,7 +59,7 @@ For the best particle, you might also be interested in [mina-webpack](https://gi
 | runtime | undefined | The file which the runtime included. (usually ``common.js``) |
 
 ## Example
-- [mina-webpack - Full Example](https://github.com/tinajs/mina-webpack/example)
+- [mina-webpack - Full Example](https://github.com/tinajs/mina-webpack/tree/master/example)
 - [TinaJS - HackerNews Reader](https://github.com/tinajs/tina-hackernews)
 
 ## License
