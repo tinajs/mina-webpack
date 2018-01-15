@@ -1,6 +1,11 @@
 # mina-entry-webpack-plugin
 > Automaticly generates entries-list from mina files for [Webpack](https://webpack.js.org/)
 
+[![npm](https://img.shields.io/npm/v/@tinajs/mina-entry-webpack-plugin.svg?style=flat-square)](https://www.npmjs.com/package/@tinajs/mina-entry-webpack-plugin)
+[![npm](https://img.shields.io/npm/dw/@tinajs/mina-entry-webpack-plugin.svg?style=flat-square)](https://www.npmjs.com/package/@tinajs/mina-entry-webpack-plugin)
+[![license](https://img.shields.io/npm/l/@tinajs/mina-entry-webpack-plugin.svg?style=flat-square)](./LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
+
 ## Installation
 ```bash
 npm i --save-dev @tinajs/mina-entry-webpack-plugin

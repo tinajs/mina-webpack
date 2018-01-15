@@ -1,6 +1,11 @@
 # mina-loader
 > [MINA single-file-component](https://tinajs.github.io/tina/#/guide/package-management-and-build-tools) loader for [Webpack](https://webpack.js.org/).
 
+[![npm](https://img.shields.io/npm/v/@tinajs/mina-loader.svg?style=flat-square)](https://www.npmjs.com/package/@tinajs/mina-loader)
+[![npm](https://img.shields.io/npm/dw/@tinajs/mina-loader.svg?style=flat-square)](https://www.npmjs.com/package/@tinajs/mina-loader)
+[![license](https://img.shields.io/npm/l/@tinajs/mina-loader.svg?style=flat-square)](./LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
+
 *Inspired by [zezhipeng/mina-loader](https://github.com/zezhipeng/mina-loader).*
 
 ## Installation

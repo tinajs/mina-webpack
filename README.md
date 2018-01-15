@@ -2,6 +2,8 @@
 <p align="center"> Mina single-file-component meets Webpack</p>
 <p align="center"><img src="https://github.com/tinajs/assets/raw/master/images/mina-webpack/equation.png" /></p>
 
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
+
 ## Get Started
 We recommend you to get started with [template-mina](https://github.com/tinajs/template-mina):
 
@@ -17,8 +19,22 @@ And see how to use with [TinaJS](https://tinajs.github.io/tina/#/guide/package-m
 
 ## Packages included
 - [mina-loader](./packages/mina-loader)
+
+  [![npm](https://img.shields.io/npm/v/@tinajs/mina-loader.svg?style=flat-square)](https://www.npmjs.com/package/@tinajs/mina-loader)
+  [![npm](https://img.shields.io/npm/dw/@tinajs/mina-loader.svg?style=flat-square)](https://www.npmjs.com/package/@tinajs/mina-loader)
+  [![license](https://img.shields.io/npm/l/@tinajs/mina-loader.svg?style=flat-square)](./LICENSE)
+
 - [mina-runtime-webpack-plugin](./packages/mina-runtime-webpack-plugin)
+
+  [![npm](https://img.shields.io/npm/v/@tinajs/mina-runtime-webpack-plugin.svg?style=flat-square)](https://www.npmjs.com/package/@tinajs/mina-runtime-webpack-plugin)
+  [![npm](https://img.shields.io/npm/dw/@tinajs/mina-runtime-webpack-plugin.svg?style=flat-square)](https://www.npmjs.com/package/@tinajs/mina-runtime-webpack-plugin)
+  [![license](https://img.shields.io/npm/l/@tinajs/mina-runtime-webpack-plugin.svg?style=flat-square)](./LICENSE)
+
 - [mina-entry-webpack-plugin](./packages/mina-entry-webpack-plugin)
+
+  [![npm](https://img.shields.io/npm/v/@tinajs/mina-entry-webpack-plugin.svg?style=flat-square)](https://www.npmjs.com/package/@tinajs/mina-entry-webpack-plugin)
+  [![npm](https://img.shields.io/npm/dw/@tinajs/mina-entry-webpack-plugin.svg?style=flat-square)](https://www.npmjs.com/package/@tinajs/mina-entry-webpack-plugin)
+  [![license](https://img.shields.io/npm/l/@tinajs/mina-entry-webpack-plugin.svg?style=flat-square)](./LICENSE)
 
 ## Manual Installation
 ```bash

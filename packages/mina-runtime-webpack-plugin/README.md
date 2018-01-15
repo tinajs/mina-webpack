@@ -1,6 +1,11 @@
 # mina-runtime-webpack-plugin
 > A runtime patch for compiling mina project by [Webpack](https://webpack.js.org/).
 
+[![npm](https://img.shields.io/npm/v/@tinajs/mina-runtime-webpack-plugin.svg?style=flat-square)](https://www.npmjs.com/package/@tinajs/mina-runtime-webpack-plugin)
+[![npm](https://img.shields.io/npm/dw/@tinajs/mina-runtime-webpack-plugin.svg?style=flat-square)](https://www.npmjs.com/package/@tinajs/mina-runtime-webpack-plugin)
+[![license](https://img.shields.io/npm/l/@tinajs/mina-runtime-webpack-plugin.svg?style=flat-square)](./LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
+
 *Heavily inspired by and forked from [Cap32/wxapp-webpack-plugin](https://github.com/Cap32/wxapp-webpack-plugin).*
 
 ## Installation
