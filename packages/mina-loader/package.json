@@ -3,6 +3,9 @@
   "version": "0.4.1",
   "description": "MINA single-file-component loader for Webpack",
   "main": "lib/index.js",
+  "files": [
+    "lib"
+  ],
   "scripts": {
     "test": "ava test/test.js"
   },
