@@ -157,3 +157,5 @@ Page({
 - [CantonJS/wxapp-boilerplate](https://github.com/cantonjs/wxapp-boilerplate)
 - [zezhipeng/mina-loader](https://github.com/zezhipeng/mina-loader)
 - [Vue - Single File Component](https://vuejs.org/v2/guide/single-file-components.html)
+
+[![](https://github.com/tinajs/assets/raw/master/images/banners/sponsored.png)](https://github.com/tinajs/tina)
