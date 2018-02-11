@@ -93,7 +93,7 @@ module.exports = function (source) {
       return pMap(config.tabBar.list, (tab) => {
         if (tab.pagePath) {
           tab = Object.assign(tab, {
-            pagePath: stripExt(tab.pagePath),
+            pagePath: ensurePosix(stripExt(tab.pagePath)),
           })
         }
         return Promise.resolve(tab)
