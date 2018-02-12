@@ -1,5 +1,6 @@
 const path = require('path')
 const fs = require('fs-extra')
+const JSON5 = require('json5')
 const flatten = require('flatten')
 const replaceExt = require('replace-ext')
 const resolveFrom = require('resolve-from')
@@ -27,7 +28,7 @@ function readConfig (fullpath) {
   if (!matched || !matched.content || !matched.content.trim()) {
     return {}
   }
-  return JSON.parse(matched.content)
+  return JSON5.parse(matched.content)
 }
 
 function getUrlsFromConfig (config) {

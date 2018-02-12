@@ -40,6 +40,7 @@
     "ensure-posix-path": "^1.0.2",
     "extract-loader": "^1.0.1",
     "file-loader": "^1.1.5",
+    "json5": "^0.5.1",
     "loader-utils": "^1.1.0",
     "lodash.merge": "^4.6.0",
     "object-path": "^0.11.4",
