@@ -111,3 +111,32 @@ test('pack with options', async (t) => {
     console.log(error)
   }
 })
+
+test('use json5 to parse config', async (t) => {
+  const { compile, mfs } = compiler({
+    context: resolveRelative('fixtures'),
+    entry: './json5.mina',
+    output: {
+      filename: 'json5.js',
+    },
+    module: {
+      rules: [
+        {
+          test: /\.mina$/,
+          use: {
+            loader: require.resolve('..'),
+            options: {
+              loaders: {
+                script: 'babel-loader',
+              },
+            },
+          },
+        },
+      ],
+    },
+  })
+
+  await compile()
+  t.deepEqual(JSON.parse(mfs.readFileSync('/json5.json', 'utf-8')), {component: true})
+  t.pass()
+})

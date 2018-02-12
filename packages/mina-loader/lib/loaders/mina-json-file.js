@@ -1,4 +1,5 @@
 const path = require('path')
+const JSON5 = require('json5')
 const merge = require('lodash.merge')
 const compose = require('compose-function')
 const replaceExt = require('replace-ext')
@@ -45,7 +46,7 @@ module.exports = function (source) {
   const relativeToRoot = path.relative(path.dirname(this.resource), this.options.context)
   const loadModule = helpers.loadModule.bind(this)
 
-  let config = JSON.parse(source)
+  let config = JSON5.parse(source)
 
   if (!config) {
     return done(null, '')
