@@ -1,0 +1,9 @@
+<config>
+{
+  component: true,
+}
+</config>
+
+<template>
+  <view>d component</view>
+</template>

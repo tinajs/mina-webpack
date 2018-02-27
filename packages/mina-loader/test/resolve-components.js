@@ -22,7 +22,9 @@ test('resolve components', async (t) => {
     "usingComponents": {
       "a": "../components/a",
       "b": "../components/b",
-      "c": "../pages/c"
+      "c": "../pages/c",
+      "d": "../pages/d",
+      "e": "../_/_/_/_node_modules_/@tinajs/tina-logo.mina/dist/index",
     }
   })
   t.pass()

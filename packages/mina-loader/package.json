@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/tinajs/mina-webpack/tree/master/packages/mina-loader#readme",
   "devDependencies": {
+    "@tinajs/tina-logo.mina": "^0.2.1",
     "ava": "^0.23.0",
     "babel": "^6.23.0",
     "babel-core": "^6.26.0",

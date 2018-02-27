@@ -4,6 +4,8 @@
     "a": "/components/a.mina",
     "b": "../components/b.mina",
     "c": "c.mina",
+    "d": "./d.mina",
+    "e": "~@tinajs/tina-logo.mina",
   }
 }
 </config>
@@ -13,6 +15,8 @@
     <a />
     <b />
     <c />
+    <d />
+    <e />
   </view>
 </template>
 
