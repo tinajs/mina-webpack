@@ -22,6 +22,18 @@ export default {
         use: 'babel-loader',
       },
       {
+        test: /\.wxss$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'postcss-loader',
+          options: {
+            config: {
+              path: resolve('./postcss.config.js'),
+            },
+          },
+        },
+      },
+      {
         test: /\.mina$/,
         exclude: /node_modules/,
         use: [{

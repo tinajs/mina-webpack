@@ -9,6 +9,8 @@
 </config>
 
 <style>
+@import '../common.wxss';
+
 text {
   &.blue {
     color: #00f;
