@@ -55,6 +55,10 @@ function getItems (rootContext, url) {
   let memory = []
 
   function search (context, url) {
+    if (memory.some((item) => item.url === url)) {
+      return
+    }
+
     let isModule = isModuleUrl(url)
     let request = urlToRequest(path.relative(rootContext, path.resolve(context, url)))
     let current = {
@@ -67,11 +71,10 @@ function getItems (rootContext, url) {
 
     let urls = getUrlsFromConfig(readConfig(current.fullpath))
     if (urls.length > 0) {
-      urls.filter((url) => !memory.some((item) => item.url === url)).forEach((url) => {
+      urls.forEach((url) => {
         if (url.startsWith('/')) {
           return search(rootContext, url.slice(1))
         }
-
         // relative url
         return search(path.dirname(current.fullpath), url)
       })
