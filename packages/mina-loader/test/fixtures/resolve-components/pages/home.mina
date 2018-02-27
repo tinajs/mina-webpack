@@ -1,0 +1,21 @@
+<config>
+{
+  "usingComponents": {
+    "a": "/components/a.mina",
+    "b": "../components/b.mina",
+    "c": "c.mina",
+  }
+}
+</config>
+
+<template>
+  <view>
+    <a />
+    <b />
+    <c />
+  </view>
+</template>
+
+<script>
+Page({})
+</script>
