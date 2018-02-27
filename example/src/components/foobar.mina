@@ -1,14 +1,14 @@
 <config>
 {
   "usingComponents": {
-    "circular": "circular.mina"
+    "bar": "./bar.mina"
   },
   "component": true
 }
 </config>
 
 <template>
-  <view> Circular </view>
+  <view> foo <bar /> </view>
 </template>
 
 <script>
