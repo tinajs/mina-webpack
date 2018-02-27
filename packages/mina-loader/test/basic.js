@@ -8,26 +8,21 @@ const resolveRelative = path.resolve.bind(null, __dirname)
 test('basic', async (t) => {
   try {
     const { compile, mfs } = compiler({
-      entry: './fixtures/page.mina',
+      entry: './fixtures/basic/page.mina',
       output: {
-        filename: 'fixtures/page.js',
+        filename: 'fixtures/basic/page.js',
       },
     })
     const stats = await compile()
 
-    // console.log(mfs.readFileSync('/fixtures/page.wxml', 'utf8'))
-
-    // console.log(mfs.readFileSync('/fixtures/page.js', 'utf8'))
-    // console.log(mfs.data)
-
     t.true(mfs.existsSync('/assets/logo.7bd732.png'))
 
-    t.true(mfs.readFileSync('/fixtures/page.js', 'utf8').includes('onLoad () {'))
-    t.true(mfs.readFileSync('/fixtures/page.js', 'utf8').includes('Hello from Page!'))
-    t.true(mfs.readFileSync('/fixtures/page.js', 'utf8').includes('console.log(\'\\u2665\')'))
-    t.is(mfs.readFileSync('/fixtures/page.wxml', 'utf8'), '<view>\n  <text class="blue">{{msg}}</text>\n  <image src="assets/logo.7bd732.png" />\n</view>')
-    t.is(mfs.readFileSync('/fixtures/page.wxss', 'utf8'), 'text.blue {\n  color: #00f;\n  background: url(assets/logo.7bd732.png);\n}')
-    t.is(mfs.readFileSync('/fixtures/page.json', 'utf8'), '{\n  "name": "mina"\n}')
+    t.true(mfs.readFileSync('/fixtures/basic/page.js', 'utf8').includes('onLoad () {'))
+    t.true(mfs.readFileSync('/fixtures/basic/page.js', 'utf8').includes('Hello from Page!'))
+    t.true(mfs.readFileSync('/fixtures/basic/page.js', 'utf8').includes('console.log(\'\\u2665\')'))
+    t.is(mfs.readFileSync('/fixtures/basic/page.wxml', 'utf8'), '<view>\n  <text class="blue">{{msg}}</text>\n  <image src="assets/logo.7bd732.png" />\n</view>')
+    t.is(mfs.readFileSync('/fixtures/basic/page.wxss', 'utf8'), 'text.blue {\n  color: #00f;\n  background: url(assets/logo.7bd732.png);\n}')
+    t.is(mfs.readFileSync('/fixtures/basic/page.json', 'utf8'), '{\n  "name": "mina"\n}')
 
     t.pass()
   } catch (error) {
@@ -38,7 +33,7 @@ test('basic', async (t) => {
 test('pack multiple files', async (t) => {
   try {
     const { compile, mfs } = compiler({
-      context: resolveRelative('fixtures'),
+      context: resolveRelative('fixtures/basic'),
       entry: {
         'page.js': './page.mina',
         'app.js': './app.mina',
@@ -74,9 +69,9 @@ test('pack multiple files', async (t) => {
 test('pack with options', async (t) => {
   try {
     const { compile, mfs } = compiler({
-      entry: './fixtures/page.mina',
+      entry: './fixtures/basic/page.mina',
       output: {
-        filename: 'fixtures/page.js',
+        filename: 'fixtures/basic/page.js',
       },
       module: {
         rules: [
@@ -98,45 +93,16 @@ test('pack with options', async (t) => {
 
     t.true(mfs.existsSync('/assets/logo.7bd732.png'))
 
-    t.false(mfs.readFileSync('/fixtures/page.js', 'utf8').includes('onLoad () {'))
-    t.true(mfs.readFileSync('/fixtures/page.js', 'utf8').includes('onLoad: function onLoad() {'))
-    t.true(mfs.readFileSync('/fixtures/page.js', 'utf8').includes('Hello from Page!'))
-    t.true(mfs.readFileSync('/fixtures/page.js', 'utf8').includes('console.log(\'\\u2665\')'))
-    t.is(mfs.readFileSync('/fixtures/page.wxml', 'utf8'), '<view>\n  <text class="blue">{{msg}}</text>\n  <image src="assets/logo.7bd732.png" />\n</view>')
-    t.is(mfs.readFileSync('/fixtures/page.wxss', 'utf8'), 'text.blue {\n  color: #00f;\n  background: url(assets/logo.7bd732.png);\n}')
-    t.is(mfs.readFileSync('/fixtures/page.json', 'utf8'), '{\n  "name": "mina"\n}')
+    t.false(mfs.readFileSync('/fixtures/basic/page.js', 'utf8').includes('onLoad () {'))
+    t.true(mfs.readFileSync('/fixtures/basic/page.js', 'utf8').includes('onLoad: function onLoad() {'))
+    t.true(mfs.readFileSync('/fixtures/basic/page.js', 'utf8').includes('Hello from Page!'))
+    t.true(mfs.readFileSync('/fixtures/basic/page.js', 'utf8').includes('console.log(\'\\u2665\')'))
+    t.is(mfs.readFileSync('/fixtures/basic/page.wxml', 'utf8'), '<view>\n  <text class="blue">{{msg}}</text>\n  <image src="assets/logo.7bd732.png" />\n</view>')
+    t.is(mfs.readFileSync('/fixtures/basic/page.wxss', 'utf8'), 'text.blue {\n  color: #00f;\n  background: url(assets/logo.7bd732.png);\n}')
+    t.is(mfs.readFileSync('/fixtures/basic/page.json', 'utf8'), '{\n  "name": "mina"\n}')
 
     t.pass()
   } catch (error) {
     console.log(error)
   }
-})
-
-test('use json5 to parse config', async (t) => {
-  const { compile, mfs } = compiler({
-    context: resolveRelative('fixtures'),
-    entry: './json5.mina',
-    output: {
-      filename: 'json5.js',
-    },
-    module: {
-      rules: [
-        {
-          test: /\.mina$/,
-          use: {
-            loader: require.resolve('..'),
-            options: {
-              loaders: {
-                script: 'babel-loader',
-              },
-            },
-          },
-        },
-      ],
-    },
-  })
-
-  await compile()
-  t.deepEqual(JSON.parse(mfs.readFileSync('/json5.json', 'utf-8')), {component: true})
-  t.pass()
 })
