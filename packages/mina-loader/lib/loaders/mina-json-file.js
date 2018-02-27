@@ -26,11 +26,13 @@ function mapObject (object, iteratee) {
 function resolveFile (dirname, target, context) {
   let relativeFromContext = (target) => path.join(path.relative(dirname, context), helpers.toSafeOutputPath(target))
   let resolve = (target) => compose(ensurePosix, relativeFromContext)(resolveFromModule(context, target))
-  // relative url
-  if (target.match(/^\./)) {
-    return resolve(path.relative(context, path.resolve(dirname, target)))
+
+  if (target.startsWith('/')) {
+    return resolve(target.slice(1))
   }
-  return resolve(target)
+
+  // relative url
+  return resolve(path.relative(context, path.resolve(dirname, target)))
 }
 
 function resolveFromModule (context, filename) {

@@ -1,0 +1,11 @@
+<config>
+{
+  "pages": [
+    "pages/home.mina"
+  ]
+}
+</config>
+
+<script>
+App({})
+</script>

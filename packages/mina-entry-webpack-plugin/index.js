@@ -68,11 +68,12 @@ function getItems (rootContext, url) {
     let urls = getUrlsFromConfig(readConfig(current.fullpath))
     if (urls.length > 0) {
       urls.filter((url) => !memory.some((item) => item.url === url)).forEach((url) => {
-        // relative url
-        if (/^\./.test(url)) {
-          return search(path.dirname(current.fullpath), url)
+        if (url.startsWith('/')) {
+          return search(rootContext, url.slice(1))
         }
-        return search(rootContext, url)
+
+        // relative url
+        return search(path.dirname(current.fullpath), url)
       })
     }
   }

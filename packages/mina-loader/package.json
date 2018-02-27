@@ -7,7 +7,7 @@
     "lib"
   ],
   "scripts": {
-    "test": "ava test/test.js"
+    "test": "ava test/*.js"
   },
   "author": "yelo",
   "license": "Apache-2.0",
