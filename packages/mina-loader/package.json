@@ -39,7 +39,7 @@
     "compose-function": "^3.0.3",
     "css-loader": "^0.28.7",
     "ensure-posix-path": "^1.0.2",
-    "extract-loader": "^1.0.1",
+    "extract-loader": "1.0.1",
     "file-loader": "^1.1.5",
     "json5": "^0.5.1",
     "loader-utils": "^1.1.0",
