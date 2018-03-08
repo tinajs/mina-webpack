@@ -5,7 +5,8 @@
     "b": "../components/b.mina",
     "c": "c.mina",
     "d": "./d.mina",
-    "e": "~@tinajs/tina-logo.mina",
+    "logo": "~logo.mina",
+    "tab": "~tab",
   }
 }
 </config>
@@ -16,7 +17,8 @@
     <b />
     <c />
     <d />
-    <e />
+    <logo />
+    <tab />
   </view>
 </template>
 
