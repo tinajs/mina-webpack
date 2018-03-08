@@ -24,8 +24,7 @@ function mapObject (object, iteratee) {
 }
 
 function resolveFile (dirname, target, context) {
-  let relativeFromContext = (target) => path.join(path.relative(dirname, context), helpers.toSafeOutputPath(target))
-  let resolve = (target) => compose(ensurePosix, relativeFromContext)(resolveFromModule(context, target))
+  let resolve = (target) => compose(ensurePosix, helpers.toSafeOutputPath)(resolveFromModule(context, target))
 
   if (target.startsWith('/')) {
     return resolve(target.slice(1))
@@ -74,7 +73,7 @@ module.exports = function (source) {
         return config
       }
       return Object.assign(config, {
-        usingComponents: mapObject(config.usingComponents, (file) => resolveFile(this.context, file, this.options.context)),
+        usingComponents: mapObject(config.usingComponents, (file) => `/${resolveFile(this.context, file, this.options.context)}`),
       })
     })
     /**
