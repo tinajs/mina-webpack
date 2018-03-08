@@ -22,20 +22,20 @@ test('resolve components', async (t) => {
 
   t.deepEqual(JSON.parse(mfs.readFileSync('/pages/home.json', 'utf-8')), {
     "usingComponents": {
-      "a": "../components/a",
-      "b": "../components/b",
-      "c": "../pages/c",
-      "d": "../pages/d",
-      "logo": "../_/_node_modules_/logo.mina/dist/logo",
-      "tab": "../_/_node_modules_/tab/tab",
+      "a": "/components/a",
+      "b": "/components/b",
+      "c": "/pages/c",
+      "d": "/pages/d",
+      "logo": "/_/_node_modules_/logo.mina/dist/logo",
+      "tab": "/_/_node_modules_/tab/tab",
     }
   })
 
   t.deepEqual(JSON.parse(mfs.readFileSync('/_/_node_modules_/tab/tab.json', 'utf-8')), {
     "component": true,
     "usingComponents": {
-      "logo": '../logo.mina/dist/logo',
-      "tab-item": '../tab/tab-item',
+      "logo": '/_/_node_modules_/logo.mina/dist/logo',
+      "tab-item": '/_/_node_modules_/tab/tab-item',
     }
   })
 
