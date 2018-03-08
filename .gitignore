@@ -1,5 +1,7 @@
 # dev
 .DS_Store
-node_modules
+/node_modules
+/example/node_modules
+/packages/*/node_modules
 npm-debug.log
 lerna-debug.log

@@ -4,10 +4,11 @@ import MinaEntryPlugin from '../../mina-entry-webpack-plugin'
 import compiler from './helpers/compiler'
 
 const resolveRelative = path.resolve.bind(null, __dirname)
+process.chdir(resolveRelative('fixtures/resolve-components'))
 
 test('resolve components', async (t) => {
   const { compile, mfs } = compiler({
-    context: resolveRelative('fixtures/resolve-components'),
+    context: resolveRelative('fixtures/resolve-components/src'),
     entry: 'app.mina',
     output: {
       filename: 'app.js',
@@ -18,14 +19,25 @@ test('resolve components', async (t) => {
   })
 
   await compile()
+
   t.deepEqual(JSON.parse(mfs.readFileSync('/pages/home.json', 'utf-8')), {
     "usingComponents": {
       "a": "../components/a",
       "b": "../components/b",
       "c": "../pages/c",
       "d": "../pages/d",
-      "e": "../_/_/_/_node_modules_/@tinajs/tina-logo.mina/dist/index",
+      "logo": "../_/_node_modules_/logo.mina/dist/logo",
+      "tab": "../_/_node_modules_/tab/tab",
     }
   })
+
+  t.deepEqual(JSON.parse(mfs.readFileSync('/_/_node_modules_/tab/tab.json', 'utf-8')), {
+    "component": true,
+    "usingComponents": {
+      "logo": '../logo.mina/dist/logo',
+      "tab-item": '../tab/tab-item',
+    }
+  })
+
   t.pass()
 })

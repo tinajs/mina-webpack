@@ -27,6 +27,11 @@ function resolveFile (dirname, target, context) {
   let relativeFromContext = (target) => path.join(path.relative(dirname, context), helpers.toSafeOutputPath(target))
   let resolve = (target) => compose(ensurePosix, relativeFromContext)(resolveFromModule(context, target))
 
+  const nodeModulesPath = path.resolve(process.cwd(), 'node_modules')
+  if (dirname.startsWith(nodeModulesPath)) {
+    context = nodeModulesPath
+  }
+
   if (target.startsWith('/')) {
     return resolve(target.slice(1))
   }
