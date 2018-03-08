@@ -14,7 +14,7 @@
     "build": "cross-env NODE_ENV=production webpack"
   },
   "dependencies": {
-    "@tinajs/tina-logo.mina": "^0.1.2",
+    "@tinajs/tina-logo.mina": "^0.2.1",
     "cowsay": "^1.2.1",
     "es6-promise": "^4.2.4"
   },
