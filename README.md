@@ -150,9 +150,17 @@ Page({
 - [TinaJS - HackerNews Reader](https://github.com/tinajs/tina-hackernews)
 
 ## Related Projects
+### Best to use with
 - [TinaJS](https://github.com/tinajs/tina)
+
+### Scaffolds
 - [template-mina](https://github.com/tinajs/template-mina)
+- [ambar/new-mina](https://github.com/ambar/new-mina)
+
+### Other package compiler (also alternatives)
 - [gulp-mina](https://github.com/tinajs/gulp-mina)
+
+### Got inspiration from
 - [Cap32/wxapp-webpack-plugin](https://github.com/Cap32/wxapp-webpack-plugin)
 - [CantonJS/wxapp-boilerplate](https://github.com/cantonjs/wxapp-boilerplate)
 - [zezhipeng/mina-loader](https://github.com/zezhipeng/mina-loader)
