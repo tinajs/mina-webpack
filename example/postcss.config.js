@@ -1,5 +1,3 @@
 module.exports = {
-  plugins: [
-    require('precss')(),
-  ],
+  plugins: [require('precss')()],
 }
