@@ -1,0 +1,17 @@
+function padding (digits) {
+  return function pad (number) {
+    var ceil = Math.pow(10, digits) + number
+    return ceil.toString().slice(1)
+  }
+}
+
+var now = getDate()
+
+var year = now.getFullYear()
+var month = padding(2)(now.getMonth() + 1)
+var date = padding(2)(now.getDate())
+var hours = padding(2)(now.getHours())
+var minutes = padding(2)(now.getMinutes())
+var seconds = padding(2)(now.getSeconds())
+
+module.exports = year + '-' + month + '-' + date + ' ' + hours + ':' + minutes + ':' + seconds

@@ -64,6 +64,15 @@ export default {
           },
         },
       },
+      {
+        test: /\.wxs$/,
+        use: {
+          loader: 'relative-file-loader',
+          options: {
+            name: 'wxs/[name].[hash:6].[ext]',
+          },
+        },
+      },
     ],
   },
   resolve: {
