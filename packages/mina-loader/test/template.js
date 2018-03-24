@@ -15,7 +15,6 @@ test('inline template', async (t) => {
     })
     const stats = await compile()
 
-    // t.true(mfs.readFileSync('/fixtures/template/inline.js', 'utf8').includes('this is a template'))
     t.true(mfs.readFileSync('/fixtures/template/inline.js', 'utf8').includes('loaded'))
     t.is(mfs.readFileSync('/fixtures/template/inline.wxml', 'utf8'), '<view>\n  <template name="odd">\n    <view> odd </view>\n  </template>\n  <template name="even">\n    <view> even </view>\n  </template>\n  <block wx:for="{{[1, 2, 3, 4, 5]}}">\n    <template is="{{item % 2 == 0 ? \'even\' : \'odd\'}}"/>\n  </block>\n</view>')
     t.is(mfs.readFileSync('/fixtures/template/inline.wxss', 'utf8'), 'view {\n  color: #00f;\n}')
