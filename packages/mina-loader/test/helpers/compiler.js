@@ -38,6 +38,15 @@ export default (options = {}) => {
             },
           },
         },
+        {
+          test: /\.wxml$/,
+          use: {
+            loader: 'relative-file-loader',
+            options: {
+              name: 'wxml/[name].[hash:6].[ext]',
+            },
+          },
+        },
       ],
     },
   }, options)
