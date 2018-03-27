@@ -72,6 +72,9 @@ function getItems (rootContext, url) {
     let urls = getUrlsFromConfig(readConfig(current.fullpath))
     if (urls.length > 0) {
       urls.forEach((url) => {
+        if (url.startsWith('plugin://')) {
+          return
+        }
         if (url.startsWith('/')) {
           return search(rootContext, url.slice(1))
         }

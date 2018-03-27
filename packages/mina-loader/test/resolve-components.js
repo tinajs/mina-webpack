@@ -28,6 +28,7 @@ test('resolve components', async (t) => {
       "d": "/pages/d",
       "logo": "/_/_node_modules_/logo.mina/dist/logo",
       "tab": "/_/_node_modules_/tab/tab",
+      "plugin": "plugin://foobar/component",
     }
   })
 

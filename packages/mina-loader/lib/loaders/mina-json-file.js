@@ -73,7 +73,12 @@ module.exports = function (source) {
         return config
       }
       return Object.assign(config, {
-        usingComponents: mapObject(config.usingComponents, (file) => `/${resolveFile(this.context, file, this.options.context)}`),
+        usingComponents: mapObject(config.usingComponents, (file) => {
+          if (file.startsWith('plugin://')) {
+            return file
+          }
+          return `/${resolveFile(this.context, file, this.options.context)}`
+        }),
       })
     })
     /**
