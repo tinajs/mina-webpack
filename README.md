@@ -3,6 +3,7 @@
 <p align="center"><img src="https://github.com/tinajs/assets/raw/master/images/mina-webpack/equation.png" /></p>
 
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Ftinajs%2Fmina-webpack.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Ftinajs%2Fmina-webpack?ref=badge_shield)
 
 ## Get Started
 We recommend you to get started with [template-mina](https://github.com/tinajs/template-mina):
@@ -35,6 +36,9 @@ And see how to use with [TinaJS](https://tinajs.github.io/tina/#/guide/package-m
   [![npm](https://img.shields.io/npm/v/@tinajs/mina-entry-webpack-plugin.svg?style=flat-square)](https://www.npmjs.com/package/@tinajs/mina-entry-webpack-plugin)
   [![npm](https://img.shields.io/npm/dw/@tinajs/mina-entry-webpack-plugin.svg?style=flat-square)](https://www.npmjs.com/package/@tinajs/mina-entry-webpack-plugin)
   [![license](https://img.shields.io/npm/l/@tinajs/mina-entry-webpack-plugin.svg?style=flat-square)](./LICENSE)
+
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Ftinajs%2Fmina-webpack.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Ftinajs%2Fmina-webpack?ref=badge_large)
 
 ## Manual Installation
 ```bash
