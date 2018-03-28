@@ -3,6 +3,7 @@
 <p align="center"><img src="https://github.com/tinajs/assets/raw/master/images/mina-webpack/equation.png" /></p>
 
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Ftinajs%2Fmina-webpack.svg?type=small)](https://app.fossa.io/projects/git%2Bgithub.com%2Ftinajs%2Fmina-webpack?ref=badge_small)
 
 ## Get Started
 We recommend you to get started with [template-mina](https://github.com/tinajs/template-mina):
