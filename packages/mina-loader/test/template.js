@@ -60,10 +60,10 @@ test('include template', async (t) => {
     const stats = await compile()
 
     t.true(mfs.existsSync('/assets/logo.97017d.png'))
-    t.is(mfs.readFileSync('/wxml/header.c9b989.wxml', 'utf8'), '<!-- header.wxml -->\n<view><image src="assets/logo.97017d.png"></view>\n')
+    t.is(mfs.readFileSync('/wxml/header.ae94ef.wxml', 'utf8'), '<!-- header.wxml -->\n<view><image src="/assets/logo.97017d.png"></view>\n')
 
     t.true(mfs.readFileSync('/fixtures/template/include.js', 'utf8').includes('this is a template'))
-    t.is(mfs.readFileSync('/fixtures/template/include.wxml', 'utf8'), '<view>\n  <include src="../../wxml/header.c9b989.wxml"/>\n  <view>body</view>\n</view>')
+    t.is(mfs.readFileSync('/fixtures/template/include.wxml', 'utf8'), '<view>\n  <include src="../../wxml/header.ae94ef.wxml"/>\n  <view>body</view>\n</view>')
     t.is(mfs.readFileSync('/fixtures/template/include.wxss', 'utf8'), 'view {\n  color: #00f;\n}')
     t.is(mfs.readFileSync('/fixtures/template/include.json', 'utf8'), '{\n  "name": "mina"\n}')
 

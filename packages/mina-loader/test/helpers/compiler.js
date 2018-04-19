@@ -19,7 +19,8 @@ export default (options = {}) => {
   options = merge.smart({
     context: root,
     output: {
-      path: '/'
+      path: '/',
+      publicPath: '/',
     },
     module: {
       rules: [
