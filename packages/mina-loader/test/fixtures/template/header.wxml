@@ -1,2 +1,2 @@
 <!-- header.wxml -->
-<view> header </view>
+<view><image src="logo.png"></view>
