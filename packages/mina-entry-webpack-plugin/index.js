@@ -78,6 +78,9 @@ function getItems (rootContext, url) {
         if (url.startsWith('/')) {
           return search(rootContext, url.slice(1))
         }
+        if (url.endsWith('.wxml')) {
+          return
+        }
         // relative url
         return search(path.dirname(current.fullpath), url)
       })
