@@ -77,6 +77,9 @@ module.exports = function (source) {
           if (file.startsWith('plugin://')) {
             return file
           }
+          if (file.endsWith('.wxml')) {
+            return file.slice(0, file.length - 5);
+          }
           return `/${resolveFile(this.context, file, this.options.context)}`
         }),
       })

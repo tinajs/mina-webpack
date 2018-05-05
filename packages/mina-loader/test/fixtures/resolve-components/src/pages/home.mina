@@ -7,7 +7,8 @@
     "d": "./d.mina",
     "logo": "~logo.mina",
     "tab": "~tab",
-    "plugin": "plugin://foobar/component"
+    "plugin": "plugin://foobar/component",
+    "wxml": "/components/a.wxml"
   }
 }
 </config>
