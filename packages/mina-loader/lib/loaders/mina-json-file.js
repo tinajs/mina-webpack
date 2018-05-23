@@ -47,7 +47,12 @@ module.exports = function (source) {
   const relativeToRoot = path.relative(path.dirname(this.resource), this.options.context)
   const loadModule = helpers.loadModule.bind(this)
 
-  let config = JSON5.parse(source)
+  let config
+  try {
+    config = JSON5.parse(source)
+  } catch (error) {
+    return done(error)
+  }
 
   if (!config) {
     return done(null, '')

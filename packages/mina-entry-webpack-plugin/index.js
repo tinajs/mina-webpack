@@ -96,23 +96,30 @@ module.exports = class MinaEntryWebpackPlugin {
   }
 
   rewrite (compiler, done) {
-    let { context, entry } = compiler.options
+    try {
+      let { context, entry } = compiler.options
 
-    // assume the latest file in array is the app.mina
-    if (Array.isArray(entry)) {
-      entry = entry[entry.length - 1]
+      // assume the latest file in array is the app.mina
+      if (Array.isArray(entry)) {
+        entry = entry[entry.length - 1]
+      }
+
+      getItems(context, entry)
+        .forEach(({ isModule, request, fullpath }) => {
+          let url = path.relative(context, fullpath)
+            // replace '..' to '_'
+            .replace(/\.\./g, '_')
+            // replace 'node_modules' to '_node_modules_'
+            .replace(/node_modules([\/\\])/g, '_node_modules_$1')
+          let name = replaceExt(urlToRequest(url), '.js')
+          compiler.apply(addEntry(context, this.map(ensurePosix(request)), ensurePosix(name)))
+        })
+    } catch (error) {
+      if (typeof done === 'function') {
+        return console.error(error)
+      }
+      throw error
     }
-
-    getItems(context, entry)
-      .forEach(({ isModule, request, fullpath }) => {
-        let url = path.relative(context, fullpath)
-          // replace '..' to '_'
-          .replace(/\.\./g, '_')
-          // replace 'node_modules' to '_node_modules_'
-          .replace(/node_modules([\/\\])/g, '_node_modules_$1')
-        let name = replaceExt(urlToRequest(url), '.js')
-        compiler.apply(addEntry(context, this.map(ensurePosix(request)), ensurePosix(name)))
-      })
 
     if (typeof done === 'function') {
       done()
