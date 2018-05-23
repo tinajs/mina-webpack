@@ -116,7 +116,8 @@ module.exports = class MinaEntryWebpackPlugin {
         })
     } catch (error) {
       if (typeof done === 'function') {
-        return console.error(error)
+        console.error(error)
+        return done()
       }
       throw error
     }
