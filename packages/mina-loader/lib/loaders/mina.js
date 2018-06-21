@@ -30,6 +30,12 @@ const EXTNAMES = {
 const TYPES_FOR_FILE_LOADER = ['template', 'style', 'config']
 const TYPES_FOR_OUTPUT = ['script']
 
+const chain = (chainedPromise, promiseFn) => {
+  return chainedPromise.then(promiseFn).catch(() => {})
+}
+
+let lastPromise = Promise.resolve()
+
 module.exports = function (source) {
   this.cacheable()
 
@@ -63,26 +69,30 @@ module.exports = function (source) {
     return loader
   }
 
-  loadModule(parsedUrl)
-    .then((source) => {
-      let parts = this.exec(source, parsedUrl)
+  const runLoadModule = () => {
+    return loadModule(parsedUrl)
+      .then((source) => {
+        let parts = this.exec(source, parsedUrl)
 
-      // compute output
-      let output = parts.script && parts.script.content ?
-        TYPES_FOR_OUTPUT.map((type) => `require(${loaderUtils.stringifyRequest(this, `!!${getLoaderOf(type, options)}${selectorLoaderPath}?type=script!${url}`)})`).join(';') :
-        ''
+        // compute output
+        let output = parts.script && parts.script.content ?
+          TYPES_FOR_OUTPUT.map((type) => `require(${loaderUtils.stringifyRequest(this, `!!${getLoaderOf(type, options)}${selectorLoaderPath}?type=script!${url}`)})`).join(';') :
+          ''
 
-      return Promise
-        // emit files
-        .all(TYPES_FOR_FILE_LOADER.map((type) => {
-          if (!parts[type] || !parts[type].content) {
-            return Promise.resolve()
-          }
-          let dirname = compose(ensurePosix, helpers.toSafeOutputPath, path.dirname)(path.relative(this.options.context, url))
-          let request = `!!${resolve('file-loader')}?name=${dirname}/[name].${EXTNAMES[type]}!${getLoaderOf(type, options)}${selectorLoaderPath}?type=${type}!${url}`
-          return loadModule(request)
-        }))
-        .then(() => done(null, output))
-    })
-    .catch(done)
+        return Promise
+          // emit files
+          .all(TYPES_FOR_FILE_LOADER.map((type) => {
+            if (!parts[type] || !parts[type].content) {
+              return Promise.resolve()
+            }
+            let dirname = compose(ensurePosix, helpers.toSafeOutputPath, path.dirname)(path.relative(this.options.context, url))
+            let request = `!!${resolve('file-loader')}?name=${dirname}/[name].${EXTNAMES[type]}!${getLoaderOf(type, options)}${selectorLoaderPath}?type=${type}!${url}`
+            return loadModule(request)
+          }))
+          .then(() => done(null, output))
+      })
+      .catch(done)
+    }
+
+    lastPromise = chain(lastPromise, runLoadModule)
 }

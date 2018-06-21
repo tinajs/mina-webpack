@@ -1,0 +1,36 @@
+<config>
+{
+  "pages": [
+    "pages/1.mina",
+    "pages/2.mina",
+    "pages/3.mina",
+    "pages/4.mina",
+    "pages/5.mina",
+    "pages/6.mina",
+    "pages/7.mina",
+    "pages/8.mina",
+    "pages/9.mina",
+    "pages/10.mina",
+    "pages/11.mina",
+    "pages/12.mina",
+    "pages/13.mina",
+    "pages/14.mina",
+    "pages/15.mina",
+    "pages/16.mina",
+    "pages/17.mina",
+    "pages/18.mina",
+    "pages/19.mina",
+    "pages/20.mina",
+    "pages/21.mina",
+    "pages/22.mina",
+    "pages/23.mina",
+    "pages/24.mina",
+    "pages/25.mina",
+  ]
+}
+</config>
+
+<script>
+App({
+})
+</script>
