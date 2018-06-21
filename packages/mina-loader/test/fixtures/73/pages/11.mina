@@ -1,0 +1,15 @@
+<config>
+{}
+</config>
+
+<template>
+  <view class="demo">
+    text
+  </view>
+</template>
+
+<style>
+.demo {
+  padding: 1em;
+}
+</style>
