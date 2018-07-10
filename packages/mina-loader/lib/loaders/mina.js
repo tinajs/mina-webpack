@@ -68,19 +68,14 @@ module.exports = function (source) {
       let parts = this.exec(source, parsedUrl)
 
       // compute output
-      let output = '';
-
-      if (parts.script) {
-        let loadedContent;
-        if (parts.script.attributes.src) {
-          // content is defined in a separate file
-          loadedContent = parts.script.attributes.src
-        } else {
-          // content is defined inline
-          loadedContent = `${selectorLoaderPath}?type=script!${url}`
+      let output = TYPES_FOR_OUTPUT.reduce((result, type) => {
+        if (!parts[type]) {
+          return result
         }
-        output = TYPES_FOR_OUTPUT.map((type) => `require(${loaderUtils.stringifyRequest(this, `!!${getLoaderOf(type, options)}${loadedContent}`)})`).join(';');
-      }
+        // content can be defined either in a separate file or inline
+        let request = parts[type].attributes.src || `!!${getLoaderOf(type, options)}${selectorLoaderPath}?type=${type}!${url}`
+        return `${result};require(${loaderUtils.stringifyRequest(this, request)})`
+      }, '')
 
       return Promise
         // emit files
