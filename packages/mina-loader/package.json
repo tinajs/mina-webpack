@@ -1,6 +1,6 @@
 {
   "name": "@tinajs/mina-loader",
-  "version": "0.6.4",
+  "version": "0.6.5",
   "description": "MINA single-file-component loader for Webpack",
   "main": "lib/index.js",
   "files": [
