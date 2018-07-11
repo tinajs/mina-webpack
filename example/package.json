@@ -8,6 +8,7 @@
   "license": "MIT",
   "scripts": {
     "clean": "rimraf \"./dist/!(app.json|project.config.json)**\"",
+    "precommit": "lint-staged",
     "prestart": "run-s clean",
     "prebuild": "run-s clean",
     "start": "webpack -w",

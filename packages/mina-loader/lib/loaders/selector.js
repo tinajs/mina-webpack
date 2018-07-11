@@ -1,7 +1,7 @@
 const loaderUtils = require('loader-utils')
 const parserLoaderPath = require.resolve('./parser')
 
-module.exports = function () {
+module.exports = function() {
   this.cacheable()
   const cb = this.async()
   const { type } = loaderUtils.getOptions(this) || {}

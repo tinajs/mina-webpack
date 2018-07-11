@@ -11,11 +11,11 @@ const pAll = require('p-all')
 
 const helpers = require('../helpers')
 
-function stripExt (path) {
+function stripExt(path) {
   return replaceExt(path, '')
 }
 
-function mapObject (object, iteratee) {
+function mapObject(object, iteratee) {
   let result = {}
   for (let key in object) {
     result[key] = iteratee(object[key], key, object)
@@ -23,8 +23,12 @@ function mapObject (object, iteratee) {
   return result
 }
 
-function resolveFile (dirname, target, context) {
-  let resolve = (target) => compose(ensurePosix, helpers.toSafeOutputPath)(resolveFromModule(context, target))
+function resolveFile(dirname, target, context) {
+  let resolve = target =>
+    compose(
+      ensurePosix,
+      helpers.toSafeOutputPath
+    )(resolveFromModule(context, target))
 
   if (target.startsWith('/')) {
     return resolve(target.slice(1))
@@ -34,17 +38,29 @@ function resolveFile (dirname, target, context) {
   return resolve(path.relative(context, path.resolve(dirname, target)))
 }
 
-function resolveFromModule (context, filename) {
-  return stripExt(path.relative(context, resolveFrom(context, loaderUtils.urlToRequest(filename))))
+function resolveFromModule(context, filename) {
+  return stripExt(
+    path.relative(
+      context,
+      resolveFrom(context, loaderUtils.urlToRequest(filename))
+    )
+  )
 }
 
-module.exports = function (source) {
+module.exports = function(source) {
   const done = this.async()
 
-  const options = merge({}, {
-    publicPath: this.options.output.publicPath,
-  }, loaderUtils.getOptions(this) || {})
-  const relativeToRoot = path.relative(path.dirname(this.resource), this.options.context)
+  const options = merge(
+    {},
+    {
+      publicPath: this.options.output.publicPath,
+    },
+    loaderUtils.getOptions(this) || {}
+  )
+  const relativeToRoot = path.relative(
+    path.dirname(this.resource),
+    this.options.context
+  )
   const loadModule = helpers.loadModule.bind(this)
 
   let config
@@ -62,23 +78,25 @@ module.exports = function (source) {
     /**
      * pages
      */
-    .then((config) => {
+    .then(config => {
       if (!Array.isArray(config.pages)) {
         return config
       }
       return Object.assign(config, {
-        pages: config.pages.map((page) => resolveFile(this.context, page, this.options.context)),
+        pages: config.pages.map(page =>
+          resolveFile(this.context, page, this.options.context)
+        ),
       })
     })
     /**
      * usingComponent
      */
-    .then((config) => {
+    .then(config => {
       if (typeof config.usingComponents !== 'object') {
         return config
       }
       return Object.assign(config, {
-        usingComponents: mapObject(config.usingComponents, (file) => {
+        usingComponents: mapObject(config.usingComponents, file => {
           if (file.startsWith('plugin://')) {
             return file
           }
@@ -89,44 +107,48 @@ module.exports = function (source) {
     /**
      * tabBar
      */
-    .then((config) => {
+    .then(config => {
       if (!config.tabBar || !Array.isArray(config.tabBar.list)) {
         return config
       }
 
-      function loadAndReplace (tab, field) {
+      function loadAndReplace(tab, field) {
         return loadModule(tab[field])
-          .then((source) => helpers.extract(source, options.publicPath))
-          .then((outputPath) => Object.assign(tab, {
-            [field]: outputPath,
-          }))
+          .then(source => helpers.extract(source, options.publicPath))
+          .then(outputPath =>
+            Object.assign(tab, {
+              [field]: outputPath,
+            })
+          )
       }
 
-      return pMap(config.tabBar.list, (tab) => {
+      return pMap(config.tabBar.list, tab => {
         if (tab.pagePath) {
           tab = Object.assign(tab, {
             pagePath: ensurePosix(stripExt(tab.pagePath)),
           })
         }
         return Promise.resolve(tab)
-          .then((tab) => {
+          .then(tab => {
             if (!tab.iconPath) {
               return tab
             }
             return loadAndReplace(tab, 'iconPath')
           })
-          .then((tab) => {
+          .then(tab => {
             if (!tab.selectedIconPath) {
               return tab
             }
             return loadAndReplace(tab, 'selectedIconPath')
           })
-      }).then((list) => Object.assign(config, {
-        tabBar: Object.assign(config.tabBar, {
-          list,
-        }),
-      }))
+      }).then(list =>
+        Object.assign(config, {
+          tabBar: Object.assign(config.tabBar, {
+            list,
+          }),
+        })
+      )
     })
-    .then((config) => done(null, JSON.stringify(config, null, 2)))
-    .catch((error) => done(error))
+    .then(config => done(null, JSON.stringify(config, null, 2)))
+    .catch(error => done(error))
 }

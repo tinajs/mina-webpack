@@ -3,7 +3,9 @@
   "version": "0.1.4",
   "description": "A runtime patch for compiling mina project by Webpack",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "precommit": "lint-staged"
+  },
   "author": "yelo",
   "license": "MIT",
   "publishConfig": {

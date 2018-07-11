@@ -7,6 +7,7 @@
     "lib"
   ],
   "scripts": {
+    "precommit": "lint-staged",
     "test": "ava test/*.js"
   },
   "author": "yelo",
