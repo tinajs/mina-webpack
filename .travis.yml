@@ -1,0 +1,17 @@
+language: node_js
+node_js:
+  - "node"
+  - "10"
+  - "8"
+  - "6"
+
+cache:
+  directoreis:
+  - $HOME/.npm
+
+before_install:
+  - npm install --global npm@latest
+
+notifications:
+  webhooks: "https://www.travisbuddy.com/"
+
