@@ -12,6 +12,9 @@ cache:
 before_install:
   - npm install --global npm@latest
 
+script:
+  - lerna run test
+
 notifications:
   webhooks: "https://www.travisbuddy.com/"
 
