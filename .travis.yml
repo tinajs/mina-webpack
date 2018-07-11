@@ -13,6 +13,9 @@ before_install:
   - npm install --global npm@latest
   - npm --version
 
+install:
+  - lerna bootstrap
+
 script:
   - lerna run test
 
