@@ -1,6 +1,6 @@
 const sfc = require('@tinajs/mina-sfc')
 
-function parse (source) {
+function parse(source) {
   const blocks = sfc.parse(source)
 
   return {
@@ -11,6 +11,6 @@ function parse (source) {
   }
 }
 
-module.exports = function (source) {
+module.exports = function(source) {
   return 'module.exports = ' + JSON.stringify(parse(source))
 }

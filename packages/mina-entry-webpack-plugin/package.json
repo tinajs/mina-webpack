@@ -8,6 +8,9 @@
   "publishConfig": {
     "access": "public"
   },
+  "scripts": {
+    "precommit": "lint-staged"
+  },
   "repository": {
     "url": "tinajs/mina-webpack",
     "type": "git"

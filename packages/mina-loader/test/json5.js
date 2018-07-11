@@ -5,7 +5,7 @@ import compiler from './helpers/compiler'
 
 const resolveRelative = path.resolve.bind(null, __dirname)
 
-test('use json5 to parse config', async (t) => {
+test('use json5 to parse config', async t => {
   const { compile, mfs } = compiler({
     context: resolveRelative('fixtures/json5'),
     entry: './component.mina',
@@ -30,6 +30,8 @@ test('use json5 to parse config', async (t) => {
   })
 
   await compile()
-  t.deepEqual(JSON.parse(mfs.readFileSync('/component.json', 'utf-8')), {component: true})
+  t.deepEqual(JSON.parse(mfs.readFileSync('/component.json', 'utf-8')), {
+    component: true,
+  })
   t.pass()
 })
