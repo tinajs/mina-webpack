@@ -12,6 +12,7 @@ cache:
 before_install:
   - npm install --global npm@latest
   - npm --version
+  - npm install --global lerna
 
 install:
   - lerna bootstrap
