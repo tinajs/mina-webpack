@@ -11,6 +11,7 @@ cache:
 
 before_install:
   - npm install --global npm@latest
+  - npm --version
 
 script:
   - lerna run test
