@@ -20,5 +20,9 @@
   "dependencies": {
     "ensure-posix-path": "^1.0.2",
     "webpack-sources": "^1.0.2"
+  },
+  "devDependencies": {
+    "lint-staged": "^7.2.0",
+    "prettier": "^1.13.7"
   }
 }

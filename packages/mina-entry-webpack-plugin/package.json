@@ -20,6 +20,8 @@
     "webpack": "^3.8.1"
   },
   "devDependencies": {
+    "lint-staged": "^7.2.0",
+    "prettier": "^1.13.7",
     "webpack": "^3.8.1"
   },
   "dependencies": {

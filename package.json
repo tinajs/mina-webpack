@@ -6,6 +6,7 @@
     }
   },
   "devDependencies": {
+    "husky": "^0.14.3",
     "lerna": "^2.11.0"
   },
   "dependencies": {}

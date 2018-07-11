@@ -30,7 +30,9 @@
     "babel-loader": "^7.1.2",
     "babel-preset-env": "^1.6.1",
     "chai": "^4.1.2",
+    "lint-staged": "^7.2.0",
     "memory-fs": "^0.4.1",
+    "prettier": "^1.13.7",
     "relative-file-loader": "^1.1.12",
     "webpack": "^3.8.1",
     "webpack-merge": "^4.1.1"
