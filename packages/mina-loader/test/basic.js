@@ -121,7 +121,9 @@ test('pack with options', async t => {
               loader: require.resolve('..'),
               options: {
                 loaders: {
-                  script: 'babel-loader',
+                  script: {
+                    default: 'babel-loader',
+                  },
                 },
               },
             },

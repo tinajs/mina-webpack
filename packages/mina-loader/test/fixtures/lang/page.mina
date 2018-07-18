@@ -1,0 +1,24 @@
+<config>
+{
+  "name": "mina"
+}
+</config>
+
+<style lang="yellow-css">
+text.blue {
+  color: #00f;
+  background: blue;
+}
+</style>
+
+<template>
+  <view></view>
+</template>
+
+<script lang="yellow-js">
+Page({
+  onLoad () {
+    console.log('blue');
+  }
+})
+</script>
