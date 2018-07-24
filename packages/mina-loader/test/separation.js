@@ -11,8 +11,17 @@ test('load separated .ts source file', async t => {
     output: {
       filename: 'ts-page.js',
     },
+    resolve: {
+      extensions: ['.ts', '.js'],
+    },
     module: {
       rules: [
+        {
+          test: /\.ts$/,
+          use: {
+            loader: 'ts-loader',
+          },
+        },
         {
           test: /\.mina$/,
           use: {
@@ -21,9 +30,6 @@ test('load separated .ts source file', async t => {
               loaders: {
                 script: {
                   loader: 'ts-loader',
-                  options: {
-                    configFile: 'tsconfig.json',
-                  },
                 },
               },
             },
@@ -41,6 +47,8 @@ test('load separated .ts source file', async t => {
   t.true(
     mfs.readFileSync('/ts-page.js', 'utf8').includes('Hello from TS Page!')
   )
+  // TypeScript targeting ES5 should shim generator and await syntax
+  t.true(mfs.readFileSync('/ts-page.js', 'utf8').includes('return __generator'))
   t.pass()
 })
 

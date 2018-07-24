@@ -6,10 +6,15 @@ type WxPage = {
   setData: (object) => void
 }
 
+import Util from './anotherUtil'
+
 Page({
   onLoad(this: WxPage) {
-    this.setData({
-      msg: 'Hello from TS Page!',
+    Util({ x: 1, y: 2 }).then(result => {
+      this.setData({
+        msg: 'Hello from TS Page!',
+        result,
+      })
     })
   },
 })
