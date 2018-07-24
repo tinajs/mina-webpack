@@ -4,6 +4,7 @@ const compose = require('compose-function')
 const loaderUtils = require('loader-utils')
 const resolveFrom = require('resolve-from')
 const ensurePosix = require('ensure-posix-path')
+const debug = require('debug')('loaders:mina')
 
 const selectorLoaderPath = require.resolve('./selector')
 const parserLoaderPath = require.resolve('./parser')
@@ -84,12 +85,11 @@ module.exports = function(source) {
           return result
         }
         // content can be defined either in a separate file or inline
-        let request =
-          parts[type].attributes.src ||
-          `!!${getLoaderOf(
-            type,
-            options
-          )}${selectorLoaderPath}?type=${type}!${url}`
+        const loader = getLoaderOf(type, options)
+        debug('load modules', { result, type, loader })
+        let request = parts[type].attributes.src
+          ? `!!${loader}${parts[type].attributes.src}`
+          : `!!${loader}${selectorLoaderPath}?type=${type}!${url}`
         return `${result};require(${loaderUtils.stringifyRequest(
           this,
           request

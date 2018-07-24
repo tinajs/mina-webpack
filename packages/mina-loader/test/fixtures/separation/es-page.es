@@ -1,7 +1,7 @@
 Page({
   onLoad () {
     this.setData({
-      msg: 'Hello from Page!',
+      msg: 'Hello from ES Page!',
     })
   },
 })

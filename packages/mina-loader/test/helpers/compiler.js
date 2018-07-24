@@ -29,6 +29,7 @@ export default (options = {}) => {
             test: /\.mina$/,
             use: {
               loader: require.resolve('../..'),
+              // TODO this should'be add .loaders to configure different loaders for script/style
             },
           },
           {
@@ -65,9 +66,11 @@ export default (options = {}) => {
       compiler.outputFileSystem = mfs
       return new Promise((resolve, reject) => {
         compiler.run((err, stats) => {
-          if (err) reject(err)
-
-          resolve(stats)
+          if (err) {
+            reject(err)
+          } else {
+            resolve(stats)
+          }
         })
       })
     },

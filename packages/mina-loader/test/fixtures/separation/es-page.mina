@@ -1,0 +1,7 @@
+<template>
+  <view>
+    <text>{{msg}}</text>
+  </view>
+</template>
+
+<script src="./es-page.es" />
