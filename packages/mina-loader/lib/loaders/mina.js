@@ -85,11 +85,9 @@ module.exports = function(source) {
           return result
         }
         // content can be defined either in a separate file or inline
-        const loader = getLoaderOf(type, options)
+        let loader = getLoaderOf(type, options)
         debug('load modules', { result, type, loader })
-        let request = parts[type].attributes.src
-          ? `!!${loader}${parts[type].attributes.src}`
-          : `!!${loader}${selectorLoaderPath}?type=${type}!${url}`
+        let request = `!!${loader}${selectorLoaderPath}?type=${type}!${url}`
         return `${result};require(${loaderUtils.stringifyRequest(
           this,
           request

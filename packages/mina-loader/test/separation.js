@@ -17,21 +17,17 @@ test('load separated .ts source file', async t => {
     module: {
       rules: [
         {
-          test: /\.ts$/,
-          use: {
-            loader: 'ts-loader',
-          },
-        },
-        {
           test: /\.mina$/,
           use: {
             loader: require.resolve('..'),
+          },
+        },
+        {
+          test: /\.ts$/,
+          use: {
+            loader: 'ts-loader',
             options: {
-              loaders: {
-                script: {
-                  loader: 'ts-loader',
-                },
-              },
+              appendTsSuffixTo: [/\.mina$/],
             },
           },
         },
@@ -65,13 +61,14 @@ test('load separated .es source file', async t => {
           test: /\.mina$/,
           use: {
             loader: require.resolve('..'),
+          },
+        },
+        {
+          test: /\.es$/,
+          use: {
+            loader: 'babel-loader',
             options: {
-              loaders: {
-                script: {
-                  loader: 'babel-loader',
-                  presets: [['env']],
-                },
-              },
+              presets: [['env']],
             },
           },
         },
