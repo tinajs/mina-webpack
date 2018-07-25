@@ -4,4 +4,4 @@
   </view>
 </template>
 
-<script src="./page.es" />
+<script src="./ts-page.ts" />
