@@ -6,6 +6,8 @@
  *
  */
 
+const readConfig = require('./readConfig')
+
 function getPages (appPath) {
   // TODO: pages如果不是数组
   const pages = readConfig(appPath).pages || []
@@ -18,20 +20,6 @@ function getPages (appPath) {
       return pagePath
     }
   })
-}
-
-function readConfig(fullpath) {
-  const fs = require('fs')
-  const { parseComponent } = require('vue-template-compiler')
-  const JSON5 = require('json5')
-
-  let buffer = fs.readFileSync(fullpath)
-  let blocks = parseComponent(buffer.toString()).customBlocks
-  let matched = blocks.find(block => block.type === 'config')
-  if (!matched || !matched.content || !matched.content.trim()) {
-    return {}
-  }
-  return JSON5.parse(matched.content)
 }
 
 module.exports = getPages
