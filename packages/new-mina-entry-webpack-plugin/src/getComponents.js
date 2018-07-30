@@ -11,7 +11,7 @@ const readConfig = require('./readConfig')
 // rootContext"pages/page1”这样的格式，另外pagePath也可以是component的path
 function getComponents (rootContext, pagePath) {
   const fullPagePath = path.resolve(rootContext, pagePath)
-  const config = readConfig(fullPagePath + '.mina')
+  const config = readConfig(fullPagePath)
   const componentsConfig = config.usingComponents || {}
   const componentPaths = []
   for (componentName in componentsConfig) {

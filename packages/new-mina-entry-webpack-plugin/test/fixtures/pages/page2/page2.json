@@ -1,16 +1,8 @@
-<config>
 {
   "usingComponents": {
     "a": "/components/a",
     "b": "components/b",
     "c": "./components/c",
-    "d": "../components/d"
+    "d": "../../components/d"
   }
 }
-</config>
-
-<template>
-</template>
-
-<script>
-</script>
