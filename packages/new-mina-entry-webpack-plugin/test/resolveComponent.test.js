@@ -7,9 +7,8 @@ test('resolve single file component', t => {
   const component = resolveComponent(context, 'pages/page1/page1')
   t.deepEqual(component, {
     name: 'pages/page1/page1',
-    paths: [
-      './pages/page1/page1.mina'
-    ]
+    extensions: '.mina',
+    configPath: resolve(context, 'pages/page1/page1.mina')
   })
 })
 
@@ -18,9 +17,7 @@ test('resolve splited files component', t => {
   const component = resolveComponent(context, 'pages/page2/page2')
   t.deepEqual(component, {
     name: 'pages/page2/page2',
-    paths: [
-      './pages/page2/page2.js',
-      './pages/page2/page2.json'
-    ]
+    extensions: ['.js', '.json'],
+    configPath: resolve(context, 'pages/page2/page2.json')
   })
 })

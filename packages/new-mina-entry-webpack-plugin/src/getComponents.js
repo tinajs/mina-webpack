@@ -1,6 +1,6 @@
 /* 从page或component中读取usingComponents的内容。usingComponent中的路径支持两种形式：
  * 
- * 1. 从context起步（"component"或"/component"均可）
+ * 1. 从context起步（"component"或"/component"）
  * 2. 从当前文件起步（"./componet"或"../component")
  * 
  */
@@ -8,20 +8,16 @@
 const path = require('path')
 const readConfig = require('./readConfig')
 
-// rootContext"pages/page1”这样的格式，另外pagePath也可以是component的path
-function getComponents (rootContext, pagePath) {
-  const fullPagePath = path.resolve(rootContext, pagePath)
-  const config = readConfig(fullPagePath)
+function getComponents (rootContext, entryComponentName, configPath) {
+  const config = configPath ? readConfig(configPath) : {}
   const componentsConfig = config.usingComponents || {}
-  const componentPaths = []
-  for (componentName in componentsConfig) {
-    componentPaths.push(componentsConfig[componentName])
-  }
-  const fullPageDir = path.dirname(fullPagePath)
+  const componentPaths = Object.values(componentsConfig)
+  const fulllEntryComponentPath = path.resolve(rootContext, entryComponentName)
+  const fullEntryComponentDir = path.dirname(fulllEntryComponentPath)
   return componentPaths.map(componentPath => {
     let componentContext = rootContext
     if (componentPath.startsWith('./') || componentPath.startsWith('../')) {
-      componentContext = fullPageDir
+      componentContext = fullEntryComponentDir
     }
     if (componentPath.startsWith('/')) {
       componentPath = componentPath.slice(1)

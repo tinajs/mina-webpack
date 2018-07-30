@@ -5,9 +5,8 @@ function resolveComponent (rootContext, componentName) {
   if (fs.existsSync(resolve(rootContext, componentName + '.mina'))) {
     return {
       name: componentName,
-      paths: [
-        './' + componentName + '.mina'
-      ]
+      extensions: '.mina',
+      configPath: resolve(rootContext, componentName + '.mina')
     }
   } else {
     let extensions = ['.js', '.json', '.wxml', '.wxss']
@@ -17,7 +16,8 @@ function resolveComponent (rootContext, componentName) {
     })
     return {
       name: componentName,
-      paths: extensions.map(extension => './' + componentName + extension)
+      extensions: extensions,
+      configPath: extensions.indexOf('.json') !== -1 ? resolve(rootContext, componentName + '.json') : null
     }
   }
 }

@@ -1,16 +1,16 @@
-/* 从app.mina文件中提取出pages. pages支持的写法包括：
+/* 从app.mina文件中提取出pages. pages的写法是从context开始计算的相对路径，可以是如下形式：
  * 
- * 1. 绝对路径（从context开始）
- * 2. 相对路径（以./开头，相对于context）
- * 3. 相对路径（不以./开头，相对于context）
+ * 1. /pages/page1
+ * 2. pages/page1
+ * 3. ./pages/page1
  *
  */
 
 const readConfig = require('./readConfig')
 
-function getPages (appPath) {
+function getPages (configPath) {
   // TODO: pages如果不是数组
-  const pages = readConfig(appPath).pages || []
+  const pages = readConfig(configPath).pages || []
   return pages.map(pagePath => {
     if (pagePath.startsWith('./')) {
       return pagePath.slice(2)

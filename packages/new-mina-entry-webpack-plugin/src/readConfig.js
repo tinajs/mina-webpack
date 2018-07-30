@@ -1,28 +1,13 @@
-/* 从json或者mina文件中读取config块。文件路径可以是：
- * 1. 带后缀的（.mina或.json）
- * 2. 不带后缀的
- *
- */
-
 const fs = require('fs')
 const { parseComponent } = require('vue-template-compiler')
 const JSON5 = require('json5')
 
-// fullPath支持：
-// 1. 带后缀（.mina或.json）
-// 2. 不带后缀
 function readConfig(fullPath) {
-  if (fs.existsSync(fullPath) && fullPath.endsWith('.mina')) {
+  if (fullPath.endsWith('.mina')) {
     return readConfigFromMinaFile(fullPath)
-  } else if (fs.existsSync(fullPath) && fullPath.endsWith('.json')) {
-    return readConfigFromJsonFile(fullPath)
-  } else if (fs.existsSync(fullPath + '.mina')) {
-    return readConfigFromMinaFile(fullPath + '.mina')
-  } else if (fs.existsSync(fullPath + '.json')) {
-    return readConfigFromJsonFile(fullPath + '.json')
   } else {
-    return {}
-  }
+    return readConfigFromJsonFile(fullPath)
+  } 
 }
 
 function readConfigFromMinaFile (fullPath) {
