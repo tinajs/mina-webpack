@@ -2,7 +2,7 @@ const test = require('ava')
 const { resolve } = require('path')
 const addComponents = require('../src/addComponents')
 
-test('add components from single entry', t => {
+test('add components from mina entry', t => {
   const components = {}
   const context = resolve(__dirname, 'fixtures')
   addComponents(context, 'pages/page1/page1', components)
@@ -11,6 +11,21 @@ test('add components from single entry', t => {
     "components/a/a": '.mina',
     "components/b/b": ['.js', '.json', '.wxml'],
     "pages/page1/components/c/c": [],
-    "components/d/d": []
+    "components/d/d": [],
+    "components/e/e": ['.js']
+  })
+})
+
+test('add components from json entry', t => {
+  const components = {}
+  const context = resolve(__dirname, 'fixtures')
+  addComponents(context, 'pages/page2/page2', components)
+  t.deepEqual(components, {
+    "pages/page2/page2": ['.js', '.json'],
+    "components/a/a": '.mina',
+    "components/b/b": ['.js', '.json', '.wxml'],
+    "pages/page2/components/c/c": [],
+    "components/d/d": [],
+    "components/e/e": ['.js']
   })
 })
