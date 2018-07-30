@@ -1,0 +1,21 @@
+{
+  "name": "mina-entry-webpack-plugin",
+  "version": "1.0.0",
+  "description": "调整小程序项目的webpack入口的插件",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "ava"
+  },
+  "keywords": [
+    "mina",
+    "entry",
+    "webpack",
+    "plugin"
+  ],
+  "author": "run27017",
+  "license": "ISC",
+  "devDependencies": {
+    "ava": "^0.25.0",
+    "webpack": "^3.8.1"
+  }
+}
