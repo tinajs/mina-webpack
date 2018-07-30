@@ -1,0 +1,12 @@
+<config>
+{
+  "pages": [
+    "a",
+    "/b",
+    "./c"
+  ]
+}
+</config>
+
+<script>
+</script>
