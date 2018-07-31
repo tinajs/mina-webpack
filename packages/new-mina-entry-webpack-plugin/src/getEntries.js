@@ -25,8 +25,7 @@ function getEntries (rootContext) {
     }
   }
 
-  entries['__assets_chunk_name__'] = assets.sort()
-  return entries
+  return [entries, assets.sort()]
 }
 
 function addMinaEntry (entries, componentName) {

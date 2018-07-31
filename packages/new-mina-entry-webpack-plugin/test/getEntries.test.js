@@ -4,7 +4,7 @@ const getEntries = require('../src/getEntries')
 
 test('get entries', t => {
   const context = resolve(__dirname, 'fixtures')
-  const entries = getEntries(context)
+  const [entries, assets] = getEntries(context)
   t.deepEqual(entries, {
     'app': './app.mina',
     'pages/page1/page1': './pages/page1/page1.mina',
@@ -12,10 +12,10 @@ test('get entries', t => {
     'components/b/b': './components/b/b.js',
     'components/e/e': './components/e/e.js',
     'pages/page2/page2': './pages/page2/page2.js',
-    '__assets_chunk_name__': [
-      './components/b/b.json',
-      './components/b/b.wxml',
-      './pages/page2/page2.json'
-    ]
   })
+  t.deepEqual(assets, [
+    './components/b/b.json',
+    './components/b/b.wxml',
+    './pages/page2/page2.json'
+  ])
 })

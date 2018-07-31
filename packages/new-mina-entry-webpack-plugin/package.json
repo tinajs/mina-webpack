@@ -16,7 +16,10 @@
   "license": "ISC",
   "devDependencies": {
     "ava": "^0.25.0",
-    "webpack": "^3.8.1"
+    "file-loader": "^1.1.11",
+    "raw-loader": "^0.5.1",
+    "rmdir": "^1.2.0",
+    "webpack": "3.8.1"
   },
   "dependencies": {
     "json5": "^1.0.1",

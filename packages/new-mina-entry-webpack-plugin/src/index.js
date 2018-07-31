@@ -6,7 +6,51 @@
  * 
  */
 
+const MultiEntryPlugin = require( 'webpack/lib/MultiEntryPlugin')
+const SingleEntryPlugin = require ('webpack/lib/SingleEntryPlugin')
+
 const getEntries = require('./getEntries')
 
-module.exports = function () {
+const AssetsChunkName = '__assets_chunk_name__'
+
+class MinaEntryWebpackPlugin {
+  apply(compiler) {
+		compiler.plugin('entry-option', () => {
+			this.addEntries(compiler)
+		})
+		compiler.plugin('watch-run', ({ compiler }, done) => {
+			this.addEntries(compiler)
+			done()
+		})
+		this.clearAssetsChunk(compiler)
+	}
+
+	addEntries(compiler) {
+		const { context } = compiler
+		const [entries, assets] = getEntries(context)
+
+		for (const name in entries) {
+			const path = entries[name]
+			compiler.apply(new SingleEntryPlugin(context, path, name))
+		}
+
+		if (assets.length > 0) {
+			compiler.apply(new MultiEntryPlugin(context, assets, AssetsChunkName))
+		}
+	}
+
+	clearAssetsChunk(compiler) {
+		compiler.plugin('compilation', (compilation) => {
+			compilation.plugin('before-chunk-assets', () => {
+				const assetsChunkIndex = compilation.chunks.findIndex(({ name }) =>
+					name === AssetsChunkName
+				)
+				if (assetsChunkIndex > -1) {
+					compilation.chunks.splice(assetsChunkIndex, 1);
+				}
+			})
+		})
+	}
 }
+
+module.exports = MinaEntryWebpackPlugin
