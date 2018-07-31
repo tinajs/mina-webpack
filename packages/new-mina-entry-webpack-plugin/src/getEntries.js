@@ -25,22 +25,16 @@ function getComponents (rootContext, pages) {
 }
 
 function addEntries (entries, assets, components) {
-  for (const name in components) {
-    const component = components[name]
-    let entryName, requestName
-    if (component.isModule) {
-      entryName = `_/_node_modules_/${name}`
-      requestName = name
-    } else {
-      entryName = name
-      requestName = './' + name
-    }
-    entries[entryName] = requestName + component.main
+  for (const request in components) {
+    const component = components[request]
+    let entryName = component.isModule 
+      ? '_/__node_modules__/' + component.name 
+      : component.name
+    entries[entryName] = request + component.main
     for (const assetExtension of component.assets) {
-      assets.push(requestName + assetExtension)
+      assets.push(request + assetExtension)
     }
   }
 }
 
 module.exports = getEntries
-module.exports.addComponents = addComponents

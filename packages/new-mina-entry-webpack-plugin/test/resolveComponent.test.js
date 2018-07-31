@@ -65,9 +65,9 @@ test('resolve splited files component, which config file is null', t => {
 })
 
 test('resolve not existed component', t => {
-  t.false(resolveComponentHelper('pages/page4/page4'))
-  t.false(resolveComponentHelper('/pages/page4/page4'))
-  t.false(resolveComponentHelper('./pages/page4/page4'))
+  t.false(resolveComponentHelper('pages/notExisted'))
+  t.false(resolveComponentHelper('/pages/notExisted'))
+  t.false(resolveComponentHelper('./pages/notExisted'))
 })
 
 test('double up to parent', t => {

@@ -1,0 +1,9 @@
+<config>
+{
+  "usingComponents": {
+    "a": "/components/a/a",
+    "local-component-one": "local-component-one/index",
+    "local-component-one-2": "/local-component-one/index"
+  }
+}
+</config>

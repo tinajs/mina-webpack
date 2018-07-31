@@ -17,7 +17,6 @@ function resolveContextComponent (rootContext, componentRequest, currentContext)
   } else {
     fullPath = resolve(currentContext, componentRequest)
   }
-
   let componentName = relative(rootContext, fullPath)
 
   if (fs.existsSync(fullPath) && fullPath.endsWith('.mina')) {

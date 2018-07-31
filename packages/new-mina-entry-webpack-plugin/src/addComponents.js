@@ -3,11 +3,12 @@
 const getComponents = require('./getComponents')
 
 function addComponents (rootContext, entryComponent, resolvedComponents) {
-  if (entryComponent.name in resolvedComponents) {
+  const requestName = entryComponent.isModule ? entryComponent.name : './' + entryComponent.name
+  if (requestName in resolvedComponents) {
     return resolvedComponents
   }
 
-  resolvedComponents[entryComponent.name] = {
+  resolvedComponents[requestName] = {
     name: entryComponent.name,
     main: entryComponent.main,
     assets: entryComponent.assets,
