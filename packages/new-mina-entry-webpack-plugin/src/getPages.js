@@ -6,20 +6,18 @@
  *
  */
 
+const { resolve } = require('path')
 const readConfig = require('./readConfig')
+const resolveComponent = require('./resolveComponent')
 
-function getPages (configPath) {
+function getPages (rootContext) {
   // TODO: pages如果不是数组
-  const pages = readConfig(configPath).pages || []
-  return pages.map(pagePath => {
-    if (pagePath.startsWith('./')) {
-      return pagePath.slice(2)
-    } else if (pagePath.startsWith('/')) {
-      return pagePath.slice(1)
-    } else {
-      return pagePath
-    }
-  })
+  const configPath = resolve(rootContext, 'app.mina')
+  const pageRequests = readConfig(configPath).pages || []
+  
+  return pageRequests.map(pageRequest => 
+    resolveComponent(rootContext, pageRequest)
+  ).filter(pageComponent => pageComponent)
 }
 
 module.exports = getPages
