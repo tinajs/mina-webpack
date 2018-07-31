@@ -3,7 +3,7 @@ const { resolve } = require('path')
 const resolveComponent = require('../src/resolveComponent')
 const addComponents = require('../src/addComponents')
 
-test.only('add components from mina entry', t => {
+test('add components from mina entry', t => {
   const context = resolve(__dirname, 'fixtures')
   const entryComponent = resolveComponent(context, 'pages/page1/page1')
   t.deepEqual(addComponents(context, entryComponent, {}), {

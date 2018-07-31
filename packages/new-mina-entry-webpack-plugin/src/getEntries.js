@@ -2,30 +2,37 @@
  * 
  */
 
-const { resolve } = require('path')
 const addComponents = require('./addComponents')
 const getPages = require('./getPages')
 
 function getEntries (rootContext) {
-  const pageNames = getPages(rootContext).map(page => page.name)
-
-  const components = {}
-  for (const pageName of pageNames) {
-    addComponents(rootContext, pageName, components)
-  }
+  const pages = getPages(rootContext)
+  const components = getComponents(rootContext, pages)
 
   const entries = { 'app': './app.mina' }
   const assets = []
-  for (componentName in components) {
-    const componentExtensions = components[componentName]
-    if (componentExtensions === '.mina') {
-      addMinaEntry(entries, componentName)
-    } else {
-      addMultiEntry(entries, assets, componentName, componentExtensions)
-    }
-  }
+  addEntries(entries, assets, components)
 
   return [entries, assets.sort()]
+}
+
+function getComponents (rootContext, pages) {
+  const components = {}
+  for (const page of pages) {
+    addComponents(rootContext, page, components)
+  }
+  return components
+}
+
+function addEntries (entries, assets, components) {
+  for (const name in components) {
+    const extensions = components[name]
+    if (extensions === '.mina') {
+      addMinaEntry(entries, name)
+    } else {
+      addMultiEntry(entries, assets, name, extensions)
+    }
+  }
 }
 
 function addMinaEntry (entries, componentName) {
