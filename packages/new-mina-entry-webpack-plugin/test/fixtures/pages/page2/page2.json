@@ -1,8 +1,8 @@
 {
   "usingComponents": {
     "a": "/components/a/a",
-    "b": "components/b/b",
+    "b": "../../components/b/b",
     "c": "./c",
-    "d": "../../components/d/d"
+    "d": "/components/d/d"
   }
 }

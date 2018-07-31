@@ -41,6 +41,7 @@ test('resolve single file component with mina extension', t => {
 test('resolve single file component with current context', t => {
   const page1Context = resolve(context, 'pages/page1')
   const page2Context = resolve(context, 'pages/page2')
+  t.deepEqual(resolveComponentHelper('page1', page1Context), page1Component)
   t.deepEqual(resolveComponentHelper('./page1', page1Context), page1Component)
   t.deepEqual(resolveComponentHelper('../page1/page1', page2Context), page1Component)
 })

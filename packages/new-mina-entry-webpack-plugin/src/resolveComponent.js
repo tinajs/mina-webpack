@@ -6,15 +6,11 @@ function resolveComponent (rootContext, componentRequest, currentContext) {
     currentContext = rootContext
   }
 
-  if (componentRequest.startsWith('/')) {
-    componentRequest = componentRequest.slice(1)
-  }
-
   let fullPath = null
-  if (componentRequest.startsWith('./') || componentRequest.startsWith('../')) {
-    fullPath = resolve(currentContext, componentRequest)
+  if (componentRequest.startsWith('/')) {
+    fullPath = resolve(rootContext, componentRequest.slice(1))
   } else {
-    fullPath = resolve(rootContext, componentRequest)
+    fullPath = resolve(currentContext, componentRequest)
   }
 
   let componentName = relative(rootContext, fullPath)
