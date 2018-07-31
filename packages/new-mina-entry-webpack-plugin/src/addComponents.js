@@ -7,7 +7,12 @@ function addComponents (rootContext, entryComponent, resolvedComponents) {
     return resolvedComponents
   }
 
-  resolvedComponents[entryComponent.name] = entryComponent.extensions
+  resolvedComponents[entryComponent.name] = {
+    name: entryComponent.name,
+    main: entryComponent.main,
+    assets: entryComponent.assets,
+    isModule: entryComponent.isModule
+  }
 
   let components = getComponents(rootContext, entryComponent.name, entryComponent.configPath)
   for (const component of components) {

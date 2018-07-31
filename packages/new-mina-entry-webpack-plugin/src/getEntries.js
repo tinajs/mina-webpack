@@ -26,28 +26,19 @@ function getComponents (rootContext, pages) {
 
 function addEntries (entries, assets, components) {
   for (const name in components) {
-    const extensions = components[name]
-    if (extensions === '.mina') {
-      addMinaEntry(entries, name)
+    const component = components[name]
+    let entryName, requestName
+    if (component.isModule) {
+      entryName = `_/_node_modules_/${name}`
+      requestName = name
     } else {
-      addMultiEntry(entries, assets, name, extensions)
+      entryName = name
+      requestName = './' + name
     }
-  }
-}
-
-function addMinaEntry (entries, componentName) {
-  entries[componentName] = './' + componentName + '.mina'
-}
-
-function addMultiEntry (entries, assets, componentName, componentExtensions) {
-  let otherExtensions = componentExtensions.slice()
-  let jsExtensionIndex = componentExtensions.indexOf('.js')
-  if (jsExtensionIndex !== -1) {
-    entries[componentName] = './' + componentName + '.js'
-    otherExtensions.splice(jsExtensionIndex, 1)
-  }
-  for (const extension of otherExtensions) {
-    assets.push('./' + componentName + extension)
+    entries[entryName] = requestName + component.main
+    for (const assetExtension of component.assets) {
+      assets.push(requestName + assetExtension)
+    }
   }
 }
 

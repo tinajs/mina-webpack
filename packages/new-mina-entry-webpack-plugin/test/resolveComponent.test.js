@@ -10,21 +10,24 @@ const resolveComponentHelper = function (request, currentContext) {
 
 const page1Component = {
   name: 'pages/page1/page1',
-  extensions: '.mina',
+  main: '.mina',
+  assets: [],
   configPath: resolve(context, 'pages/page1/page1.mina'),
   isModule: false
 }
 
 const page2Component = {
   name: 'pages/page2/page2',
-  extensions: ['.js', '.json'],
+  main: '.js',
+  assets: ['.json'],
   configPath: resolve(context, 'pages/page2/page2.json'),
   isModule: false
 }
 
 const page3Component = {
   name: 'pages/page3/page3',
-  extensions: ['.js'],
+  main: '.js',
+  assets: [],
   configPath: null,
   isModule: false
 }
@@ -74,7 +77,8 @@ test('double up to parent', t => {
   const component = resolveComponent(rootContext, request, currentContext)
   t.deepEqual(component, {
     name: 'components/b/b',
-    extensions: ['.js', '.json', '.wxml'],
+    main: '.js',
+    assets: ['.json', '.wxml'],
     configPath: '/home/hello/workspace/run27017/mina-webpack/packages/new-mina-entry-webpack-plugin/test/fixtures/components/b/b.json',
     isModule: false
   })
@@ -83,7 +87,8 @@ test('double up to parent', t => {
 test('resolve a mina module component', t => {
   const localComponent = {
     name: 'local-component-one/index',
-    extensions: '.mina',
+    main: '.mina',
+    assets: [],
     configPath: resolve(__dirname, '../vendor/local-component-one/index.mina'),
     isModule: true
   }
@@ -94,7 +99,8 @@ test('resolve a mina module component', t => {
 test('resolve a splited module component', t => {
   const localComponent = {
     name: 'local-component-two/index',
-    extensions: ['.js', '.json', '.wxml'],
+    main: '.js',
+    assets: ['.json', '.wxml'],
     configPath: resolve(__dirname, '../vendor/local-component-two/index.json'),
     isModule: true
   }
