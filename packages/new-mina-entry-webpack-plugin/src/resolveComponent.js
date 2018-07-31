@@ -34,15 +34,12 @@ function resolveComponent (rootContext, componentRequest, currentContext) {
     }
   } else {
     let extensions = ['.js', '.json', '.wxml', '.wxss']
-    extensions = extensions.filter(extension => {
-      const fullPath = resolve(rootContext, componentName + extension)
-      return fs.existsSync(fullPath)
-    })
+    extensions = extensions.filter(extension => fs.existsSync(fullPath + extension))
     if (extensions.length > 0) {
       return {
         name: componentName,
         extensions: extensions,
-        configPath: extensions.indexOf('.json') !== -1 ? resolve(rootContext, componentRequest + '.json') : null
+        configPath: extensions.indexOf('.json') !== -1 ? fullPath + '.json' : null
       }
     } else {
       return false

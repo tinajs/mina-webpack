@@ -1,12 +1,12 @@
 const test = require('ava')
 const { resolve } = require('path')
+const resolveComponent = require('../src/resolveComponent')
 const addComponents = require('../src/addComponents')
 
 test.only('add components from mina entry', t => {
-  const components = {}
   const context = resolve(__dirname, 'fixtures')
-  addComponents(context, 'pages/page1/page1', components)
-  t.deepEqual(components, {
+  const entryComponent = resolveComponent(context, 'pages/page1/page1')
+  t.deepEqual(addComponents(context, entryComponent, {}), {
     "pages/page1/page1": '.mina',
     "components/a/a": '.mina',
     "components/b/b": ['.js', '.json', '.wxml'],
@@ -15,11 +15,10 @@ test.only('add components from mina entry', t => {
   })
 })
 
-test.only('add components from json entry', t => {
-  const components = {}
+test('add components from json entry', t => {
   const context = resolve(__dirname, 'fixtures')
-  addComponents(context, 'pages/page2/page2', components)
-  t.deepEqual(components, {
+  const entryComponent = resolveComponent(context, 'pages/page2/page2')
+  t.deepEqual(addComponents(context, entryComponent, {}), {
     "pages/page2/page2": ['.js', '.json'],
     "components/a/a": '.mina',
     "components/b/b": ['.js', '.json', '.wxml'],

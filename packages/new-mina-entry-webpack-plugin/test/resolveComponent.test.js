@@ -71,6 +71,6 @@ test('double up to parent', t => {
   t.deepEqual(component, {
     name: 'components/b/b',
     extensions: ['.js', '.json', '.wxml'],
-    configPath: '/home/hello/workspace/run27017/mina-webpack/packages/new-mina-entry-webpack-plugin/components/b/b.json'
+    configPath: '/home/hello/workspace/run27017/mina-webpack/packages/new-mina-entry-webpack-plugin/test/fixtures/components/b/b.json'
   })
 })
