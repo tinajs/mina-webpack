@@ -15,11 +15,14 @@ test('get entries', t => {
     'components/e/e': './components/e/e.js',
     'pages/page1/c': './pages/page1/c.mina',
     'pages/page2/c': './pages/page2/c.mina',
-    '_/__node_modules__/local-component-one/index': 'local-component-one/index.mina'
+    '_/_node_modules_/local-component-one/index': 'local-component-one/index.mina',
+    '_/_node_modules_/local-component-two/index': 'local-component-two/index.js'
   })
   t.deepEqual(assets, [
     './components/b/b.json',
     './components/b/b.wxml',
-    './pages/page2/page2.json'
+    './pages/page2/page2.json',
+    'local-component-two/index.json',
+    'local-component-two/index.wxml'
   ])
 })

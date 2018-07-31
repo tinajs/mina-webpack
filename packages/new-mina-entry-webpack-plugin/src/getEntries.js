@@ -28,7 +28,7 @@ function addEntries (entries, assets, components) {
   for (const request in components) {
     const component = components[request]
     let entryName = component.isModule 
-      ? '_/__node_modules__/' + component.name 
+      ? '_/_node_modules_/' + component.name 
       : component.name
     entries[entryName] = request + component.main
     for (const assetExtension of component.assets) {

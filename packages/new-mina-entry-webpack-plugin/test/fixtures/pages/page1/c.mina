@@ -1,7 +1,8 @@
 <config>
 {
   "usingComponents": {
-    "local-component-one": "local-component-one/index"
+    "local-component-one": "local-component-one/index",
+    "local-component-two": "local-component-two/index"
   }
 }
 </config>

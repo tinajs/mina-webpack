@@ -1,8 +1,9 @@
 const fs = require('fs')
 const { resolve, relative } = require('path')
+const resolveFrom = require('resolve-from')
 
 function resolveComponent (rootContext, componentRequest, currentContext) {
-  return resolveModuleComponent(componentRequest) ||
+  return resolveModuleComponent(rootContext, componentRequest) ||
     resolveContextComponent(rootContext, componentRequest, currentContext)
 }
 
@@ -50,7 +51,7 @@ function resolveContextComponent (rootContext, componentRequest, currentContext)
   }
 }
 
-function resolveModuleComponent (request) {
+function resolveModuleComponent (rootContext, request) {
   if (request.startsWith('~')) {
     request = request.slice(1)
   } else if (request.startsWith('./') || request.startsWith('../') || request.startsWith('/')) {
@@ -59,9 +60,10 @@ function resolveModuleComponent (request) {
 
   let fullPath = null
   if (request.endsWith('.mina')) {
-    fullPath = resolveModuleRequest(request)
+    fullPath = resolveModuleRequest(rootContext, request)
   } else {
-    fullPath = resolveModuleRequest(request + '.mina') || resolveModuleRequest(request + '.js')
+    fullPath = resolveModuleRequest(rootContext, request + '.mina') 
+                  || resolveModuleRequest(rootContext, request + '.js')
   }
   if (!fullPath) {
     return false
@@ -88,9 +90,9 @@ function resolveModuleComponent (request) {
   }
 }
 
-function resolveModuleRequest (request) {
+function resolveModuleRequest (rootContext, request) {
   try {
-    return require.resolve(request)
+    return resolveFrom(rootContext, request)
   } catch (error) {
     return false
   }
