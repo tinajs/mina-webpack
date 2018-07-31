@@ -17,10 +17,12 @@ class MinaEntryWebpackPlugin {
   apply(compiler) {
 		compiler.plugin('entry-option', () => {
 			this.addEntries(compiler)
+			return true
 		})
 		compiler.plugin('watch-run', ({ compiler }, done) => {
 			this.addEntries(compiler)
 			done()
+			return true
 		})
 		this.clearAssetsChunk(compiler)
 	}

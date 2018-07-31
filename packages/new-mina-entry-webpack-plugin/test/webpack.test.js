@@ -25,6 +25,7 @@ test.cb('Compiles project sample', t => {
       const files = stats.toJson().assets.map(x => x.name)
 
       // 4. Run assertions. Make sure that the three expected files were generated
+      t.true(files.indexOf('main.js') === -1)
       t.true(files.indexOf('app.js') !== -1)
       t.true(files.indexOf('pages/page1/page1.js') !== -1)
       t.true(files.indexOf('pages/page2/page2.js') !== -1)
