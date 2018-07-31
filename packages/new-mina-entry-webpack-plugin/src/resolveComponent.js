@@ -2,6 +2,14 @@ const fs = require('fs')
 const { resolve, relative } = require('path')
 
 function resolveComponent (rootContext, componentRequest, currentContext) {
+  const component = resolveModuleComponent(componentRequest)
+  if (component) {
+    return component
+  }
+  return resolveContextComponent(rootContext, componentRequest, currentContext)
+}
+
+function resolveContextComponent (rootContext, componentRequest, currentContext) {
   if (!currentContext) {
     currentContext = rootContext
   }
@@ -20,26 +28,71 @@ function resolveComponent (rootContext, componentRequest, currentContext) {
     return {
       name: componentName,
       extensions: '.mina',
-      configPath: fullPath
+      configPath: fullPath,
+      isModule: false
     }
   } else if (fs.existsSync(fullPath + '.mina')) {
     return {
       name: componentName,
       extensions: '.mina',
-      configPath: fullPath + '.mina'
+      configPath: fullPath + '.mina',
+      isModule: false
+    }
+  } else if (fs.existsSync(fullPath + '.js')) {
+    let otherExtensions = ['.json', '.wxml', '.wxss']
+    otherExtensions = otherExtensions.filter(extension => fs.existsSync(fullPath + extension))
+    return {
+      name: componentName,
+      extensions: ['.js', ...otherExtensions],
+      configPath: otherExtensions.indexOf('.json') !== -1 ? fullPath + '.json' : null,
+      isModule: false
     }
   } else {
-    let extensions = ['.js', '.json', '.wxml', '.wxss']
-    extensions = extensions.filter(extension => fs.existsSync(fullPath + extension))
-    if (extensions.length > 0) {
-      return {
-        name: componentName,
-        extensions: extensions,
-        configPath: extensions.indexOf('.json') !== -1 ? fullPath + '.json' : null
-      }
-    } else {
-      return false
+    return false
+  }
+}
+
+function resolveModuleComponent (request) {
+  if (request.startsWith('~')) {
+    request = request.slice(1)
+  } else if (request.startsWith('./') || request.startsWith('../') || request.startsWith('/')) {
+    return false
+  }
+
+  let fullPath = null
+  if (request.endsWith('.mina')) {
+    fullPath = resolveModuleRequest(request)
+  } else {
+    fullPath = resolveModuleRequest(request + '.mina') || resolveModuleRequest(request + '.js')
+  }
+  if (!fullPath) {
+    return false
+  }
+
+  if (fullPath.endsWith('.mina')) {
+    return {
+      name: request.replace(/\.mina$/, ''),
+      extensions: '.mina',
+      configPath: fullPath,
+      isModule: true
     }
+  } else {
+    fullPath = fullPath.replace(/\.js$/, '')
+    otherExtensions = ['.json', '.wxml', '.wxss'].filter(extension => fs.existsSync(fullPath + extension))
+    return {
+      name: request,
+      extensions: ['.js', ...otherExtensions],
+      configPath: otherExtensions.indexOf('.json') > -1 ? fullPath + '.json' : null,
+      isModule: true
+    }
+  }
+}
+
+function resolveModuleRequest (request) {
+  try {
+    return require.resolve(request)
+  } catch (error) {
+    return false
   }
 }
 

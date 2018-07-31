@@ -11,19 +11,22 @@ const resolveComponentHelper = function (request, currentContext) {
 const page1Component = {
   name: 'pages/page1/page1',
   extensions: '.mina',
-  configPath: resolve(context, 'pages/page1/page1.mina')
+  configPath: resolve(context, 'pages/page1/page1.mina'),
+  isModule: false
 }
 
 const page2Component = {
   name: 'pages/page2/page2',
   extensions: ['.js', '.json'],
-  configPath: resolve(context, 'pages/page2/page2.json')
+  configPath: resolve(context, 'pages/page2/page2.json'),
+  isModule: false
 }
 
 const page3Component = {
   name: 'pages/page3/page3',
   extensions: ['.js'],
-  configPath: null
+  configPath: null,
+  isModule: false
 }
 
 test('resolve single file component', t => {
@@ -72,6 +75,29 @@ test('double up to parent', t => {
   t.deepEqual(component, {
     name: 'components/b/b',
     extensions: ['.js', '.json', '.wxml'],
-    configPath: '/home/hello/workspace/run27017/mina-webpack/packages/new-mina-entry-webpack-plugin/test/fixtures/components/b/b.json'
+    configPath: '/home/hello/workspace/run27017/mina-webpack/packages/new-mina-entry-webpack-plugin/test/fixtures/components/b/b.json',
+    isModule: false
   })
+})
+
+test('resolve a mina module component', t => {
+  const localComponent = {
+    name: 'local-component-one/index',
+    extensions: '.mina',
+    configPath: resolve(__dirname, '../vendor/local-component-one/index.mina'),
+    isModule: true
+  }
+  t.deepEqual(resolveComponentHelper('local-component-one/index'), localComponent)
+  t.deepEqual(resolveComponentHelper('~local-component-one/index.mina'), localComponent)
+})
+
+test('resolve a splited module component', t => {
+  const localComponent = {
+    name: 'local-component-two/index',
+    extensions: ['.js', '.json', '.wxml'],
+    configPath: resolve(__dirname, '../vendor/local-component-two/index.json'),
+    isModule: true
+  }
+  t.deepEqual(resolveComponentHelper('local-component-two/index'), localComponent)
+  t.deepEqual(resolveComponentHelper('~local-component-two/index'), localComponent)
 })
