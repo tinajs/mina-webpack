@@ -1,0 +1,7 @@
+<config>
+{
+  "usingComponents": {
+    "local-component-one": "local-component-one/index"
+  }
+}
+</config>

@@ -22,7 +22,8 @@ test('add components from mina entry', t => {
     "./components/a/a": ['.mina'],
     "./components/b/b": ['.js', '.json', '.wxml'],
     "./pages/page1/c": ['.mina'],
-    "./components/e/e": ['.js']
+    "./components/e/e": ['.js'],
+    "local-component-one/index": ['.mina']
   })
 })
 

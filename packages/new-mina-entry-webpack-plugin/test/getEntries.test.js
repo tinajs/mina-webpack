@@ -14,7 +14,8 @@ test('get entries', t => {
     'components/b/b': './components/b/b.js',
     'components/e/e': './components/e/e.js',
     'pages/page1/c': './pages/page1/c.mina',
-    'pages/page2/c': './pages/page2/c.mina'
+    'pages/page2/c': './pages/page2/c.mina',
+    '_/__node_modules__/local-component-one/index': 'local-component-one/index.mina'
   })
   t.deepEqual(assets, [
     './components/b/b.json',
