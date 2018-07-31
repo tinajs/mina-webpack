@@ -7,7 +7,7 @@ const addComponents = require('./addComponents')
 const getPages = require('./getPages')
 
 function getEntries (rootContext) {
-  const pageNames = getPages(resolve(rootContext, 'app.mina'))
+  const pageNames = getPages(rootContext).map(page => page.name)
 
   const components = {}
   for (const pageName of pageNames) {

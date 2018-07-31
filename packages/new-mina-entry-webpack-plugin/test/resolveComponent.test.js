@@ -62,3 +62,15 @@ test('resolve not existed component', t => {
   t.false(resolveComponentHelper('/pages/page4/page4'))
   t.false(resolveComponentHelper('./pages/page4/page4'))
 })
+
+test('double up to parent', t => {
+  const rootContext = resolve(__dirname, 'fixtures') 
+  const request = '../../components/b/b' 
+  const currentContext = resolve(rootContext, 'pages/page1')
+  const component = resolveComponent(rootContext, request, currentContext)
+  t.deepEqual(component, {
+    name: 'components/b/b',
+    extensions: ['.js', '.json', '.wxml'],
+    configPath: '/home/hello/workspace/run27017/mina-webpack/packages/new-mina-entry-webpack-plugin/components/b/b.json'
+  })
+})

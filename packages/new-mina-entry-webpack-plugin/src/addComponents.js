@@ -14,7 +14,8 @@ function addComponents (rootContext, entryComponentName, addedComponents) {
   }
 
   addedComponents[entryComponentName] = entryComponent.extensions
-  const componentNames = getComponents(rootContext, entryComponentName, entryComponent.configPath)
+  let componentNames = getComponents(rootContext, entryComponentName, entryComponent.configPath)
+  componentNames = componentNames.map(component => component.name)
   for (const componentName of componentNames) {
     addComponents(rootContext, componentName, addedComponents)
   }

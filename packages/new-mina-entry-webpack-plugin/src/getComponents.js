@@ -5,26 +5,24 @@
  * 
  */
 
-const path = require('path')
+const { resolve, dirname } = require('path')
 const readConfig = require('./readConfig')
+const resolveComponent = require('./resolveComponent')
 
 function getComponents (rootContext, entryComponentName, configPath) {
+  const requests = configPath ? readComponentRequests(configPath) : []
+  const currentContext = dirname(resolve(rootContext, entryComponentName))
+
+  return requests.map(request => 
+    resolveComponent(rootContext, request, currentContext)
+  ).filter(component => component)
+}
+
+function readComponentRequests (configPath) {
   const config = configPath ? readConfig(configPath) : {}
+  // TODO: usingComponents不是对象
   const componentsConfig = config.usingComponents || {}
-  const componentPaths = Object.values(componentsConfig)
-  const fulllEntryComponentPath = path.resolve(rootContext, entryComponentName)
-  const fullEntryComponentDir = path.dirname(fulllEntryComponentPath)
-  return componentPaths.map(componentPath => {
-    let componentContext = rootContext
-    if (componentPath.startsWith('./') || componentPath.startsWith('../')) {
-      componentContext = fullEntryComponentDir
-    }
-    if (componentPath.startsWith('/')) {
-      componentPath = componentPath.slice(1)
-    }
-    const fullComponentPath = path.resolve(componentContext, componentPath)
-    return path.relative(rootContext, fullComponentPath)
-  })
+  return Object.values(componentsConfig)
 }
 
 module.exports = getComponents

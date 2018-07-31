@@ -35,7 +35,7 @@ function resolveComponent (rootContext, componentRequest, currentContext) {
   } else {
     let extensions = ['.js', '.json', '.wxml', '.wxss']
     extensions = extensions.filter(extension => {
-      const fullPath = resolve(rootContext, componentRequest + extension)
+      const fullPath = resolve(rootContext, componentName + extension)
       return fs.existsSync(fullPath)
     })
     if (extensions.length > 0) {

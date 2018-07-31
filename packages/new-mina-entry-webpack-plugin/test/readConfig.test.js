@@ -8,9 +8,9 @@ test('read config from mina file', t => {
   t.deepEqual(config, {
     "usingComponents": {
       "a": "/components/a/a",
-      "b": "components/b/b",
-      "c": "./components/c/c",
-      "d": "../../components/d/d"
+      "b": "../../components/b/b",
+      "c": "./c",
+      "d": "components/d/d"
     }
   })
 })
@@ -22,7 +22,7 @@ test('read config from json path', t => {
     "usingComponents": {
       "a": "/components/a/a",
       "b": "components/b/b",
-      "c": "./components/c/c",
+      "c": "./c",
       "d": "../../components/d/d"
     }
   })
