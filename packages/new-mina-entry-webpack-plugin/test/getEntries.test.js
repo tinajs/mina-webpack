@@ -12,6 +12,7 @@ test('get entries', t => {
     'components/b/b': './components/b/b.js',
     'components/e/e': './components/e/e.js',
     'pages/page2/page2': './pages/page2/page2.js',
+    'pages/page3/page3': './pages/page3/page3.js'
   })
   t.deepEqual(assets, [
     './components/b/b.json',

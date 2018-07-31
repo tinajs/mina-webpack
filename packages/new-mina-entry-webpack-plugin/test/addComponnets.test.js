@@ -10,8 +10,6 @@ test('add components from mina entry', t => {
     "pages/page1/page1": '.mina',
     "components/a/a": '.mina',
     "components/b/b": ['.js', '.json', '.wxml'],
-    "pages/page1/components/c/c": [],
-    "components/d/d": [],
     "components/e/e": ['.js']
   })
 })
@@ -24,8 +22,6 @@ test('add components from json entry', t => {
     "pages/page2/page2": ['.js', '.json'],
     "components/a/a": '.mina',
     "components/b/b": ['.js', '.json', '.wxml'],
-    "pages/page2/components/c/c": [],
-    "components/d/d": [],
     "components/e/e": ['.js']
   })
 })

@@ -9,6 +9,10 @@ function addComponents (rootContext, entryComponentName, addedComponents) {
   }
 
   const entryComponent = resolveComponent(rootContext, entryComponentName)
+  if (!entryComponent) {
+    return addedComponents
+  }
+
   addedComponents[entryComponentName] = entryComponent.extensions
   const componentNames = getComponents(rootContext, entryComponentName, entryComponent.configPath)
   for (const componentName of componentNames) {
