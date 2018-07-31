@@ -1,0 +1,21 @@
+const test = require('ava')
+const { resolve } = require('path')
+const getEntries = require('../src/getEntries')
+
+test('get entries', t => {
+  const context = resolve(__dirname, 'fixtures')
+  const entries = getEntries(context)
+  t.deepEqual(entries, {
+    'app': './app.mina',
+    'pages/page1/page1': './pages/page1/page1.mina',
+    'components/a/a': './components/a/a.mina',
+    'components/b/b': './components/b/b.js',
+    'components/e/e': './components/e/e.js',
+    'pages/page2/page2': './pages/page2/page2.js',
+    '__assets_chunk_name__': [
+      './components/b/b.json',
+      './components/b/b.wxml',
+      './pages/page2/page2.json'
+    ]
+  })
+})
