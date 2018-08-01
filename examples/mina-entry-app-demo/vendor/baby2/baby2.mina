@@ -1,0 +1,25 @@
+<config>
+{
+  "component": true
+}
+</config>
+
+<style>
+.baby {
+  background: blue;
+}
+</style>
+
+<template>
+  <view class="baby"> {{ welcome }} </view>
+</template>
+
+<script>
+var name = require('./name')
+
+Component({
+  data: {
+    welcome: name + "宝贝2号"
+  }
+})
+</script>

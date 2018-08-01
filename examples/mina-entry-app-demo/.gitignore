@@ -1,0 +1,8 @@
+# dev
+.vscode
+.DS_Store
+node_modules
+npm-debug.log
+
+# build
+/dist

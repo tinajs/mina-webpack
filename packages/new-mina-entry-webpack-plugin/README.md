@@ -29,7 +29,11 @@
         ]
     }
 
-其中最后两条是本地安装的node_modules模块，这里是vendor目录，因为使用的是`npm install --save file:vendor/local-component-one`。如果是直接安装在node_modules中去的，则键名会是`_/node_modules/...`. 
+其中最后两条是本地安装的node_modules模块，这里是vendor目录，因为使用的是`npm install --save file:vendor/local-component-one`。如果是直接安装在node_modules中去的，则键名会是`_/node_modules/...`.
+
+## 示例项目
+
+对啦，我给了个使用新插件的示例项目，在[../../examples/mina-entry-app-demo](../../examples/mina-entry-app-demo)下面。
 
 ## 新增的能力
 

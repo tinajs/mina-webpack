@@ -1,0 +1,1 @@
+<view class="baby2"> {{ welcome }} </view>
