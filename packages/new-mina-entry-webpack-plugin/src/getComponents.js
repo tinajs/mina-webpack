@@ -22,7 +22,7 @@ function readComponentRequests (configPath) {
   const config = configPath ? readConfig(configPath) : {}
   // TODO: usingComponents不是对象
   const componentsConfig = config.usingComponents || {}
-  return Object.values(componentsConfig)
+  return Object.keys(componentsConfig).map(key => componentsConfig[key])
 }
 
 module.exports = getComponents

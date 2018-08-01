@@ -94,7 +94,7 @@ test('double up to parent', t => {
     request: './components/b/b',
     main: '.js',
     assets: ['.json', '.wxml'],
-    fullPath: '/home/hello/workspace/run27017/mina-webpack/packages/new-mina-entry-webpack-plugin/test/fixtures/components/b/b'
+    fullPath: resolve(rootContext, 'components/b/b')
   }))
 })
 
