@@ -1,16 +1,6 @@
 const { resolve } = require('path')
 const MinaEntryPlugin = require('../../')
 
-const relativeFileLoader = function () {
-  return {
-    loader: 'file-loader',
-    options: {
-      useRelativePath: true,
-      name: '[name].[ext]'
-    }
-  }
-}
-
 module.exports = {
   context: resolve(__dirname, '.'),
   entry: './app.mina',
@@ -26,7 +16,12 @@ module.exports = {
       },
       {
         test: /\.(json|wxml|wxss)$/,
-        use: relativeFileLoader()
+        use: {
+          loader: 'file-loader',
+          options: {
+            name: '[path][name].[ext]'
+          }
+        }
       }
     ]
   },

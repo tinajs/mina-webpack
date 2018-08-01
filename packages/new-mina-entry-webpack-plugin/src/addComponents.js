@@ -8,12 +8,7 @@ function addComponents (rootContext, entryComponent, resolvedComponents) {
     return resolvedComponents
   }
 
-  resolvedComponents[requestName] = {
-    name: entryComponent.name,
-    main: entryComponent.main,
-    assets: entryComponent.assets,
-    isModule: entryComponent.isModule
-  }
+  resolvedComponents[requestName] = entryComponent
 
   let components = getComponents(rootContext, entryComponent.name, entryComponent.configPath)
   for (const component of components) {

@@ -1,6 +1,7 @@
 const fs = require('fs')
 const { resolve, relative } = require('path')
 const resolveFrom = require('resolve-from')
+const Component = require('./Component')
 
 function resolveComponent (rootContext, componentRequest, currentContext) {
   return resolveModuleComponent(rootContext, componentRequest) ||
@@ -22,30 +23,30 @@ function resolveContextComponent (rootContext, componentRequest, currentContext)
 
   if (fs.existsSync(fullPath) && fullPath.endsWith('.mina')) {
     componentName = componentName.replace(/\.mina$/, '')
-    return {
-      name: componentName,
+    return new Component({
+      context: rootContext,
+      request: './' + componentName,
       main: '.mina',
       assets: [],
-      configPath: fullPath,
-      isModule: false
-    }
+      fullPath: fullPath.replace(/\.mina$/, '')
+    })
   } else if (fs.existsSync(fullPath + '.mina')) {
-    return {
-      name: componentName,
+    return new Component({
+      context: rootContext,
+      request: './' + componentName,
       main: '.mina',
       assets: [],
-      configPath: fullPath + '.mina',
-      isModule: false
-    }
+      fullPath
+    })
   } else if (fs.existsSync(fullPath + '.js')) {
     const assets = ['.json', '.wxml', 'wxss'].filter(extension => fs.existsSync(fullPath + extension))
-    return {
-      name: componentName,
+    return new Component({
+      context: rootContext,
+      request: './' + componentName,
       main: '.js',
       assets: assets,
-      configPath: assets.indexOf('.json') !== -1 ? fullPath + '.json' : null,
-      isModule: false
-    }
+      fullPath
+    })
   } else {
     return false
   }
@@ -70,23 +71,23 @@ function resolveModuleComponent (rootContext, request) {
   }
 
   if (fullPath.endsWith('.mina')) {
-    return {
-      name: request.replace(/\.mina$/, ''),
+    return new Component({
+      context: rootContext,
+      request: request.replace(/\.mina$/, ''),
       main: '.mina',
       assets: [],
-      configPath: fullPath,
-      isModule: true
-    }
+      fullPath: fullPath.replace(/\.mina$/, '')
+    })
   } else {
     fullPath = fullPath.replace(/\.js$/, '')
     const assets = ['.json', '.wxml', '.wxss'].filter(extension => fs.existsSync(fullPath + extension))
-    return {
-      name: request,
+    return new Component({
+      context: rootContext,
+      request: request,
       main: '.js',
       assets: assets,
-      configPath: assets.indexOf('.json') > -1 ? fullPath + '.json' : null,
-      isModule: true
-    }
+      fullPath
+    })
   }
 }
 

@@ -7,9 +7,9 @@ const addComponents = require('../src/addComponents')
 const addComponentsHelper = function (context, entryComponent) {
   const components = addComponents(context, entryComponent, {})
   const simplyfiedComponents = {}
-  for (const name in components) {
-    const component = components[name]
-    simplyfiedComponents[name] = [component.main].concat(component.assets)
+  for (const request in components) {
+    const component = components[request]
+    simplyfiedComponents[request] = [component.main].concat(component.assets)
   }
   return simplyfiedComponents
 }

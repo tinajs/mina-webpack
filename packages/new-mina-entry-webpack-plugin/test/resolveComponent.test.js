@@ -1,11 +1,19 @@
 const test = require('ava')
 const { resolve } = require('path')
 const resolveComponent = require('../src/resolveComponent')
+const Component = require('../src/Component')
 
 const context = resolve(__dirname, 'fixtures')
 
 const resolveComponentHelper = function (request, currentContext) {
-  return resolveComponent(context, request, currentContext)
+  const component = resolveComponent(context, request, currentContext)
+  return component && {
+    name: component.request.startsWith('./') ? component.request.slice(2) : component.request,
+    main: component.main,
+    assets: component.assets,
+    configPath: component.configPath,
+    isModule: component.isModule
+  }
 }
 
 const page1Component = {
@@ -75,13 +83,13 @@ test('double up to parent', t => {
   const request = '../../components/b/b' 
   const currentContext = resolve(rootContext, 'pages/page1')
   const component = resolveComponent(rootContext, request, currentContext)
-  t.deepEqual(component, {
-    name: 'components/b/b',
+  t.deepEqual(component, new Component({
+    context: rootContext,
+    request: './components/b/b',
     main: '.js',
     assets: ['.json', '.wxml'],
-    configPath: '/home/hello/workspace/run27017/mina-webpack/packages/new-mina-entry-webpack-plugin/test/fixtures/components/b/b.json',
-    isModule: false
-  })
+    fullPath: '/home/hello/workspace/run27017/mina-webpack/packages/new-mina-entry-webpack-plugin/test/fixtures/components/b/b'
+  }))
 })
 
 test('resolve a mina module component', t => {

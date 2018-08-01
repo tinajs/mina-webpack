@@ -30,6 +30,9 @@ test.cb('Compiles project sample', t => {
       t.true(files.indexOf('pages/page1/page1.js') !== -1)
       t.true(files.indexOf('pages/page2/page2.js') !== -1)
       t.true(files.indexOf('pages/page2/page2.json') !== -1)
+      t.true(files.indexOf('_/_/vendor/local-component-one/index.js') !== -1)
+      t.true(files.indexOf('_/_/vendor/local-component-two/index.js') !== -1)
+      t.true(files.indexOf('_/_/vendor/local-component-two/index.json') !== -1)
 
       t.end()
     })
