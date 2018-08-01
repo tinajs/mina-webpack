@@ -22,13 +22,21 @@ function resolveContextComponent (rootContext, componentRequest, currentContext)
   let componentName = relative(rootContext, fullPath)
 
   if (fs.existsSync(fullPath) && fullPath.endsWith('.mina')) {
-    componentName = componentName.replace(/\.mina$/, '')
     return new Component({
       context: rootContext,
-      request: './' + componentName,
+      request: './' + componentName.replace(/\.mina$/, ''),
       main: '.mina',
       assets: [],
       fullPath: fullPath.replace(/\.mina$/, '')
+    })
+  } else if (fs.existsSync(fullPath) && fullPath.endsWith('.js')) {
+    fullPath = fullPath.replace(/\.js$/, '')
+    return new Component({
+      context: rootContext,
+      request: './' + componentName.replace(/\.js$/, ''),
+      main: '.js',
+      assets: ['.json', '.wxml', '.wxss'].filter(extension => fs.existsSync(fullPath + extension)),
+      fullPath
     })
   } else if (fs.existsSync(fullPath + '.mina')) {
     return new Component({
@@ -39,12 +47,11 @@ function resolveContextComponent (rootContext, componentRequest, currentContext)
       fullPath
     })
   } else if (fs.existsSync(fullPath + '.js')) {
-    const assets = ['.json', '.wxml', 'wxss'].filter(extension => fs.existsSync(fullPath + extension))
     return new Component({
       context: rootContext,
       request: './' + componentName,
       main: '.js',
-      assets: assets,
+      assets: ['.json', '.wxml', '.wxss'].filter(extension => fs.existsSync(fullPath + extension)),
       fullPath
     })
   } else {
@@ -60,7 +67,7 @@ function resolveModuleComponent (rootContext, request) {
   }
 
   let fullPath = null
-  if (request.endsWith('.mina')) {
+  if (request.endsWith('.mina') || request.endsWith('.js')) {
     fullPath = resolveModuleRequest(rootContext, request)
   } else {
     fullPath = resolveModuleRequest(rootContext, request + '.mina') 
@@ -80,12 +87,11 @@ function resolveModuleComponent (rootContext, request) {
     })
   } else {
     fullPath = fullPath.replace(/\.js$/, '')
-    const assets = ['.json', '.wxml', '.wxss'].filter(extension => fs.existsSync(fullPath + extension))
     return new Component({
       context: rootContext,
-      request: request,
+      request: request.replace(/\.js$/, ''),
       main: '.js',
-      assets: assets,
+      assets: ['.json', '.wxml', '.wxss'].filter(extension => fs.existsSync(fullPath + extension)),
       fullPath
     })
   }

@@ -66,6 +66,12 @@ test('resolve splited files component', t => {
   t.deepEqual(resolveComponentHelper('./pages/page2/page2'), page2Component)
 })
 
+test('resolve splited files componnet with js extension', t => {
+  t.deepEqual(resolveComponentHelper('pages/page2/page2.js'), page2Component)
+  t.deepEqual(resolveComponentHelper('/pages/page2/page2.js'), page2Component)
+  t.deepEqual(resolveComponentHelper('./pages/page2/page2.js'), page2Component)
+})
+
 test('resolve splited files component, which config file is null', t => {
   t.deepEqual(resolveComponentHelper('pages/page3/page3'), page3Component)
   t.deepEqual(resolveComponentHelper('/pages/page3/page3'), page3Component)
@@ -113,5 +119,6 @@ test('resolve a splited module component', t => {
     isModule: true
   }
   t.deepEqual(resolveComponentHelper('local-component-two/index'), localComponent)
+  t.deepEqual(resolveComponentHelper('local-component-two/index.js'), localComponent)
   t.deepEqual(resolveComponentHelper('~local-component-two/index'), localComponent)
 })
