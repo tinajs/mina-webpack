@@ -12,5 +12,7 @@
   "scripts": {
     "precommit": "lerna run --concurrency 1 --stream precommit"
   },
-  "dependencies": {}
+  "dependencies": {
+    "debug": "^3.1.0"
+  }
 }

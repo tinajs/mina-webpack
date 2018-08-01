@@ -7,6 +7,7 @@
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Ftinajs%2Fmina-webpack.svg?type=small)](https://app.fossa.io/projects/git%2Bgithub.com%2Ftinajs%2Fmina-webpack?ref=badge_small)
 
 ## Get Started
+
 We recommend you to get started with [template-mina](https://github.com/tinajs/template-mina):
 
 ```bash
@@ -20,6 +21,7 @@ npm start
 And see how to use with [TinaJS](https://tinajs.github.io/tina/#/guide/package-management-and-build-tools)
 
 ## Packages included
+
 - [mina-loader](./packages/mina-loader)
 
   [![npm](https://img.shields.io/npm/v/@tinajs/mina-loader.svg?style=flat-square)](https://www.npmjs.com/package/@tinajs/mina-loader)
@@ -39,6 +41,7 @@ And see how to use with [TinaJS](https://tinajs.github.io/tina/#/guide/package-m
   [![license](https://img.shields.io/npm/l/@tinajs/mina-entry-webpack-plugin.svg?style=flat-square)](./LICENSE)
 
 ## Manual Installation
+
 ```bash
 npm i --save-dev \
   @tinajs/mina-entry-webpack-plugin \
@@ -47,52 +50,55 @@ npm i --save-dev \
 ```
 
 ## Simplest Usage
+
 **webpack.config.js**:
+
 ```javascript
-const webpack = require('webpack')
-const MinaEntryPlugin = require('@tinajs/mina-entry-webpack-plugin')
-const MinaRuntimePlugin = require('@tinajs/mina-runtime-webpack-plugin')
-const resolve = require('path').resolve
+const webpack = require("webpack");
+const MinaEntryPlugin = require("@tinajs/mina-entry-webpack-plugin");
+const MinaRuntimePlugin = require("@tinajs/mina-runtime-webpack-plugin");
+const resolve = require("path").resolve;
 
 module.exports = {
-  context: resolve('src'),
-  entry: './app.mina',
+  context: resolve("src"),
+  entry: "./app.mina",
   output: {
-    path: resolve('dist'),
-    filename: '[name]',
-    publicPath: '/',
+    path: resolve("dist"),
+    filename: "[name]",
+    publicPath: "/"
   },
   module: {
     rules: [
       {
         test: /\.mina$/,
         use: {
-          loader: 'mina-loader',
+          loader: "mina-loader",
           options: {
             loaders: {
-              script: 'babel-loader',
-            },
-          },
-        },
-      },
-    ],
+              script: "babel-loader"
+            }
+          }
+        }
+      }
+    ]
   },
   plugins: [
     new MinaEntryPlugin({
-      map: (entry) => ['es6-promise/dist/es6-promise.auto.js', entry],
+      map: entry => ["es6-promise/dist/es6-promise.auto.js", entry]
     }),
     new MinaRuntimePlugin({
-      runtime: './common.js',
+      runtime: "./common.js"
     }),
     new webpack.optimize.CommonsChunkPlugin({
-      name: 'common.js',
-      minChunks: 2,
-    }),
-  ],
-}
+      name: "common.js",
+      minChunks: 2
+    })
+  ]
+};
 ```
 
 **app.mina**:
+
 ```html
 <config>
 {
@@ -113,6 +119,7 @@ App({
 ```
 
 **page.mina**:
+
 ```html
 <config>
 {
@@ -147,22 +154,28 @@ Page({
 ```
 
 ## Examples
+
 - [mina-webpack - Full Example](./example)
 - [mina-loader - test](./packages/mina-loader/test)
 - [TinaJS - HackerNews Reader](https://github.com/tinajs/tina-hackernews)
 
 ## Related Projects
+
 ### Best to use with
+
 - [TinaJS](https://github.com/tinajs/tina)
 
 ### Scaffolds
+
 - [template-mina](https://github.com/tinajs/template-mina)
 - [ambar/new-mina](https://github.com/ambar/new-mina)
 
 ### Other package compiler (also alternatives)
+
 - [gulp-mina](https://github.com/tinajs/gulp-mina)
 
 ### Got inspiration from
+
 - [Cap32/wxapp-webpack-plugin](https://github.com/Cap32/wxapp-webpack-plugin)
 - [CantonJS/wxapp-boilerplate](https://github.com/cantonjs/wxapp-boilerplate)
 - [zezhipeng/mina-loader](https://github.com/zezhipeng/mina-loader)

@@ -12,8 +12,10 @@ _Inspired by [zezhipeng/mina-loader](https://github.com/zezhipeng/mina-loader)._
 ## Installation
 
 ```bash
-npm i --save-dev @tinajs/mina-loader
+npm i --save-dev @tinajs/mina-loader webpack@^4.0.0
 ```
+
+Note you'll have to use webpack 4.
 
 ## Usage
 
@@ -23,6 +25,7 @@ npm i --save-dev @tinajs/mina-loader
  */
 module.exports = {
   context: resolve('src'),
+  mode: 'production',
   entry: {
     'app.mina': './app.mina',
     'pages/home.mina': './pages/home.mina',
@@ -77,6 +80,7 @@ For the best particle, you might also be interested in [mina-webpack](https://gi
 | loaders.style    | `undefined`                                                                         | The _Rules.use_ for `<style>`                                                                                                                                                 |
 | languages        | `{}`                                                                                | Used in the `.mina` file with the lang attribute. A map of _Rules.use_. See [Webpack - Module - Rule.use](https://webpack.js.org/configuration/module/#rule-use) for details. |
 | publicPath       | [output.publicPath](https://webpack.js.org/configuration/output/#output-publicpath) | Useful for relative `publicPath`, see [extract-loader - options](https://github.com/peerigon/extract-loader#options)                                                          |
+
 
 ## Example
 

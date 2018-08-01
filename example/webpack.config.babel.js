@@ -21,8 +21,9 @@ const loaders = {
 export default {
   context: resolve('src'),
   entry: './app.mina',
+  mode: isProduction ? 'production' : 'development',
   output: {
-    path: resolve('dist'),
+    path: resolve(__dirname, 'dist'),
     filename: '[name]',
     publicPath: '/',
   },
@@ -89,10 +90,13 @@ export default {
     new MinaRuntimePlugin({
       runtime: './common.js',
     }),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'common.js',
+  ],
+  optimization: {
+    minimizer: [isProduction && new UglifyJsPlugin()].filter(Boolean),
+    splitChunks: {
+      name: 'common',
+      chunks: 'all',
       minChunks: 2,
-    }),
-    isProduction && new UglifyJsPlugin(),
-  ].filter(Boolean),
+    },
+  },
 }

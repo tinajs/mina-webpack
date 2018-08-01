@@ -40,14 +40,15 @@ module.exports = function(source) {
   this.cacheable()
 
   const done = this.async()
+  const webpackOptions = loaderUtils.getOptions(this) || {}
   const options = merge(
     {},
     {
       loaders: {},
       languages: {},
-      publicPath: this.options.output.publicPath,
+      publicPath: helpers.getPublicPath(webpackOptions, this),
     },
-    loaderUtils.getOptions(this) || {}
+    webpackOptions
   )
 
   const url = loaderUtils.getRemainingRequest(this)
@@ -66,7 +67,7 @@ module.exports = function(source) {
       custom = helpers.stringifyLoaders(
         helpers.parseLoaders(custom).map(object => {
           return merge({}, object, {
-            loader: resolveFrom(this.options.context, object.loader),
+            loader: resolveFrom(this.rootContext, object.loader),
           })
         })
       )
@@ -110,7 +111,7 @@ module.exports = function(source) {
                 ensurePosix,
                 helpers.toSafeOutputPath,
                 path.dirname
-              )(path.relative(this.options.context, url))
+              )(path.relative(this.rootContext, url))
               let request = `!!${resolve(
                 'file-loader'
               )}?name=${dirname}/[name].${EXTNAMES[type]}!${getLoaderOf(
