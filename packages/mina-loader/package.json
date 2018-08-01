@@ -39,8 +39,11 @@
     "relative-file-loader": "^1.1.12",
     "ts-loader": "^3.5.0",
     "typescript": "^2.9.2",
-    "webpack": "^3.8.1",
+    "webpack": "^4.16.0",
     "webpack-merge": "^4.1.1"
+  },
+  "peerDependencies": {
+    "webpack": "^4.0.0"
   },
   "dependencies": {
     "@tinajs/mina-sfc": "^0.2.0",

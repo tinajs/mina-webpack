@@ -11,7 +11,7 @@
     "precommit": "lint-staged",
     "prestart": "run-s clean",
     "prebuild": "run-s clean",
-    "start": "webpack -w",
+    "start": "webpack --watch --progress --det",
     "build": "cross-env NODE_ENV=production webpack"
   },
   "dependencies": {
@@ -36,8 +36,9 @@
     "prettier": "^1.13.7",
     "relative-file-loader": "^1.1.12",
     "rimraf": "^2.6.2",
-    "uglifyjs-webpack-plugin": "^1.2.2",
+    "uglifyjs-webpack-plugin": "^1.2.7",
     "url-loader": "^0.6.2",
-    "webpack": "^3.11.0"
+    "webpack": "^4.16.0",
+    "webpack-cli": "^3.1.0"
   }
 }

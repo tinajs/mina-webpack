@@ -49,17 +49,17 @@ function resolveFromModule(context, filename) {
 
 module.exports = function(source) {
   const done = this.async()
-
+  const webpackOptions = loaderUtils.getOptions(this) || {}
   const options = merge(
     {},
     {
-      publicPath: this.options.output.publicPath,
+      publicPath: helpers.getPublicPath(webpackOptions, this),
     },
-    loaderUtils.getOptions(this) || {}
+    webpackOptions
   )
   const relativeToRoot = path.relative(
     path.dirname(this.resource),
-    this.options.context
+    this.rootContext
   )
   const loadModule = helpers.loadModule.bind(this)
 
@@ -84,7 +84,7 @@ module.exports = function(source) {
       }
       return Object.assign(config, {
         pages: config.pages.map(page =>
-          resolveFile(this.context, page, this.options.context)
+          resolveFile(this.context, page, this.rootContext)
         ),
       })
     })
@@ -100,7 +100,7 @@ module.exports = function(source) {
           if (file.startsWith('plugin://')) {
             return file
           }
-          return `/${resolveFile(this.context, file, this.options.context)}`
+          return `/${resolveFile(this.context, file, this.rootContext)}`
         }),
       })
     })
