@@ -16,11 +16,20 @@ const AssetsChunkName = '__assets_chunk_name__'
 class MinaEntryWebpackPlugin {
   apply(compiler) {
 		compiler.plugin('entry-option', () => {
-			this.addEntries(compiler)
+			try {
+				this.addEntries(compiler)
+			} catch (error) {
+				throw error
+			}
 			return true
 		})
 		compiler.plugin('watch-run', ({ compiler }, done) => {
-			this.addEntries(compiler)
+			try {
+				this.addEntries(compiler)
+			} catch (error) {
+				console.error(error)
+				return done()
+			}
 			done()
 			return true
 		})
