@@ -103,7 +103,7 @@ test('resolve a mina module component', t => {
     name: 'local-component-one/index',
     main: '.mina',
     assets: [],
-    configPath: resolve(__dirname, '../vendor/local-component-one/index.mina'),
+    configPath: resolve(__dirname, './vendor/local-component-one/index.mina'),
     isModule: true
   }
   t.deepEqual(resolveComponentHelper('local-component-one/index'), localComponent)
@@ -115,7 +115,7 @@ test('resolve a splited module component', t => {
     name: 'local-component-two/index',
     main: '.js',
     assets: ['.json', '.wxml'],
-    configPath: resolve(__dirname, '../vendor/local-component-two/index.json'),
+    configPath: resolve(__dirname, './vendor/local-component-two/index.json'),
     isModule: true
   }
   t.deepEqual(resolveComponentHelper('local-component-two/index'), localComponent)
