@@ -16,14 +16,10 @@ test('pack with customized lang attribute', async t => {
               loader: require.resolve('..'),
               options: {
                 loaders: {
-                  script: {
-                    default: 'babel-loader',
-                    'yellow-js': './loaders/change-first-blue-to-yellow-loader',
-                  },
-                  style: {
-                    'yellow-css':
-                      './loaders/change-first-blue-to-yellow-loader',
-                  },
+                  script: 'babel-loader',
+                },
+                languages: {
+                  yellowify: './loaders/replace-blue-to-yellow',
                 },
               },
             },
@@ -45,7 +41,7 @@ test('pack with customized lang attribute', async t => {
     )
     t.is(
       mfs.readFileSync('/fixtures/lang/page.wxss', 'utf8'),
-      'text.yellow {\n  color: #00f;\n  background: blue;\n}'
+      'text.yellow {\n  color: #00f;\n  background: yellow;\n}'
     )
 
     t.pass()

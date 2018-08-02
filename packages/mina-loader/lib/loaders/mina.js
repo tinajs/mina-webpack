@@ -44,6 +44,7 @@ module.exports = function(source) {
     {},
     {
       loaders: {},
+      languages: {},
       publicPath: this.options.output.publicPath,
     },
     loaderUtils.getOptions(this) || {}
@@ -56,9 +57,10 @@ module.exports = function(source) {
 
   const getLoaderOf = (type, options, attributes = {}) => {
     let loader = LOADERS[type](options) || ''
+    let lang = attributes.lang
     // append custom loader
-    const lang = attributes.lang || 'default'
-    let custom = (options.loaders[type] && options.loaders[type][lang]) || ''
+    let custom =
+      (lang && options.languages[lang]) || options.loaders[type] || ''
     if (custom) {
       custom = helpers.stringifyLoaders(
         helpers.parseLoaders(custom).map(object => {
