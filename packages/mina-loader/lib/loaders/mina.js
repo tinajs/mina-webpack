@@ -59,8 +59,9 @@ module.exports = function(source) {
     let loader = LOADERS[type](options) || ''
     let lang = attributes.lang
     // append custom loader
-    let custom =
-      (lang && options.languages[lang]) || options.loaders[type] || ''
+    let custom = lang
+      ? options.languages[lang] || `${lang}-loader`
+      : options.loaders[type] || ''
     if (custom) {
       custom = helpers.stringifyLoaders(
         helpers.parseLoaders(custom).map(object => {
