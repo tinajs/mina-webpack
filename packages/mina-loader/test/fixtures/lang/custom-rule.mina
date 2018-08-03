@@ -1,19 +1,9 @@
-<config>
-{
-  "name": "mina"
-}
-</config>
-
 <style lang="yellowify">
 text.blue {
   color: #00f;
   background: blue;
 }
 </style>
-
-<template>
-  <view></view>
-</template>
 
 <script lang="yellowify">
 Page({
