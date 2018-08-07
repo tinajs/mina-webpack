@@ -37,9 +37,9 @@ function addEntries (rootContext, componentsMapping, entries, assets) {
 }
 
 function getEntryName (rootContext, component) {
-  return relative(rootContext, component.fullPath).replace(/^(\.\.\/)+/, matched => 
-    matched.replace(/\.\./g, '_')
-  )
+  return relative(rootContext, component.fullPath)
+    .replace(/^(\.\.\/)+/, matched => matched.replace(/\.\./g, '_'))
+    .replace(/(^|\/)node_modules($|\/)/g, matched => matched.replace(/node_modules/, '_node_modules_'))
 }
 
 module.exports = getEntries

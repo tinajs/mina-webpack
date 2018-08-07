@@ -27,6 +27,9 @@ export default {
     filename: '[name].js',
     publicPath: '/',
   },
+  resolveLoader: {
+    modules: [resolve(__dirname, 'loaders'), 'node_modules']
+  },
   module: {
     rules: [
       {
@@ -76,16 +79,21 @@ export default {
           options: {
             name: '[path][name].[ext]',
           },
-        }, 'wxml-loader'],
+        }, 
+        'change-path-loader',
+        'wxml-loader'],
       },
       {
         test: /\.(json|wxss)$/,
-        use: {
-          loader: 'file-loader',
-          options: {
-            name: '[path][name].[ext]',
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[path][name].[ext]',
+            },
           },
-        },
+          resolve(__dirname, 'loaders/change-path-loader'),
+        ],
       }
     ],
   },

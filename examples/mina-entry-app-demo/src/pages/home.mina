@@ -5,8 +5,8 @@
     "baby-one": "/components/baby1/baby1.js",
     "baby-two": "~baby2/baby2.mina",
     "baby-three": "~baby3/baby3.js",
-    // "tina-logo": "~@tinajs/tina-logo.mina"
-    // "i-button": "~iview-weapp/dist/button/index.js"
+    "tina-logo": "~@tinajs/tina-logo.mina",
+    "i-button": "~iview-weapp/dist/button/index.js"
   }
 }
 </config>
@@ -16,6 +16,9 @@
 
 <template>
   <view>
+    <view>
+      <tina-logo />
+    </view>
     <view>
       Hi <author />!
     </view>
@@ -28,10 +31,14 @@
     <view>
       Hi <baby-three />!
     </view>
+    <i-button type="primary" bind:click="handleClick">这是一个按钮</i-button>
   </view>
 </template>
 
 <script>
 Page({
+  handleClick () {
+    console.log('clicked')
+  }
 })
 </script>
