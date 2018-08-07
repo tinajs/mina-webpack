@@ -4,8 +4,12 @@ const resolveFrom = require('resolve-from')
 const Component = require('./Component')
 
 function resolveComponent (rootContext, componentRequest, currentContext) {
-  return resolveModuleComponent(rootContext, componentRequest) ||
-    resolveContextComponent(rootContext, componentRequest, currentContext)
+  componentRequest = normalizeRequest(componentRequest)
+  if (/^(.\/|..\/|\/)/.test(componentRequest)) {
+    return resolveContextComponent(rootContext, componentRequest, currentContext)
+  } else {
+    return resolveModuleComponent(rootContext, componentRequest)
+  }
 }
 
 function resolveContextComponent (rootContext, componentRequest, currentContext) {
@@ -24,35 +28,30 @@ function resolveContextComponent (rootContext, componentRequest, currentContext)
   if (fs.existsSync(fullPath) && fullPath.endsWith('.mina')) {
     return new Component({
       context: rootContext,
-      request: './' + componentName.replace(/\.mina$/, ''),
-      main: '.mina',
+      request: './' + componentName,
       assets: [],
-      fullPath: fullPath.replace(/\.mina$/, '')
+      fullPath: fullPath
     })
   } else if (fs.existsSync(fullPath) && fullPath.endsWith('.js')) {
-    fullPath = fullPath.replace(/\.js$/, '')
     return new Component({
       context: rootContext,
-      request: './' + componentName.replace(/\.js$/, ''),
-      main: '.js',
-      assets: ['.json', '.wxml', '.wxss'].filter(extension => fs.existsSync(fullPath + extension)),
+      request: './' + componentName,
+      assets: getAssets(fullPath),
       fullPath
     })
   } else if (fs.existsSync(fullPath + '.mina')) {
     return new Component({
       context: rootContext,
-      request: './' + componentName,
-      main: '.mina',
+      request: './' + componentName + '.mina',
       assets: [],
-      fullPath
+      fullPath: fullPath + '.mina'
     })
   } else if (fs.existsSync(fullPath + '.js')) {
     return new Component({
       context: rootContext,
-      request: './' + componentName,
-      main: '.js',
-      assets: ['.json', '.wxml', '.wxss'].filter(extension => fs.existsSync(fullPath + extension)),
-      fullPath
+      request: './' + componentName + '.js',
+      assets: getAssets(fullPath + '.js'),
+      fullPath: fullPath + '.js'
     })
   } else {
     return false
@@ -60,39 +59,29 @@ function resolveContextComponent (rootContext, componentRequest, currentContext)
 }
 
 function resolveModuleComponent (rootContext, request) {
-  if (request.startsWith('~')) {
-    request = request.slice(1)
-  } else if (request.startsWith('./') || request.startsWith('../') || request.startsWith('/')) {
-    return false
-  }
-
-  let fullPath = null
-  if (request.endsWith('.mina') || request.endsWith('.js')) {
-    fullPath = resolveModuleRequest(rootContext, request)
+  if (fullPath = resolveModuleRequest(rootContext, request)) {
+    // request = request
+  } else if (fullPath = resolveModuleRequest(rootContext, request + '.mina')) {
+    request += '.mina'
+  } else if (fullPath = resolveModuleRequest(rootContext, request + '.js')) {
+    request += '.js'
   } else {
-    fullPath = resolveModuleRequest(rootContext, request + '.mina') 
-                  || resolveModuleRequest(rootContext, request + '.js')
-  }
-  if (!fullPath) {
     return false
   }
 
   if (fullPath.endsWith('.mina')) {
     return new Component({
       context: rootContext,
-      request: request.replace(/\.mina$/, ''),
-      main: '.mina',
-      assets: [],
-      fullPath: fullPath.replace(/\.mina$/, '')
+      request,
+      fullPath,
+      assets: []
     })
   } else {
-    fullPath = fullPath.replace(/\.js$/, '')
     return new Component({
       context: rootContext,
-      request: request.replace(/\.js$/, ''),
-      main: '.js',
-      assets: ['.json', '.wxml', '.wxss'].filter(extension => fs.existsSync(fullPath + extension)),
-      fullPath
+      request,
+      fullPath,
+      assets: getAssets(fullPath)
     })
   }
 }
@@ -103,6 +92,23 @@ function resolveModuleRequest (rootContext, request) {
   } catch (error) {
     return false
   }
+}
+
+function normalizeRequest (request) {
+  if (request.startsWith('~')) {
+    return request.slice(1)
+  } else if (/^(.\/|..\/|\/)/.test(request)) {
+    return request
+  } else {
+    return './' + request
+  }
+}
+
+// fullPath.endsWith('.js')
+function getAssets (fullPath) {
+  fullPath = fullPath.replace(/.js$/, '')
+  return ['.json', '.wxml', '.wxss'].filter(extension => fs.existsSync(fullPath + extension))
+                                    .map(extension => fullPath + extension)
 }
 
 module.exports = resolveComponent

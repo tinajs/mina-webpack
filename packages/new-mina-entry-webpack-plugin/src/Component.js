@@ -1,9 +1,8 @@
 class Component {
-  constructor ({ context, request, fullPath, main, assets }) {
+  constructor ({ context, request, fullPath, assets }) {
     this.context = context
     this.request = request
     this.fullPath = fullPath
-    this.main = main
     this.assets = assets
   }
 
@@ -12,17 +11,17 @@ class Component {
   }
 
   get configPath () {
-    if (this.main === '.mina') {
-      return this.fullPath + '.mina'
+    if (this.fullPath.endsWith('.mina')) {
+      return this.fullPath
     } else {
-      return this.assets.indexOf('.json') > -1 ? this.fullPath + '.json' : null
+      return this.assets.find(assetPath => assetPath.endsWith('.json'))
     }
   }
 
   // 去掉request开头的'./'
-  get name () {
-    return this.request.replace(/^\.\//, '')
-  }
+  // get name () {
+  //   return this.request.replace(/^\.\//, '')
+  // }
 }
 
 module.exports = Component

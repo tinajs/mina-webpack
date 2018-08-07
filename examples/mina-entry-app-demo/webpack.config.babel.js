@@ -24,7 +24,7 @@ export default {
   entry: './app.mina',
   output: {
     path: resolve('dist'),
-    filename: '[name].js',
+    filename: '[name]',
     publicPath: '/',
   },
   resolveLoader: {
@@ -110,7 +110,7 @@ export default {
       runtime: './common.js',
     }),
     new webpack.optimize.CommonsChunkPlugin({
-      name: 'common',
+      name: 'common.js',
       minChunks: 2,
     }),
     isProduction && new UglifyJsPlugin(),

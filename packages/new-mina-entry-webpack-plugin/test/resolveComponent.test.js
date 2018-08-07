@@ -1,3 +1,7 @@
+const td = require('testdouble')
+const resolveFrom = td.replace('resolve-from')
+const fs = td.replace('fs')
+
 const test = require('ava')
 const { resolve } = require('path')
 const resolveComponent = require('../src/resolveComponent')
@@ -5,120 +9,93 @@ const Component = require('../src/Component')
 
 const context = resolve(__dirname, 'fixtures')
 
-const resolveComponentHelper = function (request, currentContext) {
-  const component = resolveComponent(context, request, currentContext)
-  return component && {
-    name: component.request.startsWith('./') ? component.request.slice(2) : component.request,
-    main: component.main,
-    assets: component.assets,
-    configPath: component.configPath,
-    isModule: component.isModule
-  }
-}
+test('resolve a mina file in src', t => {
+  td.when(fs.existsSync(resolve(context, 'components/a.mina'))).thenReturn(true)
 
-const page1Component = {
-  name: 'pages/page1/page1',
-  main: '.mina',
-  assets: [],
-  configPath: resolve(context, 'pages/page1/page1.mina'),
-  isModule: false
-}
+  const component = new Component({
+    context,
+    request: './components/a.mina',
+    fullPath: resolve(context, './components/a.mina'),
+    assets: []
+  })
 
-const page2Component = {
-  name: 'pages/page2/page2',
-  main: '.js',
-  assets: ['.json'],
-  configPath: resolve(context, 'pages/page2/page2.json'),
-  isModule: false
-}
-
-const page3Component = {
-  name: 'pages/page3/page3',
-  main: '.js',
-  assets: [],
-  configPath: null,
-  isModule: false
-}
-
-test('resolve single file component', t => {
-  t.deepEqual(resolveComponentHelper('pages/page1/page1'), page1Component)
-  t.deepEqual(resolveComponentHelper('/pages/page1/page1'), page1Component)
-  t.deepEqual(resolveComponentHelper('./pages/page1/page1'), page1Component)
+  t.deepEqual(resolveComponent(context, 'components/a.mina'), component)
+  t.deepEqual(resolveComponent(context, '/components/a.mina'), component)
+  t.deepEqual(resolveComponent(context, './components/a.mina'), component)
+  t.deepEqual(resolveComponent(context, 'components/a'), component)
+  t.deepEqual(resolveComponent(context, '/components/a'), component)
+  t.deepEqual(resolveComponent(context, './components/a'), component)
 })
 
-test('resolve single file component with mina extension', t => {
-  t.deepEqual(resolveComponentHelper('pages/page1/page1.mina'), page1Component)
-  t.deepEqual(resolveComponentHelper('/pages/page1/page1.mina'), page1Component)
-  t.deepEqual(resolveComponentHelper('./pages/page1/page1.mina'), page1Component)
+test('resolve a js file in src', t => {
+  td.when(fs.existsSync(resolve(context, 'components/b.js'))).thenReturn(true)
+  td.when(fs.existsSync(resolve(context, 'components/b.json'))).thenReturn(true)
+  td.when(fs.existsSync(resolve(context, 'components/b.wxml'))).thenReturn(true)
+
+  const component = new Component({
+    context,
+    request: './components/b.js',
+    fullPath: resolve(context, 'components/b.js'),
+    assets: [
+      resolve(context, 'components/b.json'),
+      resolve(context, 'components/b.wxml')
+    ]
+  })
+
+  t.deepEqual(resolveComponent(context, 'components/b.js'), component)
+  t.deepEqual(resolveComponent(context, '/components/b.js'), component)
+  t.deepEqual(resolveComponent(context, './components/b.js'), component)
+  t.deepEqual(resolveComponent(context, 'components/b'), component)
+  t.deepEqual(resolveComponent(context, '/components/b'), component)
+  t.deepEqual(resolveComponent(context, './components/b'), component)
 })
 
-test('resolve single file component with current context', t => {
-  const page1Context = resolve(context, 'pages/page1')
-  const page2Context = resolve(context, 'pages/page2')
-  t.deepEqual(resolveComponentHelper('page1', page1Context), page1Component)
-  t.deepEqual(resolveComponentHelper('./page1', page1Context), page1Component)
-  t.deepEqual(resolveComponentHelper('../page1/page1', page2Context), page1Component)
+test('resolve a mina file in node_modules', t => {
+  td.when(resolveFrom(context, 'component-one/dist/index.mina'))
+    .thenReturn(resolve(context, '../node_modules/component-one/dist/index.mina'))
+
+  const component = new Component({
+    context,
+    request: 'component-one/dist/index.mina',
+    fullPath: resolve(context, '../node_modules/component-one/dist/index.mina'),
+    assets: []
+  })
+
+  t.deepEqual(resolveComponent(context, '~component-one/dist/index.mina'), component)
+  t.deepEqual(resolveComponent(context, '~component-one/dist/index'), component)
 })
 
-test('resolve splited files component', t => {
-  t.deepEqual(resolveComponentHelper('pages/page2/page2'), page2Component)
-  t.deepEqual(resolveComponentHelper('/pages/page2/page2'), page2Component)
-  t.deepEqual(resolveComponentHelper('./pages/page2/page2'), page2Component)
+test('resolve a js file in node_modules', t => {
+  td.when(resolveFrom(context, 'component-two/dist/index.js'))
+    .thenReturn(resolve(context, '../node_modules/component-two/dist/index.js'))
+  td.when(fs.existsSync(resolve(context, '../node_modules/component-two/dist/index.js'))).thenReturn(true)
+  td.when(fs.existsSync(resolve(context, '../node_modules/component-two/dist/index.json'))).thenReturn(true)
+  td.when(fs.existsSync(resolve(context, '../node_modules/component-two/dist/index.wxml'))).thenReturn(true)
+
+  const component = new Component({
+    context,
+    request: 'component-two/dist/index.js',
+    fullPath: resolve(context, '../node_modules/component-two/dist/index.js'),
+    assets: [
+      resolve(context, '../node_modules/component-two/dist/index.json'),
+      resolve(context, '../node_modules/component-two/dist/index.wxml')
+    ]
+  })
+
+  t.deepEqual(resolveComponent(context, '~component-two/dist/index.js'), component)
+  t.deepEqual(resolveComponent(context, '~component-two/dist/index'), component)
 })
 
-test('resolve splited files componnet with js extension', t => {
-  t.deepEqual(resolveComponentHelper('pages/page2/page2.js'), page2Component)
-  t.deepEqual(resolveComponentHelper('/pages/page2/page2.js'), page2Component)
-  t.deepEqual(resolveComponentHelper('./pages/page2/page2.js'), page2Component)
-})
+test('resolve a mina module in node_modules', t => {
+  td.when(resolveFrom(context, 'component-three'))
+    .thenReturn(resolve(context, '../node_modules/component-three/dist/index.mina'))
 
-test('resolve splited files component, which config file is null', t => {
-  t.deepEqual(resolveComponentHelper('pages/page3/page3'), page3Component)
-  t.deepEqual(resolveComponentHelper('/pages/page3/page3'), page3Component)
-  t.deepEqual(resolveComponentHelper('./pages/page3/page3'), page3Component)
-})
+  const component = new Component({
+    context,
+    request: 'component-three',
+    fullPath: resolve(context, '../node_modules/component-three/dist/index.mina'),
+    assets: []
+  })
 
-test('resolve not existed component', t => {
-  t.false(resolveComponentHelper('pages/notExisted'))
-  t.false(resolveComponentHelper('/pages/notExisted'))
-  t.false(resolveComponentHelper('./pages/notExisted'))
-})
-
-test('double up to parent', t => {
-  const rootContext = resolve(__dirname, 'fixtures') 
-  const request = '../../components/b/b' 
-  const currentContext = resolve(rootContext, 'pages/page1')
-  const component = resolveComponent(rootContext, request, currentContext)
-  t.deepEqual(component, new Component({
-    context: rootContext,
-    request: './components/b/b',
-    main: '.js',
-    assets: ['.json', '.wxml'],
-    fullPath: resolve(rootContext, 'components/b/b')
-  }))
-})
-
-test('resolve a mina module component', t => {
-  const localComponent = {
-    name: 'local-component-one/index',
-    main: '.mina',
-    assets: [],
-    configPath: resolve(__dirname, './vendor/local-component-one/index.mina'),
-    isModule: true
-  }
-  t.deepEqual(resolveComponentHelper('local-component-one/index'), localComponent)
-  t.deepEqual(resolveComponentHelper('~local-component-one/index.mina'), localComponent)
-})
-
-test('resolve a splited module component', t => {
-  const localComponent = {
-    name: 'local-component-two/index',
-    main: '.js',
-    assets: ['.json', '.wxml'],
-    configPath: resolve(__dirname, './vendor/local-component-two/index.json'),
-    isModule: true
-  }
-  t.deepEqual(resolveComponentHelper('local-component-two/index'), localComponent)
-  t.deepEqual(resolveComponentHelper('local-component-two/index.js'), localComponent)
-  t.deepEqual(resolveComponentHelper('~local-component-two/index'), localComponent)
+  t.deepEqual(resolveComponent(context, '~component-three'), component)
 })

@@ -6,7 +6,7 @@ module.exports = {
   entry: './app.mina',
   output: {
     path: resolve(__dirname, 'dist'),
-    filename: '[name].js'
+    filename: '[name]'
   },
   module: {
     rules: [

@@ -10,7 +10,7 @@ function getEntries (rootContext) {
   const pages = getPages(rootContext)
   const componentsMapping = getComponentsMapping(rootContext, pages)
 
-  const entries = { 'app': './app.mina' }
+  const entries = { 'app.js': './app.mina' }
   const assets = []
   addEntries(rootContext, componentsMapping, entries, assets)
 
@@ -26,12 +26,12 @@ function getComponentsMapping (rootContext, pages) {
 }
 
 function addEntries (rootContext, componentsMapping, entries, assets) {
-  for (const request in componentsMapping) {
-    const component = componentsMapping[request]
+  for (const fullPath in componentsMapping) {
+    const component = componentsMapping[fullPath]
     let entryName = getEntryName(rootContext, component)
-    entries[entryName] = request + component.main
-    for (const assetExtension of component.assets) {
-      assets.push(request + assetExtension)
+    entries[entryName] = component.request
+    for (const assetPath of component.assets) {
+      assets.push(getAssetRequest(rootContext, assetPath))
     }
   }
 }
@@ -39,7 +39,17 @@ function addEntries (rootContext, componentsMapping, entries, assets) {
 function getEntryName (rootContext, component) {
   return relative(rootContext, component.fullPath)
     .replace(/^(\.\.\/)+/, matched => matched.replace(/\.\./g, '_'))
+    .replace(/\.mina$/, '.js')
     .replace(/(^|\/)node_modules($|\/)/g, matched => matched.replace(/node_modules/, '_node_modules_'))
+}
+
+function getAssetRequest (rootContext, assetPath) {
+  const relativePath = relative(rootContext, assetPath)
+  if (relativePath.startsWith('../')) {
+    return relativePath
+  } else {
+    return './' + relativePath
+  }
 }
 
 module.exports = getEntries

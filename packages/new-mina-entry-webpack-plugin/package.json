@@ -24,6 +24,7 @@
     "local-component-two": "file:test/vendor/local-component-two",
     "raw-loader": "^0.5.1",
     "rmdir": "^1.2.0",
+    "testdouble": "^3.8.1",
     "webpack": "^3.8.1"
   },
   "dependencies": {

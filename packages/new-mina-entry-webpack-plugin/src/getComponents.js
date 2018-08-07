@@ -5,13 +5,11 @@
  * 
  */
 
-const { resolve, dirname } = require('path')
 const readConfig = require('./readConfig')
 const resolveComponent = require('./resolveComponent')
 
-function getComponents (rootContext, entryComponentName, configPath) {
+function getComponents (rootContext, currentContext, configPath) {
   const requests = configPath ? readComponentRequests(configPath) : []
-  const currentContext = dirname(resolve(rootContext, entryComponentName))
 
   return requests.map(request => 
     resolveComponent(rootContext, request, currentContext)

@@ -5,9 +5,9 @@ const getPages = require('../src/getPages')
 test('get pages', t => {
   const context = resolve(__dirname, 'fixtures')
   const pages = getPages(context)
-  t.deepEqual(pages.map(page => page.name), [
-    'pages/page1/page1',
-    'pages/page2/page2',
-    'pages/page3/page3'
+  t.deepEqual(pages.map(page => page.request), [
+    './pages/page1/page1.mina',
+    './pages/page2/page2.js',
+    './pages/page3/page3.js'
   ])
 })
