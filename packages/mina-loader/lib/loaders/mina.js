@@ -44,6 +44,7 @@ module.exports = function(source) {
     {},
     {
       loaders: {},
+      languages: {},
       publicPath: this.options.output.publicPath,
     },
     loaderUtils.getOptions(this) || {}
@@ -54,10 +55,13 @@ module.exports = function(source) {
 
   const loadModule = helpers.loadModule.bind(this)
 
-  const getLoaderOf = (type, options) => {
+  const getLoaderOf = (type, options, attributes = {}) => {
     let loader = LOADERS[type](options) || ''
+    let lang = attributes.lang
     // append custom loader
-    let custom = options.loaders[type] || ''
+    let custom = lang
+      ? options.languages[lang] || `${lang}-loader`
+      : options.loaders[type] || ''
     if (custom) {
       custom = helpers.stringifyLoaders(
         helpers.parseLoaders(custom).map(object => {
@@ -85,7 +89,7 @@ module.exports = function(source) {
           return result
         }
         // content can be defined either in a separate file or inline
-        let loader = getLoaderOf(type, options)
+        let loader = getLoaderOf(type, options, parts[type].attributes)
         debug('load modules', { result, type, loader })
         let request = `!!${loader}${selectorLoaderPath}?type=${type}!${url}`
         return `${result};require(${loaderUtils.stringifyRequest(
@@ -111,7 +115,8 @@ module.exports = function(source) {
                 'file-loader'
               )}?name=${dirname}/[name].${EXTNAMES[type]}!${getLoaderOf(
                 type,
-                options
+                options,
+                parts[type].attributes
               )}${selectorLoaderPath}?type=${type}!${url}`
               return loadModule(request)
             })

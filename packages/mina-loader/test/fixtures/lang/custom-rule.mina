@@ -1,0 +1,14 @@
+<style lang="yellowify">
+text.blue {
+  color: #00f;
+  background: blue;
+}
+</style>
+
+<script lang="yellowify">
+Page({
+  onLoad () {
+    console.log('blue');
+  }
+})
+</script>

@@ -31,6 +31,8 @@
     "babel-loader": "^7.1.2",
     "babel-preset-env": "^1.7.0",
     "chai": "^4.1.2",
+    "less": "^3.8.0",
+    "less-loader": "^4.1.0",
     "lint-staged": "^7.2.0",
     "memory-fs": "^0.4.1",
     "prettier": "^1.13.7",

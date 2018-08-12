@@ -1,0 +1,8 @@
+<style lang="less">
+.parent {
+  .child {
+    color: #333;
+  }
+}
+</style>
+<script />
