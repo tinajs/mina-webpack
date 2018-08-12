@@ -1,8 +1,8 @@
 {
   "lerna": "2.2.0",
-  "commands": {
+  "command": {
     "publish": {
-      "ignore": ["@tinajs/mina-sfc"]
+      "ignoreChanges": ["@tinajs/mina-sfc"]
     }
   },
   "packages": ["packages/*", "example", "../mina-sfc"],
