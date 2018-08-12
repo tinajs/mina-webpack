@@ -1,7 +1,7 @@
 {
   "name": "@tinajs/mina-webpack-examples",
   "private": true,
-  "version": "0.2.14",
+  "version": "0.2.15",
   "description": "",
   "main": "index.js",
   "author": "yelo",
@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "@tinajs/mina-entry-webpack-plugin": "^0.6.6",
-    "@tinajs/mina-loader": "^0.6.6",
+    "@tinajs/mina-loader": "^0.7.0",
     "@tinajs/mina-runtime-webpack-plugin": "^0.1.5",
     "babel": "^6.23.0",
     "babel-core": "^6.26.0",
