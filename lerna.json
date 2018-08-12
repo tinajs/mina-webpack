@@ -1,10 +1,5 @@
 {
   "lerna": "2.2.0",
-  "command": {
-    "publish": {
-      "ignoreChanges": ["@tinajs/mina-sfc"]
-    }
-  },
-  "packages": ["packages/*", "example", "../mina-sfc"],
+  "packages": ["packages/*", "example"],
   "version": "independent"
 }
