@@ -16,7 +16,7 @@ const helpers = require('../helpers')
 
 const LOADERS = {
   template: ({ publicPath }) =>
-    `${resolve('wxml-loader')}?${JSON.stringify({ publicPath })}`,
+    `${resolve('@tinajs/wxml-loader')}?${JSON.stringify({ publicPath })}`,
   style: ({ publicPath }) =>
     `${resolve('extract-loader')}?${JSON.stringify({ publicPath })}!${resolve(
       'css-loader'
