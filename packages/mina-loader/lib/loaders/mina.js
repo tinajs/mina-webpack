@@ -125,5 +125,8 @@ module.exports = function(source) {
           .then(() => done(null, output))
       )
     })
-    .catch(done)
+    .catch(error => {
+      debug('error', error)
+      done(error)
+    })
 }
