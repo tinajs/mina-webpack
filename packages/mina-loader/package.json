@@ -37,7 +37,7 @@
     "memory-fs": "^0.4.1",
     "prettier": "^1.13.7",
     "relative-file-loader": "^1.1.12",
-    "ts-loader": "^3.5.0",
+    "ts-loader": "^4.4.2",
     "typescript": "^2.9.2",
     "webpack": "^4.16.0",
     "webpack-merge": "^4.1.1"
