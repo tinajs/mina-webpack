@@ -18,6 +18,7 @@ export default (options = {}) => {
 
   options = merge.smart(
     {
+      mode: 'none',
       context: root,
       output: {
         path: '/',
@@ -50,7 +51,7 @@ export default (options = {}) => {
                   name: 'wxml/[name].[hash:6].[ext]',
                 },
               },
-              'wxml-loader',
+              '@tinajs/wxml-loader',
             ],
           },
         ],
