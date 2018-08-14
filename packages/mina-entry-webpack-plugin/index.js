@@ -117,9 +117,11 @@ module.exports = class MinaEntryWebpackPlugin {
           // replace 'node_modules' to '_node_modules_'
           .replace(/node_modules([\/\\])/g, '_node_modules_$1')
         let name = replaceExt(urlToRequest(url), '.js')
-        compiler.apply(
-          addEntry(context, this.map(ensurePosix(request)), ensurePosix(name))
-        )
+        addEntry(
+          context,
+          this.map(ensurePosix(request)),
+          ensurePosix(name)
+        ).apply(compiler)
       })
     } catch (error) {
       if (typeof done === 'function') {
@@ -137,8 +139,10 @@ module.exports = class MinaEntryWebpackPlugin {
   }
 
   apply(compiler) {
-    compiler.plugin('entry-option', () => this.rewrite(compiler))
-    compiler.plugin('watch-run', ({ compiler }, done) =>
+    compiler.hooks.entryOption.tap('MinaEntryPlugin', () =>
+      this.rewrite(compiler)
+    )
+    compiler.hooks.watchRun.tap('MinaEntryPlugin', (compiler, done) =>
       this.rewrite(compiler, done)
     )
   }
