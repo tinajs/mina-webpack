@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/tinajs/mina-webpack/tree/master/packages/mina-runtime-webpack-plugin#readme",
   "dependencies": {
+    "debug": "^3.1.0",
     "ensure-posix-path": "^1.0.2",
     "webpack-sources": "^1.0.2"
   },
