@@ -1,5 +1,5 @@
 const test = require('ava')
-const { resolve, extname, relative } = require('path')
+const { resolve, extname, relative, sep } = require('path')
 const resolveComponent = require('../src/resolveComponent')
 const addComponents = require('../src/addComponents')
 
@@ -11,7 +11,7 @@ const addComponentsHelper = function (rootContext, currentContext) {
     const component = components[fullPath]
     const main = extname(component.fullPath)
     const assets = component.assets.map(assetPath => extname(assetPath))
-    const request = relative(rootContext, fullPath)
+    const request = relative(rootContext, fullPath).split(sep).join('/')
     simplyfiedComponents[request] = [main].concat(assets)
   }
   return simplyfiedComponents

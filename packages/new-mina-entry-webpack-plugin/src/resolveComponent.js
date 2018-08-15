@@ -1,5 +1,5 @@
 const fs = require('fs')
-const { resolve, relative } = require('path')
+const { resolve, relative, sep } = require('path')
 const resolveFrom = require('resolve-from')
 const Component = require('./Component')
 
@@ -23,7 +23,7 @@ function resolveContextComponent (rootContext, componentRequest, currentContext)
   } else {
     fullPath = resolve(currentContext, componentRequest)
   }
-  let componentName = relative(rootContext, fullPath)
+  let componentName = relative(rootContext, fullPath).split(sep).join('/')
 
   if (fs.existsSync(fullPath) && fullPath.endsWith('.mina')) {
     return new Component({
@@ -59,6 +59,7 @@ function resolveContextComponent (rootContext, componentRequest, currentContext)
 }
 
 function resolveModuleComponent (rootContext, request) {
+  let fullPath = null
   if (fullPath = resolveModuleRequest(rootContext, request)) {
     // request = request
   } else if (fullPath = resolveModuleRequest(rootContext, request + '.mina')) {

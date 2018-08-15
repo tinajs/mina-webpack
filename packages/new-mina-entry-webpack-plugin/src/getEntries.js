@@ -2,7 +2,7 @@
  * 
  */
 
-const { relative } = require('path')
+const { relative, sep } = require('path')
 const addComponents = require('./addComponents')
 const getPages = require('./getPages')
 
@@ -38,13 +38,14 @@ function addEntries (rootContext, componentsMapping, entries, assets) {
 
 function getEntryName (rootContext, component) {
   return relative(rootContext, component.fullPath)
+    .split(sep).join('/')
     .replace(/^(\.\.\/)+/, matched => matched.replace(/\.\./g, '_'))
     .replace(/\.mina$/, '.js')
     .replace(/(^|\/)node_modules($|\/)/g, matched => matched.replace(/node_modules/, '_node_modules_'))
 }
 
 function getAssetRequest (rootContext, assetPath) {
-  const relativePath = relative(rootContext, assetPath)
+  const relativePath = relative(rootContext, assetPath).split(sep).join('/')
   if (relativePath.startsWith('../')) {
     return relativePath
   } else {
