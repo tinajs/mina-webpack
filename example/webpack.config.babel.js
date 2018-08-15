@@ -21,11 +21,12 @@ const loaders = {
 export default {
   context: resolve('src'),
   entry: './app.mina',
-  mode: isProduction ? 'production' : 'development',
+  mode: isProduction ? 'production' : 'none',
   output: {
     path: resolve(__dirname, 'dist'),
     filename: '[name]',
     publicPath: '/',
+    globalObject: 'wx',
   },
   module: {
     rules: [
@@ -88,15 +89,19 @@ export default {
       map: entry => ['es6-promise/dist/es6-promise.auto.js', entry],
     }),
     new MinaRuntimePlugin({
-      runtime: './common.js',
+      runtime: './runtime.js',
     }),
   ],
   optimization: {
     minimizer: [isProduction && new UglifyJsPlugin()].filter(Boolean),
     splitChunks: {
-      name: 'common',
+      name: 'common.js',
       chunks: 'all',
       minChunks: 2,
+      minSize: 0,
+    },
+    runtimeChunk: {
+      name: 'runtime.js',
     },
   },
 }

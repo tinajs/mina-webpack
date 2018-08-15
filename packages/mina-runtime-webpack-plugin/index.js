@@ -5,23 +5,17 @@
 const path = require('path')
 const ensurePosix = require('ensure-posix-path')
 const { ConcatSource } = require('webpack-sources')
-
-const GLOBAL_VARIABLE = 'wx'
+const debug = require('debug')('plugins:mina-runtime')
 
 function isRuntimeExtracted(compilation) {
   return compilation.chunks.some(
-    chunk => chunk.isInitial() && !chunk.hasRuntime()
+    chunk =>
+      chunk.isOnlyInitial() && chunk.hasRuntime() && !chunk.hasEntryModule()
   )
 }
 
-function runtimeChunk(compilation) {
-  return compilation.chunks.find(
-    chunk => chunk.isInitial() && chunk.hasRuntime()
-  )
-}
-
-function script({ runtime, namespace }) {
-  return `; require('${runtime}'); var webpackJsonp = ${namespace}.webpackJsonp;`
+function script({ dependencies }) {
+  return ';' + dependencies.map(file => `require('${file}');`).join('')
 }
 
 module.exports = class MinaRuntimeWebpackPlugin {
@@ -30,34 +24,48 @@ module.exports = class MinaRuntimeWebpackPlugin {
   }
 
   apply(compiler) {
-    compiler.plugin('compilation', compilation => {
-      compilation.chunkTemplate.plugin('render-with-entry', (core, chunk) => {
-        if (!isRuntimeExtracted(compilation) || !runtimeChunk(compilation)) {
-          return core
-        }
-        if (!this.runtime) {
-          throw new Error('options.runtime is required.')
-        }
-        // assume output.filename is chunk.name here
-        let runtime = ensurePosix(
-          path.relative(path.dirname(chunk.name), this.runtime)
-        )
-        let source = new ConcatSource(
-          script({ runtime, namespace: GLOBAL_VARIABLE }),
-          core
-        )
-        return source
-      })
+    compiler.hooks.compilation.tap('MinaRuntimePlugin', compilation => {
+      for (let template of [
+        compilation.mainTemplate,
+        compilation.chunkTemplate,
+      ]) {
+        template.hooks.renderWithEntry.tap(
+          'MinaRuntimePlugin',
+          (source, entry) => {
+            if (!isRuntimeExtracted(compilation)) {
+              throw new Error(
+                [
+                  'Please reuse the runtime chunk to avoid duplicate loading of javascript files.',
+                  "Simple solution: set `optimization.runtimeChunk` to `{ name: 'runtime.js' }` .",
+                  'Detail of `optimization.runtimeChunk`: https://webpack.js.org/configuration/optimization/#optimization-runtimechunk .',
+                ].join('\n')
+              )
+            }
+            if (!entry.hasEntryModule()) {
+              return source
+            }
 
-      compilation.mainTemplate.plugin('bootstrap', (source, chunk) => {
-        if (!isRuntimeExtracted(compilation) || !runtimeChunk(compilation)) {
-          return source
-        }
-        if (chunk !== runtimeChunk(compilation)) {
-          return source
-        }
-        return source.replace(/window/g, GLOBAL_VARIABLE)
-      })
+            let dependencies = []
+            entry.groupsIterable.forEach(group => {
+              group.chunks.forEach(chunk => {
+                /**
+                 * assume output.filename is chunk.name here
+                 */
+                let filename = ensurePosix(
+                  path.relative(path.dirname(entry.name), chunk.name)
+                )
+                if (chunk === entry || ~dependencies.indexOf(filename)) {
+                  return
+                }
+                dependencies.push(filename)
+              })
+            })
+            debug(`dependencies of ${entry.name}:`, dependencies)
+            source = new ConcatSource(script({ dependencies }), source)
+            return source
+          }
+        )
+      }
     })
   }
 }
