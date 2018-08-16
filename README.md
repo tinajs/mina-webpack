@@ -65,7 +65,8 @@ module.exports = {
   output: {
     path: resolve("dist"),
     filename: "[name]",
-    publicPath: "/"
+    publicPath: "/",
+    globalObject: "wx",
   },
   module: {
     rules: [
@@ -86,14 +87,19 @@ module.exports = {
     new MinaEntryPlugin({
       map: entry => ["es6-promise/dist/es6-promise.auto.js", entry]
     }),
-    new MinaRuntimePlugin({
-      runtime: "./common.js"
-    }),
-    new webpack.optimize.CommonsChunkPlugin({
+    new MinaRuntimePlugin(),
+  ],
+  optimization: {
+    splitChunks: {
       name: "common.js",
-      minChunks: 2
-    })
-  ]
+      minChunks: 2,
+      minSize: 0,
+    },
+    runtimeChunk: {
+      name: "runtime.js",
+    },
+  },
+  mode: "none",
 };
 ```
 
