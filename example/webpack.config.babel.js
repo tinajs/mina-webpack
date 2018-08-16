@@ -2,7 +2,6 @@ import { resolve } from 'path'
 import webpack from 'webpack'
 import MinaEntryPlugin from '@tinajs/mina-entry-webpack-plugin'
 import MinaRuntimePlugin from '@tinajs/mina-runtime-webpack-plugin'
-import UglifyJsPlugin from 'uglifyjs-webpack-plugin'
 
 const isProduction = process.env.NODE_ENV === 'production'
 
@@ -21,7 +20,6 @@ const loaders = {
 export default {
   context: resolve('src'),
   entry: './app.mina',
-  mode: isProduction ? 'production' : 'none',
   output: {
     path: resolve(__dirname, 'dist'),
     filename: '[name]',
@@ -93,10 +91,8 @@ export default {
     }),
   ],
   optimization: {
-    minimizer: [isProduction && new UglifyJsPlugin()].filter(Boolean),
     splitChunks: {
       name: 'common.js',
-      chunks: 'all',
       minChunks: 2,
       minSize: 0,
     },
@@ -104,4 +100,5 @@ export default {
       name: 'runtime.js',
     },
   },
+  mode: isProduction ? 'production' : 'none',
 }
