@@ -1,6 +1,6 @@
 {
   "name": "@tinajs/mina-runtime-webpack-plugin",
-  "version": "0.1.5",
+  "version": "1.0.0-0",
   "description": "A runtime patch for compiling mina project by Webpack",
   "main": "index.js",
   "scripts": {
