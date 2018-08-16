@@ -1,7 +1,6 @@
 const path = require('path')
 const fs = require('fs-extra')
 const JSON5 = require('json5')
-const flatten = require('flatten')
 const replaceExt = require('replace-ext')
 const resolveFrom = require('resolve-from')
 const ensurePosix = require('ensure-posix-path')
@@ -54,10 +53,6 @@ function getItems(rootContext, url) {
   let memory = []
 
   function search(context, url) {
-    if (memory.some(item => item.url === url)) {
-      return
-    }
-
     let isModule = isModuleUrl(url)
     let request = urlToRequest(
       path.relative(rootContext, path.resolve(context, url))
@@ -69,6 +64,10 @@ function getItems(rootContext, url) {
       fullpath: isModule
         ? resolveFrom(context, request)
         : path.resolve(context, url),
+    }
+
+    if (memory.some(item => item.fullpath === current.fullpath)) {
+      return
     }
     memory.push(current)
 
@@ -98,6 +97,11 @@ module.exports = class MinaEntryWebpackPlugin {
       function(entry) {
         return entry
       }
+
+    /**
+     * cache items to prevent duplicate `addEntry` operations
+     */
+    this._items = []
   }
 
   rewrite(compiler, done) {
@@ -109,9 +113,13 @@ module.exports = class MinaEntryWebpackPlugin {
         entry = entry[entry.length - 1]
       }
 
-      getItems(context, entry).forEach(({ isModule, request, fullpath }) => {
+      getItems(context, entry).forEach(item => {
+        if (this._items.some(({ fullpath }) => fullpath === item.fullpath)) {
+          return
+        }
+        this._items.push(item)
         let url = path
-          .relative(context, fullpath)
+          .relative(context, item.fullpath)
           // replace '..' to '_'
           .replace(/\.\./g, '_')
           // replace 'node_modules' to '_node_modules_'
@@ -119,7 +127,7 @@ module.exports = class MinaEntryWebpackPlugin {
         let name = replaceExt(urlToRequest(url), '.js')
         addEntry(
           context,
-          this.map(ensurePosix(request)),
+          this.map(ensurePosix(item.request)),
           ensurePosix(name)
         ).apply(compiler)
       })
