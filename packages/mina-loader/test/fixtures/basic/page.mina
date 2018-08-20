@@ -19,7 +19,7 @@ text.blue {
 </template>
 
 <script>
-require('./dependency.js')
+require('./dependency.a.js')
 Page({
   onLoad () {
     this.setData({

@@ -7,7 +7,7 @@
 </config>
 
 <script>
-require('./dependency.js')
+require('./dependency.a.js')
 App({
   onLaunch () {
     console.log(say({ text: 'Hello from App!' }))

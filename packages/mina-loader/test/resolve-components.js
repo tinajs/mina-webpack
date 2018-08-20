@@ -1,10 +1,9 @@
 import path from 'path'
 import test from 'ava'
-import MinaEntryPlugin from '../../mina-entry-webpack-plugin'
+import MinaEntryPlugin from '@tinajs/mina-entry-webpack-plugin'
 import compiler from './helpers/compiler'
 
 const resolveRelative = path.resolve.bind(null, __dirname)
-process.chdir(resolveRelative('fixtures/resolve-components'))
 
 test('resolve components', async t => {
   const { compile, mfs } = compiler({

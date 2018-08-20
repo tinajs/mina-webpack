@@ -37,7 +37,7 @@ test('use lang attribute with extra rules', async t => {
               loader: require.resolve('..'),
               options: {
                 languages: {
-                  yellowify: './loaders/replace-blue-to-yellow',
+                  yellowify: './helpers/loaders/replace-blue-to-yellow',
                 },
               },
             },
@@ -86,7 +86,7 @@ test('use lang attribute should override loaders options', async t => {
                   script: 'babel-loader',
                 },
                 languages: {
-                  yellowify: './loaders/replace-blue-to-yellow',
+                  yellowify: './helpers/loaders/replace-blue-to-yellow',
                 },
               },
             },
