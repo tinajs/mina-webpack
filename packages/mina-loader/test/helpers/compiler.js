@@ -5,14 +5,6 @@ import MemoryFS from 'memory-fs'
 
 const root = path.resolve(__dirname, '..')
 
-function extname(fullpath, ext) {
-  return path.format({
-    dir: path.dirname(fullpath),
-    name: path.basename(fullpath, path.extname(fullpath)),
-    ext: ext,
-  })
-}
-
 export default (options = {}) => {
   const mfs = new MemoryFS()
 
