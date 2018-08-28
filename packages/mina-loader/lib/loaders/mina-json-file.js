@@ -11,7 +11,7 @@ const debug = require('debug')('loaders:mina')
 
 const helpers = require('../helpers')
 
-const RESOLVE_EXTENSIONS = ['.js', '.wxml', 'json', 'wxss']
+const { RESOLVE_EXTENSIONS } = require('../constants')
 
 function stripExt(path) {
   return replaceExt(path, '')
@@ -33,7 +33,7 @@ function resolveFile(source, target, context, workdir = './') {
       stripExt
     )(resolveFromModule(context, target))
 
-  target = target.split('!').slice(-1)[0]
+  target = helpers.getResourcePathFromRequest(target)
 
   let transformedSource = resolve(path.relative(context, source))
 

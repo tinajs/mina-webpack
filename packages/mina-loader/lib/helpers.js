@@ -124,3 +124,7 @@ exports.exec = function exec(context, code, filename) {
   delete require.cache[filename]
   return module.exports
 }
+
+exports.getResourcePathFromRequest = function(request) {
+  return request.split('!').slice(-1)[0]
+}
