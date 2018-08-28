@@ -54,14 +54,7 @@ test('pack with MinaEntryPlugin', async t => {
   t.true(mfs.readFileSync('/app.js', 'utf8').includes('onLaunch () {'))
   t.true(mfs.readFileSync('/app.js', 'utf8').includes('Hello from App!'))
   t.true(mfs.readFileSync('/app.js', 'utf8').includes("console.log('\\u2665')"))
-  t.false(
-    mfs.existsSync('/app.wxml', 'utf8'),
-    '<view>\n  <text class="blue">{{msg}}</text>\n  <image src="/assets/logo.7bd732.png" />\n</view>'
-  )
-  t.false(
-    mfs.existsSync('/app.wxss', 'utf8'),
-    'text.blue {\n  color: #00f;\n  background: url(/assets/logo.7bd732.png);\n}'
-  )
+
   t.is(
     mfs.readFileSync('/app.json', 'utf8'),
     JSON.stringify({ pages: ['page'] }, null, '  ')
