@@ -33,6 +33,8 @@ function resolveFile(source, target, context, workdir = './') {
       stripExt
     )(resolveFromModule(context, target))
 
+  target = target.split('!').slice(-1)[0]
+
   let transformedSource = resolve(path.relative(context, source))
 
   let transformedTarget = resolve(
