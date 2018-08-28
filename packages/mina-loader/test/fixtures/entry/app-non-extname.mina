@@ -1,0 +1,12 @@
+<config>
+{
+  "pages": [
+    "page-c",
+    "page-d"
+  ]
+}
+</config>
+
+<script>
+App({})
+</script>
