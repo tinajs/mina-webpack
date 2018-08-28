@@ -1,16 +1,17 @@
 const path = require('path')
 const JSON5 = require('json5')
+const resolve = require('resolve')
 const merge = require('lodash.merge')
 const compose = require('compose-function')
 const replaceExt = require('replace-ext')
 const loaderUtils = require('loader-utils')
-const resolveFrom = require('resolve-from')
 const ensurePosix = require('ensure-posix-path')
 const pMap = require('p-map')
-const pAll = require('p-all')
 const debug = require('debug')('loaders:mina')
 
 const helpers = require('../helpers')
+
+const RESOLVE_EXTENSIONS = ['.js', '.wxml', 'json', 'wxss']
 
 function stripExt(path) {
   return replaceExt(path, '')
@@ -28,7 +29,8 @@ function resolveFile(source, target, context, workdir = './') {
   let resolve = target =>
     compose(
       ensurePosix,
-      helpers.toSafeOutputPath
+      helpers.toSafeOutputPath,
+      stripExt
     )(resolveFromModule(context, target))
 
   let transformedSource = resolve(path.relative(context, source))
@@ -59,11 +61,12 @@ function resolveFile(source, target, context, workdir = './') {
 }
 
 function resolveFromModule(context, filename) {
-  return stripExt(
-    path.relative(
-      context,
-      resolveFrom(context, loaderUtils.urlToRequest(filename))
-    )
+  return path.relative(
+    context,
+    resolve.sync(loaderUtils.urlToRequest(filename), {
+      basedir: context,
+      extensions: RESOLVE_EXTENSIONS,
+    })
   )
 }
 

@@ -5,7 +5,7 @@ import compiler from './helpers/compiler'
 
 const resolveRelative = path.resolve.bind(null, __dirname)
 
-test('pack with MinaEntryPlugin', async t => {
+test('basic usage with MinaEntryPlugin', async t => {
   const { compile, mfs } = compiler({
     context: resolveRelative('fixtures/basic'),
     entry: './app.mina',
@@ -59,6 +59,51 @@ test('pack with MinaEntryPlugin', async t => {
     mfs.readFileSync('/app.json', 'utf8'),
     JSON.stringify({ pages: ['page'] }, null, '  ')
   )
+
+  t.pass()
+})
+
+test('entry could be defined as requests with custom loaders', async t => {
+  const { compile, mfs } = compiler({
+    context: resolveRelative('fixtures/entry'),
+    entry: {
+      'app-basic.js': `${require.resolve(
+        './helpers/loaders/nothing-loader'
+      )}!./app-basic.mina`,
+    },
+    output: {
+      filename: '[name]',
+    },
+  })
+  const stats = await compile()
+
+  t.deepEqual(stats.compilation.errors, [], stats.compilation.errors[0])
+
+  t.true(mfs.existsSync('/app-basic.js'))
+  t.true(mfs.existsSync('/app-basic.json'))
+
+  t.pass()
+})
+
+test('pages / usingComponents could be defined with non-extname', async t => {
+  const { compile, mfs } = compiler({
+    context: resolveRelative('fixtures/entry'),
+    entry: {
+      'app-non-extname.js': './app-non-extname.mina',
+    },
+    output: {
+      filename: '[name]',
+    },
+  })
+  const stats = await compile()
+
+  t.deepEqual(stats.compilation.errors, [], stats.compilation.errors[0])
+
+  t.true(mfs.existsSync('/app-non-extname.js'))
+  t.true(mfs.existsSync('/app-non-extname.json'))
+  t.deepEqual(JSON.parse(mfs.readFileSync('/app-non-extname.json', 'utf8')), {
+    pages: ['page-c', 'page-d'],
+  })
 
   t.pass()
 })
