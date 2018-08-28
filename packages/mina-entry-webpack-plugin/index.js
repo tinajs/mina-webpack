@@ -70,15 +70,16 @@ function getItems(rootContext, url) {
   function search(context, url) {
     let isModule = isModuleUrl(url)
     let request = urlToRequest(
-      path.relative(rootContext, path.resolve(context, url))
+      path.relative(
+        rootContext,
+        path.resolve(context, isModule ? url : `./${url}`)
+      )
     )
     let current = {
       url,
       request,
       isModule: isModule,
-      fullpath: isModule
-        ? resolveFrom(context, request)
-        : path.resolve(context, url),
+      fullpath: resolveFrom(rootContext, request),
     }
 
     if (memory.some(item => item.fullpath === current.fullpath)) {
