@@ -1,0 +1,12 @@
+<config>
+{
+  "pages": [
+    "../../helpers/loaders/nothing-loader!page-a.mina",
+    "../../helpers/loaders/nothing-loader!../../helpers/loaders/nothing-loader!page-b.mina"
+  ]
+}
+</config>
+
+<script>
+App({})
+</script>

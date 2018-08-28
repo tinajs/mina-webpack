@@ -85,6 +85,32 @@ test('entry could be defined as requests with custom loaders', async t => {
   t.pass()
 })
 
+test('pages / usingComponents could be defined with inline-loaders', async t => {
+  const { compile, mfs } = compiler({
+    context: resolveRelative('fixtures/entry'),
+    entry: {
+      'app-inline-loaders.js': './app-inline-loaders.mina',
+    },
+    output: {
+      filename: '[name]',
+    },
+  })
+  const stats = await compile()
+
+  t.deepEqual(stats.compilation.errors, [], stats.compilation.errors[0])
+
+  t.true(mfs.existsSync('/app-inline-loaders.js'))
+  t.true(mfs.existsSync('/app-inline-loaders.json'))
+  t.deepEqual(
+    JSON.parse(mfs.readFileSync('/app-inline-loaders.json', 'utf8')),
+    {
+      pages: ['page-a', 'page-b'],
+    }
+  )
+
+  t.pass()
+})
+
 test('pages / usingComponents could be defined with non-extname', async t => {
   const { compile, mfs } = compiler({
     context: resolveRelative('fixtures/entry'),

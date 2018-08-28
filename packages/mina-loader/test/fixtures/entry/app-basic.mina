@@ -1,0 +1,12 @@
+<config>
+{
+  "pages": [
+    "page-a.mina",
+    "page-b.mina"
+  ]
+}
+</config>
+
+<script>
+App({})
+</script>
