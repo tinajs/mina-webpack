@@ -13,12 +13,52 @@ const parserLoaderPath = require.resolve('./parser')
 const helpers = require('../helpers')
 const {
   EXTNAMES,
-  TYPES_FOR_FILE_LOADER,
-  TYPES_FOR_OUTPUT,
+  TAGS_FOR_FILE_LOADER,
+  TAGS_FOR_OUTPUT,
   LOADERS,
 } = require('../constants')
 
-module.exports = function(source) {
+function getBlocks(loaderContext, request) {
+  request = `!${parserLoaderPath}!${request}`
+  return helpers.loadModule
+    .call(loaderContext, request)
+    .then(source => loaderContext.exec(source, request))
+}
+
+const getLoaders = (loaderContext, tag, options, attributes = {}) => {
+  let loader = LOADERS[tag](options) || ''
+  let lang = attributes.lang
+
+  /**
+   * Because we can't add built-in loaders if we satisfy the [inline url rule](https://webpack.js.org/concepts/loaders/#inline) (especially by overriding the original rule with an `!` in the header), at this point when the users are using the `src` attribute, we can't automatically add built-in loaders for them and instead they need to manually set the rules themselves.
+   */
+  if (attributes.src) {
+    return ''
+  }
+
+  // append custom loader
+  let custom = lang
+    ? options.languages[lang] || `${lang}-loader`
+    : options.loaders[tag] || ''
+  if (custom) {
+    custom = helpers.stringifyLoaders(
+      helpers.parseLoaders(custom).map(object => {
+        return merge({}, object, {
+          loader: resolveFrom(loaderContext.rootContext, object.loader),
+        })
+      })
+    )
+    loader = loader ? `${loader}!${custom}` : custom
+  }
+
+  return loader
+}
+
+function select(originalRequest, tag) {
+  return `${selectorLoaderPath}?tag=${tag}!${originalRequest}`
+}
+
+module.exports = function() {
   this.cacheable()
 
   const done = this.async()
@@ -35,49 +75,23 @@ module.exports = function(source) {
     webpackOptions
   )
 
-  const url = loaderUtils.getRemainingRequest(this)
-  const parsedUrl = `!!${parserLoaderPath}!${url}`
+  const originalRequest = loaderUtils.getRemainingRequest(this)
+  const filePath = this.resourcePath
 
-  const loadModule = helpers.loadModule.bind(this)
-
-  const getLoaderOf = (type, options, attributes = {}) => {
-    let loader = LOADERS[type](options) || ''
-    let lang = attributes.lang
-    if (attributes.src) {
-      return ''
-    }
-    // append custom loader
-    let custom = lang
-      ? options.languages[lang] || `${lang}-loader`
-      : options.loaders[type] || ''
-    if (custom) {
-      custom = helpers.stringifyLoaders(
-        helpers.parseLoaders(custom).map(object => {
-          return merge({}, object, {
-            loader: resolveFrom(this.rootContext, object.loader),
-          })
-        })
-      )
-      loader = loader ? `${loader}!${custom}` : custom
-    }
-    return loader
-  }
-
-  loadModule(parsedUrl)
-    .then(source => {
-      let parts = this.exec(source, parsedUrl)
-
+  getBlocks(this, originalRequest)
+    .then(blocks => {
       // compute output
-      let output = TYPES_FOR_OUTPUT.reduce((result, type) => {
-        if (!parts[type]) {
+      let output = TAGS_FOR_OUTPUT.reduce((result, tag) => {
+        if (!blocks[tag]) {
           return result
         }
-        // content can be defined either in a separate file or inline
-        let loader = getLoaderOf(type, options, parts[type].attributes)
-        debug('load modules', { result, type, loader })
+
         let request =
           '!!' +
-          [loader, `${selectorLoaderPath}?type=${type}!${url}`]
+          [
+            getLoaders(this, tag, options, blocks[tag].attributes),
+            select(originalRequest, tag),
+          ]
             .filter(Boolean)
             .join('!')
         return `${result};require(${loaderUtils.stringifyRequest(
@@ -90,31 +104,32 @@ module.exports = function(source) {
         Promise
           // emit files
           .all(
-            TYPES_FOR_FILE_LOADER.map(type => {
+            TAGS_FOR_FILE_LOADER.map(tag => {
               if (
-                !parts[type] ||
+                !blocks[tag] ||
                 !(
-                  parts[type].content ||
-                  (parts[type].attributes && parts[type].attributes.src)
+                  blocks[tag].content ||
+                  (blocks[tag].attributes && blocks[tag].attributes.src)
                 )
               ) {
                 return Promise.resolve()
               }
+
               let dirname = compose(
                 ensurePosix,
                 helpers.toSafeOutputPath,
                 path.dirname
-              )(path.relative(this.rootContext, url))
+              )(path.relative(this.rootContext, filePath))
               let request =
                 '!!' +
                 [
-                  `${fileLoaderPath}?name=${dirname}/[name].${EXTNAMES[type]}`,
-                  getLoaderOf(type, options, parts[type].attributes),
-                  `${selectorLoaderPath}?type=${type}!${url}`,
+                  `${fileLoaderPath}?name=${dirname}/[name]${EXTNAMES[tag]}`,
+                  getLoaders(this, tag, options, blocks[tag].attributes),
+                  select(originalRequest, tag),
                 ]
                   .filter(Boolean)
                   .join('!')
-              return loadModule(request)
+              return helpers.loadModule.call(this, request)
             })
           )
           .then(() => done(null, output))

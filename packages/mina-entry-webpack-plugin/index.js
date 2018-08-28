@@ -1,24 +1,24 @@
 const path = require('path')
-const fs = require('fs-extra')
-const JSON5 = require('json5')
 const replaceExt = require('replace-ext')
-const resolveFrom = require('resolve-from')
+const resolve = require('resolve')
 const ensurePosix = require('ensure-posix-path')
 const { urlToRequest } = require('loader-utils')
-const { parseComponent } = require('vue-template-compiler')
 const SingleEntryPlugin = require('webpack/lib/SingleEntryPlugin')
 const MultiEntryPlugin = require('webpack/lib/MultiEntryPlugin')
+const compose = require('compose-function')
 
-function values(object) {
-  return Object.keys(object).map(key => object[key])
-}
+const { MinaConfigReader, ClassicalConfigReader } = require('./config-readers')
+const {
+  values,
+  uniq,
+  toSafeOutputPath,
+  getResourceUrlFromRequest,
+} = require('./helpers')
 
-function uniq(array) {
-  return [...new Set(array)]
-}
+const RESOLVE_EXTENSIONS = ['.js', '.wxml', '.json', '.wxss']
 
-function isModuleUrl(url) {
-  return !!url.match(/^~/)
+function isAbsoluteUrl(url) {
+  return !!url.startsWith('/')
 }
 
 function addEntry(context, item, name) {
@@ -28,81 +28,95 @@ function addEntry(context, item, name) {
   return new SingleEntryPlugin(context, item, name)
 }
 
-function readConfig(fullpath) {
-  let buffer = fs.readFileSync(fullpath)
-  let blocks = parseComponent(buffer.toString()).customBlocks
-  let matched = blocks.find(block => block.type === 'config')
-  if (!matched || !matched.content || !matched.content.trim()) {
-    return {}
-  }
-  return JSON5.parse(matched.content)
-}
-
-function getUrlsFromConfig(config) {
-  let urls = []
-
+function getRequestsFromConfig(config) {
+  let requests = []
   if (!config) {
-    return urls
+    return requests
   }
 
   ;['pages', 'usingComponents', 'publicComponents'].forEach(key => {
     if (typeof config[key] !== 'object') {
       return
     }
-    urls = [...urls, ...values(config[key])]
+    requests = [...requests, ...values(config[key])]
   })
 
   if (Array.isArray(config.subPackages)) {
     config.subPackages.forEach(subPackage => {
       const { root, pages } = subPackage
       if (Array.isArray(pages)) {
-        urls = [...urls, ...pages.map(page => path.join(root || '', page))]
+        requests = [
+          ...requests,
+          ...pages.map(page => path.join(root || '', page)),
+        ]
       }
     })
   }
 
-  return uniq(urls)
+  return uniq(requests)
 }
 
-function getItems(rootContext, url) {
+function getItems(rootContext, entry) {
   let memory = []
 
-  function search(context, url) {
-    let isModule = isModuleUrl(url)
+  function search(currentContext, originalRequest) {
+    let resourceUrl = getResourceUrlFromRequest(originalRequest)
     let request = urlToRequest(
-      path.relative(
-        rootContext,
-        path.resolve(context, isModule ? url : `./${url}`)
-      )
+      isAbsoluteUrl(resourceUrl)
+        ? resourceUrl.slice(1)
+        : path.relative(rootContext, path.resolve(currentContext, resourceUrl))
     )
-    let current = {
-      url,
-      request,
-      isModule: isModule,
-      fullpath: resolveFrom(rootContext, request),
+
+    let resourcePath, isClassical
+    try {
+      resourcePath = resolve.sync(request, {
+        basedir: rootContext,
+        extensions: [],
+      })
+      isClassical = false
+    } catch (error) {
+      resourcePath = resolve.sync(request, {
+        basedir: rootContext,
+        extensions: RESOLVE_EXTENSIONS,
+      })
+      request = `!${require.resolve('@tinajs/mina-loader')}!${require.resolve(
+        './virtual-mina-loader.js'
+      )}!${resourcePath}`
+      isClassical = true
     }
 
-    if (memory.some(item => item.fullpath === current.fullpath)) {
+    let name = compose(
+      ensurePosix,
+      path => replaceExt(path, '.js'),
+      urlToRequest,
+      toSafeOutputPath
+    )(path.relative(rootContext, resourcePath))
+
+    let current = {
+      name,
+      request,
+    }
+
+    if (memory.some(item => item.request === current.request)) {
       return
     }
     memory.push(current)
 
-    let urls = getUrlsFromConfig(readConfig(current.fullpath))
-    if (urls.length > 0) {
-      urls.forEach(url => {
-        if (url.startsWith('plugin://')) {
+    let config = isClassical
+      ? ClassicalConfigReader.getConfig(resourcePath)
+      : MinaConfigReader.getConfig(resourcePath)
+    let requests = getRequestsFromConfig(config)
+    if (requests.length > 0) {
+      requests.forEach(req => {
+        if (req.startsWith('plugin://')) {
           return
         }
-        if (url.startsWith('/')) {
-          return search(rootContext, url.slice(1))
-        }
-        // relative url
-        return search(path.dirname(current.fullpath), url)
+        return search(path.dirname(resourcePath), req)
       })
     }
   }
 
-  search(rootContext, url)
+  search(rootContext, entry)
   return memory
 }
 
@@ -130,22 +144,14 @@ module.exports = class MinaEntryWebpackPlugin {
       }
 
       getItems(context, entry).forEach(item => {
-        if (this._items.some(({ fullpath }) => fullpath === item.fullpath)) {
+        if (this._items.some(({ request }) => request === item.request)) {
           return
         }
         this._items.push(item)
-        let url = path
-          .relative(context, item.fullpath)
-          // replace '..' to '_'
-          .replace(/\.\./g, '_')
-          // replace 'node_modules' to '_node_modules_'
-          .replace(/node_modules([\/\\])/g, '_node_modules_$1')
-        let name = replaceExt(urlToRequest(url), '.js')
-        addEntry(
-          context,
-          this.map(ensurePosix(item.request)),
-          ensurePosix(name)
-        ).apply(compiler)
+
+        addEntry(context, this.map(ensurePosix(item.request)), item.name).apply(
+          compiler
+        )
       })
     } catch (error) {
       if (typeof done === 'function') {

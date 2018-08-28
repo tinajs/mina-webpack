@@ -111,7 +111,7 @@ test('pages / usingComponents could be defined with inline-loaders', async t => 
   t.pass()
 })
 
-test('pages / usingComponents could be defined with non-extname', async t => {
+test('pages / usingComponents could be defined as classical component', async t => {
   const { compile, mfs } = compiler({
     context: resolveRelative('fixtures/entry'),
     entry: {
@@ -128,8 +128,74 @@ test('pages / usingComponents could be defined with non-extname', async t => {
   t.true(mfs.existsSync('/app-non-extname.js'))
   t.true(mfs.existsSync('/app-non-extname.json'))
   t.deepEqual(JSON.parse(mfs.readFileSync('/app-non-extname.json', 'utf8')), {
-    pages: ['page-c', 'page-d'],
+    pages: ['page-c', 'page-d', 'page-e', 'page-f'],
   })
+
+  t.pass()
+})
+
+test('pages / usingComponents could be defined as classical component with MinaEntryPlugin', async t => {
+  const { compile, mfs } = compiler({
+    context: resolveRelative('fixtures/entry'),
+    entry: './app-non-extname.mina',
+    output: {
+      filename: '[name]',
+    },
+    plugins: [new MinaEntryPlugin()],
+  })
+  const stats = await compile()
+
+  t.deepEqual(stats.compilation.errors, [], stats.compilation.errors[0])
+
+  t.true(mfs.existsSync('/app-non-extname.js'))
+  t.true(mfs.existsSync('/app-non-extname.json'))
+  t.deepEqual(JSON.parse(mfs.readFileSync('/app-non-extname.json', 'utf8')), {
+    pages: ['page-c', 'page-d', 'page-e', 'page-f'],
+  })
+  t.true(
+    mfs.readFileSync('/page-c.js', 'utf8').includes("'Page C'") &&
+      mfs.readFileSync('/page-c.js', 'utf8').includes("'Hi'") &&
+      mfs
+        .readFileSync('/page-c.js', 'utf8')
+        .includes(
+          'module.exports = __webpack_require__.p + "assets/logo.97017d.png";'
+        )
+  )
+  t.deepEqual(JSON.parse(mfs.readFileSync('/page-c.json', 'utf8')), {
+    usingComponents: {
+      a: 'component-a',
+    },
+  })
+  t.is(
+    mfs.readFileSync('/page-d.wxml', 'utf8'),
+    '<view>Page D<image src="./assets/logo.97017d.png" /></view>'
+  )
+  t.deepEqual(JSON.parse(mfs.readFileSync('/page-e.json', 'utf8')), {
+    usingComponents: {
+      b: 'component-b',
+      c: 'component-c',
+    },
+  })
+  t.is(mfs.readFileSync('/page-f.wxss', 'utf8'), 'view {\n  display: none;\n}')
+  t.deepEqual(JSON.parse(mfs.readFileSync('/component-a.json', 'utf8')), {
+    component: true,
+  })
+  t.is(
+    mfs.readFileSync('/component-a.wxml', 'utf8'),
+    '<view>Component A</view>'
+  )
+  t.true(mfs.readFileSync('/component-a.js', 'utf8').includes('Component({})'))
+  t.deepEqual(JSON.parse(mfs.readFileSync('/component-b.json', 'utf8')), {
+    component: true,
+  })
+  t.deepEqual(JSON.parse(mfs.readFileSync('/component-c.json', 'utf8')), {
+    component: true,
+  })
+  t.is(
+    mfs.readFileSync('/component-c.wxml', 'utf8'),
+    '<view>Component C</view>'
+  )
+  t.true(mfs.readFileSync('/component-c.js', 'utf8').includes('Component({})'))
 
   t.pass()
 })

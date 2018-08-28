@@ -1,14 +1,21 @@
 const resolve = module => require.resolve(module)
 
 const EXTNAMES = {
-  template: 'wxml',
-  style: 'wxss',
-  script: 'js',
-  config: 'json',
+  template: '.wxml',
+  style: '.wxss',
+  script: '.js',
+  config: '.json',
 }
 
-const TYPES_FOR_FILE_LOADER = ['template', 'style', 'config']
-const TYPES_FOR_OUTPUT = ['script']
+const RESOLVE_EXTENSIONS = [
+  EXTNAMES.script,
+  EXTNAMES.template,
+  EXTNAMES.config,
+  EXTNAMES.style,
+]
+
+const TAGS_FOR_FILE_LOADER = ['template', 'style', 'config']
+const TAGS_FOR_OUTPUT = ['script']
 
 const LOADERS = {
   template: ({ publicPath, context, minimize }) =>
@@ -32,6 +39,7 @@ const LOADERS = {
 }
 
 exports.EXTNAMES = EXTNAMES
-exports.TYPES_FOR_FILE_LOADER = TYPES_FOR_FILE_LOADER
-exports.TYPES_FOR_OUTPUT = TYPES_FOR_OUTPUT
+exports.RESOLVE_EXTENSIONS = RESOLVE_EXTENSIONS
+exports.TAGS_FOR_FILE_LOADER = TAGS_FOR_FILE_LOADER
+exports.TAGS_FOR_OUTPUT = TAGS_FOR_OUTPUT
 exports.LOADERS = LOADERS
