@@ -17,6 +17,7 @@ test('pack with MinaEntryPlugin', async t => {
   await compile()
 
   t.true(mfs.existsSync('/assets/logo.7bd732.png'))
+  t.true(mfs.existsSync('/assets/github.7e4717.png'))
 
   t.true(mfs.readFileSync('/page.js', 'utf8').includes('onLoad () {'))
   t.true(mfs.readFileSync('/page.js', 'utf8').includes('Hello from Page!'))
@@ -31,7 +32,24 @@ test('pack with MinaEntryPlugin', async t => {
     mfs.readFileSync('/page.wxss', 'utf8'),
     'text.blue {\n  color: #00f;\n  background: url(/assets/logo.7bd732.png);\n}'
   )
-  t.is(mfs.readFileSync('/page.json', 'utf8'), '{\n  "name": "mina"\n}')
+  t.deepEqual(JSON.parse(mfs.readFileSync('/page.json', 'utf8')), {
+    name: 'mina',
+    usingComponents: { github: '/_/extra-resources/github' },
+  })
+
+  t.true(
+    mfs
+      .readFileSync('/_/extra-resources/github.js', 'utf8')
+      .includes('Component({})')
+  )
+  t.is(
+    mfs.readFileSync('/_/extra-resources/github.wxml', 'utf8'),
+    '<image src="../../assets/github.7e4717.png" />'
+  )
+  t.deepEqual(
+    JSON.parse(mfs.readFileSync('/_/extra-resources/github.json', 'utf8')),
+    { component: true }
+  )
 
   t.true(mfs.readFileSync('/app.js', 'utf8').includes('onLaunch () {'))
   t.true(mfs.readFileSync('/app.js', 'utf8').includes('Hello from App!'))

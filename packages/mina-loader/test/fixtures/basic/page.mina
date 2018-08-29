@@ -1,6 +1,9 @@
 <config>
 {
-  "name": "mina"
+  "name": "mina",
+  "usingComponents": {
+    "github": "../extra-resources/github.mina"
+  }
 }
 </config>
 
