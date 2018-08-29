@@ -30,7 +30,7 @@ test('basic', async t => {
   )
   t.is(
     mfs.readFileSync('/fixtures/basic/page.wxml', 'utf8'),
-    '<view>\n  <text class="blue">{{msg}}</text>\n  <image src="/assets/logo.7bd732.png" />\n</view>'
+    '<view>\n  <text class="blue">{{msg}}</text>\n  <image src="../../assets/logo.7bd732.png" />\n</view>'
   )
   t.is(
     mfs.readFileSync('/fixtures/basic/page.wxss', 'utf8'),
@@ -66,7 +66,7 @@ test('pack multiple files', async t => {
   )
   t.is(
     mfs.readFileSync('/page.wxml', 'utf8'),
-    '<view>\n  <text class="blue">{{msg}}</text>\n  <image src="/assets/logo.7bd732.png" />\n</view>'
+    '<view>\n  <text class="blue">{{msg}}</text>\n  <image src="./assets/logo.7bd732.png" />\n</view>'
   )
   t.is(
     mfs.readFileSync('/page.wxss', 'utf8'),
@@ -79,7 +79,7 @@ test('pack multiple files', async t => {
   t.true(mfs.readFileSync('/app.js', 'utf8').includes("console.log('\\u2665')"))
   t.false(
     mfs.existsSync('/app.wxml', 'utf8'),
-    '<view>\n  <text class="blue">{{msg}}</text>\n  <image src="/assets/logo.7bd732.png" />\n</view>'
+    '<view>\n  <text class="blue">{{msg}}</text>\n  <image src="./assets/logo.7bd732.png" />\n</view>'
   )
   t.false(
     mfs.existsSync('/app.wxss', 'utf8'),
@@ -139,7 +139,7 @@ test('pack with options', async t => {
   )
   t.is(
     mfs.readFileSync('/fixtures/basic/page.wxml', 'utf8'),
-    '<view>\n  <text class="blue">{{msg}}</text>\n  <image src="/assets/logo.7bd732.png" />\n</view>'
+    '<view>\n  <text class="blue">{{msg}}</text>\n  <image src="../../assets/logo.7bd732.png" />\n</view>'
   )
   t.is(
     mfs.readFileSync('/fixtures/basic/page.wxss', 'utf8'),
