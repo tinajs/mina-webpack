@@ -1,0 +1,13 @@
+<config>
+{
+  "component": true
+}
+</config>
+
+<template>
+  <image src="github.png" />
+</template>
+
+<script>
+Component({})
+</script>

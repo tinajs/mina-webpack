@@ -36,20 +36,24 @@ test('basic', async t => {
     mfs.readFileSync('/fixtures/basic/page.wxss', 'utf8'),
     'text.blue {\n  color: #00f;\n  background: url(/assets/logo.7bd732.png);\n}'
   )
-  t.is(
-    mfs.readFileSync('/fixtures/basic/page.json', 'utf8'),
-    '{\n  "name": "mina"\n}'
+  t.deepEqual(
+    JSON.parse(mfs.readFileSync('/fixtures/basic/page.json', 'utf8')),
+    {
+      name: 'mina',
+      usingComponents: { github: '/fixtures/extra-resources/github' },
+    }
   )
 
   t.pass()
 })
 
-test('pack multiple files', async t => {
+test('pack multiple files with specified context', async t => {
   const { compile, mfs } = compiler({
     context: resolveRelative('fixtures/basic'),
     entry: {
       'page.js': './page.mina',
       'app.js': './app.mina',
+      '_/extra-resources/github.js': '../extra-resources/github.mina',
     },
     output: {
       filename: '[name]',
@@ -58,6 +62,7 @@ test('pack multiple files', async t => {
   const stats = await compile()
 
   t.true(mfs.existsSync('/assets/logo.7bd732.png'))
+  t.true(mfs.existsSync('/assets/github.7e4717.png'))
 
   t.true(mfs.readFileSync('/page.js', 'utf8').includes('onLoad () {'))
   t.true(mfs.readFileSync('/page.js', 'utf8').includes('Hello from Page!'))
@@ -72,19 +77,28 @@ test('pack multiple files', async t => {
     mfs.readFileSync('/page.wxss', 'utf8'),
     'text.blue {\n  color: #00f;\n  background: url(/assets/logo.7bd732.png);\n}'
   )
-  t.is(mfs.readFileSync('/page.json', 'utf8'), '{\n  "name": "mina"\n}')
+  t.deepEqual(JSON.parse(mfs.readFileSync('/page.json', 'utf8')), {
+    name: 'mina',
+    usingComponents: { github: '/_/extra-resources/github' },
+  })
+
+  t.true(
+    mfs
+      .readFileSync('/_/extra-resources/github.js', 'utf8')
+      .includes('Component({})')
+  )
+  t.is(
+    mfs.readFileSync('/_/extra-resources/github.wxml', 'utf8'),
+    '<image src="../../assets/github.7e4717.png" />'
+  )
+  t.deepEqual(
+    JSON.parse(mfs.readFileSync('/_/extra-resources/github.json', 'utf8')),
+    { component: true }
+  )
 
   t.true(mfs.readFileSync('/app.js', 'utf8').includes('onLaunch () {'))
   t.true(mfs.readFileSync('/app.js', 'utf8').includes('Hello from App!'))
   t.true(mfs.readFileSync('/app.js', 'utf8').includes("console.log('\\u2665')"))
-  t.false(
-    mfs.existsSync('/app.wxml', 'utf8'),
-    '<view>\n  <text class="blue">{{msg}}</text>\n  <image src="./assets/logo.7bd732.png" />\n</view>'
-  )
-  t.false(
-    mfs.existsSync('/app.wxss', 'utf8'),
-    'text.blue {\n  color: #00f;\n  background: url(/assets/logo.7bd732.png);\n}'
-  )
   t.is(
     mfs.readFileSync('/app.json', 'utf8'),
     JSON.stringify({ pages: ['page'] }, null, '  ')
@@ -145,9 +159,12 @@ test('pack with options', async t => {
     mfs.readFileSync('/fixtures/basic/page.wxss', 'utf8'),
     'text.blue {\n  color: #00f;\n  background: url(/assets/logo.7bd732.png);\n}'
   )
-  t.is(
-    mfs.readFileSync('/fixtures/basic/page.json', 'utf8'),
-    '{\n  "name": "mina"\n}'
+  t.deepEqual(
+    JSON.parse(mfs.readFileSync('/fixtures/basic/page.json', 'utf8')),
+    {
+      name: 'mina',
+      usingComponents: { github: '/fixtures/extra-resources/github' },
+    }
   )
 
   t.pass()
