@@ -68,5 +68,12 @@
     "style-loader": "^0.19.0",
     "vue-template-compiler": "^2.5.3",
     "wxml-loader": "^0.2.1"
+  },
+  "ava": {
+    "source": [
+      "lib/**/*.js",
+      "../mina-entry-webpack-plugin/**/*.js",
+      "../mina-runtime-webpack-plugin/**/*.js"
+    ]
   }
 }
