@@ -117,3 +117,28 @@ test('include template', async t => {
     console.log(error)
   }
 })
+
+test('use template from different paths', async t => {
+  const { compile, mfs } = compiler({
+    context: resolveRelative('fixtures/template'),
+    entry: {
+      'import.js': './import.mina',
+      'subdir/page.js': './subdir/page.mina',
+    },
+    output: {
+      filename: '[name]',
+    },
+  })
+  const stats = await compile()
+
+  t.is(
+    mfs.readFileSync('/import.wxml', 'utf8'),
+    '<view>\n  <import src="./wxml/message.fd0e28.wxml"/>\n  <template is="message" data="{{...item}}"/>\n</view>'
+  )
+  t.is(
+    mfs.readFileSync('/subdir/page.wxml', 'utf8'),
+    '<view>\n  <import src="../wxml/message.fd0e28.wxml"/>\n</view>'
+  )
+
+  t.pass()
+})
