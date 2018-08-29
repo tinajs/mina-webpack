@@ -89,20 +89,23 @@ module.exports = function(source) {
       })
     })
     /**
-     * usingComponent
+     * usingComponents and pages, publicComponents in miniprogram plugin
      */
     .then(config => {
-      if (typeof config.usingComponents !== 'object') {
-        return config
-      }
-      return Object.assign(config, {
-        usingComponents: mapObject(config.usingComponents, file => {
+      const reduceConfig = {}
+      ;['pages', 'usingComponents', 'publicComponents'].forEach(prop => {
+        if (typeof config[prop] !== 'object') {
+          return
+        }
+
+        reduceConfig[prop] = mapObject(config[prop], file => {
           if (file.startsWith('plugin://')) {
             return file
           }
           return `/${resolveFile(this.context, file, this.rootContext)}`
-        }),
+        })
       })
+      return Object.assign(config, reduceConfig)
     })
     /**
      * tabBar
