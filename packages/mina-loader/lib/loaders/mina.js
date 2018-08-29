@@ -15,8 +15,12 @@ const resolve = module => require.resolve(module)
 const helpers = require('../helpers')
 
 const LOADERS = {
-  template: ({ publicPath }) =>
-    `${resolve('@tinajs/wxml-loader')}?${JSON.stringify({ publicPath })}`,
+  template: ({ publicPath, context }) =>
+    `${resolve('@tinajs/wxml-loader')}?${JSON.stringify({
+      publicPath,
+      enforceRelativePath: true,
+      root: context,
+    })}`,
   style: ({ publicPath }) =>
     `${resolve('extract-loader')}?${JSON.stringify({ publicPath })}!${resolve(
       'css-loader'
@@ -47,6 +51,7 @@ module.exports = function(source) {
       loaders: {},
       languages: {},
       publicPath: helpers.getPublicPath(webpackOptions, this),
+      context: this.rootContext,
     },
     webpackOptions
   )

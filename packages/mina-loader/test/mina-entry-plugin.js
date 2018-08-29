@@ -25,7 +25,7 @@ test('pack with MinaEntryPlugin', async t => {
   )
   t.is(
     mfs.readFileSync('/page.wxml', 'utf8'),
-    '<view>\n  <text class="blue">{{msg}}</text>\n  <image src="/assets/logo.7bd732.png" />\n</view>'
+    '<view>\n  <text class="blue">{{msg}}</text>\n  <image src="./assets/logo.7bd732.png" />\n</view>'
   )
   t.is(
     mfs.readFileSync('/page.wxss', 'utf8'),

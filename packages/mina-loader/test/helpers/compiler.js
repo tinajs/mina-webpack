@@ -38,7 +38,7 @@ export default (options = {}) => {
             test: /\.wxml$/,
             use: [
               {
-                loader: 'relative-file-loader',
+                loader: 'file-loader',
                 options: {
                   name: 'wxml/[name].[hash:6].[ext]',
                 },
