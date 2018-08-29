@@ -38,14 +38,14 @@ function getUrlsFromConfig(config) {
   if (Array.isArray(config.pages)) {
     urls = [...urls, ...config.pages]
   }
-  if (typeof config.usingComponents === 'object') {
-    urls = [
-      ...urls,
-      ...Object.keys(config.usingComponents).map(
-        tag => config.usingComponents[tag]
-      ),
-    ]
-  }
+
+  ;['pages', 'usingComponents', 'publicComponents'].forEach(prop => {
+    if (typeof config[prop] !== 'object') {
+      return
+    }
+
+    urls = [...urls, ...Object.keys(config[prop]).map(tag => config[prop][tag])]
+  })
   return urls
 }
 
