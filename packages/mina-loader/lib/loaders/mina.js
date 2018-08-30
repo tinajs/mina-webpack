@@ -6,39 +6,17 @@ const resolveFrom = require('resolve-from')
 const ensurePosix = require('ensure-posix-path')
 const debug = require('debug')('loaders:mina')
 
+const fileLoaderPath = require.resolve('file-loader')
 const selectorLoaderPath = require.resolve('./selector')
 const parserLoaderPath = require.resolve('./parser')
-const minaJSONFileLoaderPath = require.resolve('./mina-json-file')
-
-const resolve = module => require.resolve(module)
 
 const helpers = require('../helpers')
-
-const LOADERS = {
-  template: ({ publicPath, context }) =>
-    `${resolve('@tinajs/wxml-loader')}?${JSON.stringify({
-      publicPath,
-      enforceRelativePath: true,
-      root: context,
-    })}`,
-  style: ({ publicPath }) =>
-    `${resolve('extract-loader')}?${JSON.stringify({ publicPath })}!${resolve(
-      'css-loader'
-    )}`,
-  script: () => '',
-  config: ({ publicPath }) =>
-    `${minaJSONFileLoaderPath}?${JSON.stringify({ publicPath })}`,
-}
-
-const EXTNAMES = {
-  template: 'wxml',
-  style: 'wxss',
-  script: 'js',
-  config: 'json',
-}
-
-const TYPES_FOR_FILE_LOADER = ['template', 'style', 'config']
-const TYPES_FOR_OUTPUT = ['script']
+const {
+  EXTNAMES,
+  TYPES_FOR_FILE_LOADER,
+  TYPES_FOR_OUTPUT,
+  LOADERS,
+} = require('../constants')
 
 module.exports = function(source) {
   this.cacheable()
@@ -64,6 +42,9 @@ module.exports = function(source) {
   const getLoaderOf = (type, options, attributes = {}) => {
     let loader = LOADERS[type](options) || ''
     let lang = attributes.lang
+    if (attributes.src) {
+      return ''
+    }
     // append custom loader
     let custom = lang
       ? options.languages[lang] || `${lang}-loader`
@@ -77,10 +58,6 @@ module.exports = function(source) {
         })
       )
       loader = loader ? `${loader}!${custom}` : custom
-    }
-    // add '!' at the end
-    if (loader) {
-      loader += '!'
     }
     return loader
   }
@@ -97,7 +74,11 @@ module.exports = function(source) {
         // content can be defined either in a separate file or inline
         let loader = getLoaderOf(type, options, parts[type].attributes)
         debug('load modules', { result, type, loader })
-        let request = `!!${loader}${selectorLoaderPath}?type=${type}!${url}`
+        let request =
+          '!!' +
+          [loader, `${selectorLoaderPath}?type=${type}!${url}`]
+            .filter(Boolean)
+            .join('!')
         return `${result};require(${loaderUtils.stringifyRequest(
           this,
           request
@@ -109,7 +90,13 @@ module.exports = function(source) {
           // emit files
           .all(
             TYPES_FOR_FILE_LOADER.map(type => {
-              if (!parts[type] || !parts[type].content) {
+              if (
+                !parts[type] ||
+                !(
+                  parts[type].content ||
+                  (parts[type].attributes && parts[type].attributes.src)
+                )
+              ) {
                 return Promise.resolve()
               }
               let dirname = compose(
@@ -117,13 +104,15 @@ module.exports = function(source) {
                 helpers.toSafeOutputPath,
                 path.dirname
               )(path.relative(this.rootContext, url))
-              let request = `!!${resolve(
-                'file-loader'
-              )}?name=${dirname}/[name].${EXTNAMES[type]}!${getLoaderOf(
-                type,
-                options,
-                parts[type].attributes
-              )}${selectorLoaderPath}?type=${type}!${url}`
+              let request =
+                '!!' +
+                [
+                  `${fileLoaderPath}?name=${dirname}/[name].${EXTNAMES[type]}`,
+                  getLoaderOf(type, options, parts[type].attributes),
+                  `${selectorLoaderPath}?type=${type}!${url}`,
+                ]
+                  .filter(Boolean)
+                  .join('!')
               return loadModule(request)
             })
           )

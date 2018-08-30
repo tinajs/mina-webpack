@@ -43,7 +43,12 @@ export default (options = {}) => {
                   name: 'wxml/[name].[hash:6].[ext]',
                 },
               },
-              '@tinajs/wxml-loader',
+              {
+                loader: '@tinajs/wxml-loader',
+                options: {
+                  raw: true,
+                },
+              },
             ],
           },
         ],

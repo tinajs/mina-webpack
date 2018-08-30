@@ -1,8 +1,53 @@
 import path from 'path'
 import test from 'ava'
+import precss from 'precss'
 import compiler from './helpers/compiler'
 
 const resolveRelative = path.resolve.bind(null, __dirname)
+
+test('load separated source files', async t => {
+  const { compile, mfs } = compiler({
+    context: resolveRelative('fixtures/separation'),
+    entry: './simple-page.mina',
+    output: {
+      filename: 'simple-page.js',
+    },
+    module: {
+      rules: [
+        {
+          test: /\.mina$/,
+          use: {
+            loader: require.resolve('..'),
+          },
+        },
+        {
+          test: /\.wxss$/,
+          use: {
+            loader: 'postcss-loader',
+            options: {
+              plugins: [precss],
+            },
+          },
+        },
+      ],
+    },
+  })
+
+  const stats = await compile()
+
+  t.deepEqual(stats.compilation.errors, [])
+
+  t.is(
+    mfs.readFileSync('/simple-page.wxml', 'utf8'),
+    '<view>Page <image src="/assets/logo.7bd732.png" /></view>\n'
+  )
+  t.is(
+    mfs.readFileSync('/simple-page.wxss', 'utf8'),
+    '.view .image {\n    width: 0;\n  }\n'
+  )
+
+  t.pass()
+})
 
 test('load separated .ts source file', async t => {
   const { compile, mfs } = compiler({

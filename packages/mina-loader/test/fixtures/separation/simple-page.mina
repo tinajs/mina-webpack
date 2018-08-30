@@ -1,0 +1,2 @@
+<style src="./simple-page.wxss"></style>
+<template src="!@tinajs/wxml-loader!./simple-page.wxml"></template>

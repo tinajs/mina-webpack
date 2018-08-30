@@ -1,0 +1,5 @@
+.view {
+  .image {
+    width: 0;
+  }
+}

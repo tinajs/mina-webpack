@@ -1,4 +1,5 @@
 const vm = require('vm')
+const Module = require('module')
 const loaderUtils = require('loader-utils')
 
 /**
@@ -109,4 +110,17 @@ exports.extract = function(src, publicPath = '') {
 
   script.runInNewContext(sandbox)
   return sandbox.module.exports.toString()
+}
+
+/**
+ * Forked from:
+ * https://github.com/webpack/webpack.js.org/issues/1268#issuecomment-313513988
+ */
+exports.exec = function exec(context, code, filename) {
+  const module = new Module(filename, context)
+  module.paths = Module._nodeModulePaths(context.context)
+  module.filename = filename
+  module._compile(code, filename)
+  delete require.cache[filename]
+  return module.exports
 }
