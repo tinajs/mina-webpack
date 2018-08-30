@@ -48,7 +48,7 @@
   },
   "dependencies": {
     "@tinajs/mina-sfc": "^0.2.0",
-    "@tinajs/wxml-loader": "^0.3.0-fork.0",
+    "@tinajs/wxml-loader": "^0.3.1-fork.0",
     "compose-function": "^3.0.3",
     "css-loader": "^0.28.7",
     "debug": "^3.1.0",
