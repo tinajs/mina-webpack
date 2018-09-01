@@ -79,21 +79,24 @@ module.exports = function(source) {
      * pages
      */
     .then(config => {
-      if (!Array.isArray(config.pages)) {
+      const { pages } = config
+      if (!Array.isArray(pages) && typeof pages !== 'object') {
         return config
       }
+
+      const map = Array.isArray(pages)
+        ? [].map.bind(pages)
+        : mapObject.bind(null, pages)
       return Object.assign(config, {
-        pages: config.pages.map(page =>
-          resolveFile(this.context, page, this.rootContext)
-        ),
+        pages: map(page => resolveFile(this.context, page, this.rootContext)),
       })
     })
     /**
-     * usingComponents and pages, publicComponents in miniprogram plugin
+     * usingComponents
      */
     .then(config => {
       const reduceConfig = {}
-      ;['pages', 'usingComponents', 'publicComponents'].forEach(prop => {
+      ;['usingComponents', 'publicComponents'].forEach(prop => {
         if (typeof config[prop] !== 'object') {
           return
         }
