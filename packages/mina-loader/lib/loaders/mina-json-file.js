@@ -79,30 +79,36 @@ module.exports = function(source) {
      * pages
      */
     .then(config => {
-      if (!Array.isArray(config.pages)) {
+      const { pages } = config
+      if (!Array.isArray(pages) && typeof pages !== 'object') {
         return config
       }
+
+      const map = Array.isArray(pages)
+        ? [].map.bind(pages)
+        : mapObject.bind(null, pages)
       return Object.assign(config, {
-        pages: config.pages.map(page =>
-          resolveFile(this.context, page, this.rootContext)
-        ),
+        pages: map(page => resolveFile(this.context, page, this.rootContext)),
       })
     })
     /**
-     * usingComponent
+     * usingComponents
      */
     .then(config => {
-      if (typeof config.usingComponents !== 'object') {
-        return config
-      }
-      return Object.assign(config, {
-        usingComponents: mapObject(config.usingComponents, file => {
+      const reduceConfig = {}
+      ;['usingComponents', 'publicComponents'].forEach(prop => {
+        if (typeof config[prop] !== 'object') {
+          return
+        }
+
+        reduceConfig[prop] = mapObject(config[prop], file => {
           if (file.startsWith('plugin://')) {
             return file
           }
           return `/${resolveFile(this.context, file, this.rootContext)}`
-        }),
+        })
       })
+      return Object.assign(config, reduceConfig)
     })
     /**
      * tabBar
