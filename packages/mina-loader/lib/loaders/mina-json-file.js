@@ -95,20 +95,33 @@ module.exports = function(source) {
      * usingComponents
      */
     .then(config => {
-      const reduceConfig = {}
-      ;['usingComponents', 'publicComponents'].forEach(prop => {
-        if (typeof config[prop] !== 'object') {
-          return
-        }
+      if (typeof config.usingComponents !== 'object') {
+        return config
+      }
 
-        reduceConfig[prop] = mapObject(config[prop], file => {
+      return Object.assign(config, {
+        usingComponents: mapObject(config.usingComponents, file => {
           if (file.startsWith('plugin://')) {
             return file
           }
+
           return `/${resolveFile(this.context, file, this.rootContext)}`
-        })
+        }),
       })
-      return Object.assign(config, reduceConfig)
+    })
+    /**
+     * publicComponents
+     */
+    .then(config => {
+      if (typeof config.publicComponents !== 'object') {
+        return config
+      }
+
+      return Object.assign(config, {
+        publicComponents: mapObject(config.publicComponents, file =>
+          resolveFile(this.context, file, this.rootContext)
+        ),
+      })
     })
     /**
      * tabBar
