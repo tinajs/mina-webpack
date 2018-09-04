@@ -30,6 +30,7 @@ module.exports = function(source) {
       languages: {},
       publicPath: helpers.getPublicPath(webpackOptions, this),
       context: this.rootContext,
+      minimize: process.env.NODE_ENV === 'production',
     },
     webpackOptions
   )

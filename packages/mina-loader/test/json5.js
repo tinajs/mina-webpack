@@ -5,8 +5,8 @@ import compiler from './helpers/compiler'
 
 const resolveRelative = path.resolve.bind(null, __dirname)
 
-test('use json5 to parse config', async t => {
-  const { compile, mfs } = compiler({
+function createCompiler({ minimize }) {
+  return compiler({
     context: resolveRelative('fixtures/json5'),
     entry: './component.mina',
     output: {
@@ -19,6 +19,7 @@ test('use json5 to parse config', async t => {
           use: {
             loader: require.resolve('..'),
             options: {
+              minimize,
               loaders: {
                 script: 'babel-loader',
               },
@@ -28,10 +29,34 @@ test('use json5 to parse config', async t => {
       ],
     },
   })
+}
 
+test('use json5 to parse config', async t => {
+  const { compile, mfs } = createCompiler({ minimize: false })
   await compile()
-  t.deepEqual(JSON.parse(mfs.readFileSync('/component.json', 'utf-8')), {
+  const got = JSON.parse(mfs.readFileSync('/component.json', 'utf-8'))
+  const expected = {
     component: true,
-  })
+  }
+  t.deepEqual(got, expected)
+  t.deepEqual(
+    mfs.readFileSync('/component.json', 'utf-8'),
+    JSON.stringify(expected, null, 2)
+  )
+  t.pass()
+})
+
+test('use json5 to parse config with minimize', async t => {
+  const { compile, mfs } = createCompiler({ minimize: true })
+  await compile()
+  const got = JSON.parse(mfs.readFileSync('/component.json', 'utf-8'))
+  const expected = {
+    component: true,
+  }
+  t.deepEqual(got, expected)
+  t.deepEqual(
+    mfs.readFileSync('/component.json', 'utf-8'),
+    JSON.stringify(expected)
+  )
   t.pass()
 })

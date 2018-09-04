@@ -168,6 +168,8 @@ module.exports = function(source) {
         })
       )
     })
-    .then(config => done(null, JSON.stringify(config, null, 2)))
+    .then(config =>
+      done(null, JSON.stringify(config, null, webpackOptions.minimize ? 0 : 2))
+    )
     .catch(error => done(error))
 }
