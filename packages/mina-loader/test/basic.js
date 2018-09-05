@@ -40,7 +40,7 @@ test('basic', async t => {
     JSON.parse(mfs.readFileSync('/fixtures/basic/page.json', 'utf8')),
     {
       name: 'mina',
-      usingComponents: { github: '/fixtures/extra-resources/github' },
+      usingComponents: { github: '../extra-resources/github' },
     }
   )
 
@@ -79,7 +79,7 @@ test('pack multiple files with specified context', async t => {
   )
   t.deepEqual(JSON.parse(mfs.readFileSync('/page.json', 'utf8')), {
     name: 'mina',
-    usingComponents: { github: '/_/extra-resources/github' },
+    usingComponents: { github: '_/extra-resources/github' },
   })
 
   t.true(
@@ -163,7 +163,7 @@ test('pack with options', async t => {
     JSON.parse(mfs.readFileSync('/fixtures/basic/page.json', 'utf8')),
     {
       name: 'mina',
-      usingComponents: { github: '/fixtures/extra-resources/github' },
+      usingComponents: { github: '../extra-resources/github' },
     }
   )
 

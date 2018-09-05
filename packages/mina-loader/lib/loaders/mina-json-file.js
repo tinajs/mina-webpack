@@ -8,6 +8,7 @@ const resolveFrom = require('resolve-from')
 const ensurePosix = require('ensure-posix-path')
 const pMap = require('p-map')
 const pAll = require('p-all')
+const debug = require('debug')('loaders:mina')
 
 const helpers = require('../helpers')
 
@@ -23,19 +24,34 @@ function mapObject(object, iteratee) {
   return result
 }
 
-function resolveFile(dirname, target, context) {
+function resolveFile(source, target, context) {
   let resolve = target =>
     compose(
       ensurePosix,
       helpers.toSafeOutputPath
     )(resolveFromModule(context, target))
 
-  if (target.startsWith('/')) {
-    return resolve(target.slice(1))
-  }
+  let transformedSource = resolve(path.relative(context, source))
+
+  let transformedTarget = resolve(
+    path.relative(
+      context,
+      target.startsWith('/')
+        ? path.resolve(context, target.slice(1))
+        : path.resolve(path.dirname(source), target)
+    )
+  )
+
+  debug('resolve file in mina-json', {
+    source,
+    target,
+    context,
+    transformedSource,
+    transformedTarget,
+  })
 
   // relative url
-  return resolve(path.relative(context, path.resolve(dirname, target)))
+  return path.relative(path.dirname(transformedSource), transformedTarget)
 }
 
 function resolveFromModule(context, filename) {
@@ -88,7 +104,9 @@ module.exports = function(source) {
         ? [].map.bind(pages)
         : mapObject.bind(null, pages)
       return Object.assign(config, {
-        pages: map(page => resolveFile(this.context, page, this.rootContext)),
+        pages: map(page =>
+          resolveFile(this.resourcePath, page, this.rootContext)
+        ),
       })
     })
     /**
@@ -105,7 +123,7 @@ module.exports = function(source) {
             return file
           }
 
-          return `/${resolveFile(this.context, file, this.rootContext)}`
+          return resolveFile(this.resourcePath, file, this.rootContext)
         }),
       })
     })
@@ -119,7 +137,7 @@ module.exports = function(source) {
 
       return Object.assign(config, {
         publicComponents: mapObject(config.publicComponents, file =>
-          resolveFile(this.context, file, this.rootContext)
+          resolveFile(this.resourcePath, file, this.rootContext)
         ),
       })
     })

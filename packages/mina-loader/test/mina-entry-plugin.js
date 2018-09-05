@@ -34,7 +34,7 @@ test('pack with MinaEntryPlugin', async t => {
   )
   t.deepEqual(JSON.parse(mfs.readFileSync('/page.json', 'utf8')), {
     name: 'mina',
-    usingComponents: { github: '/_/extra-resources/github' },
+    usingComponents: { github: '_/extra-resources/github' },
   })
 
   t.true(
