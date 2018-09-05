@@ -39,10 +39,6 @@ function getUrlsFromConfig(config) {
     urls = [...urls, ...config.pages]
   }
 
-  if (config.main) {
-    urls = [...urls, config.main]
-  }
-
   ;['pages', 'usingComponents', 'publicComponents'].forEach(prop => {
     if (typeof config[prop] !== 'object') {
       return
