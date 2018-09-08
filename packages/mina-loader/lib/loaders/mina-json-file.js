@@ -110,6 +110,28 @@ module.exports = function(source) {
       })
     })
     /**
+     * subPages
+     */
+    .then(config => {
+      const { subPackages } = config
+      if (!Array.isArray(subPackages)) {
+        return config
+      }
+
+      return Object.assign(config, {
+        subPackages: subPackages.map(({ root, pages }) => ({
+          root,
+          pages: pages.map(page =>
+            resolveFile(
+              this.resourcePath,
+              path.join(root, page),
+              this.rootContext
+            )
+          ),
+        })),
+      })
+    })
+    /**
      * usingComponents
      */
     .then(config => {

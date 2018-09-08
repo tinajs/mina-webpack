@@ -1,0 +1,9 @@
+<template>
+  <view>
+    <view>This is subPage A</view>
+  </view>
+</template>
+
+<script>
+Page({})
+</script>
