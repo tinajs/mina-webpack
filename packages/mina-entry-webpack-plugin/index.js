@@ -39,12 +39,23 @@ function getUrlsFromConfig(config) {
     urls = [...urls, ...config.pages]
   }
 
-  ;['pages', 'usingComponents', 'publicComponents'].forEach(prop => {
-    if (typeof config[prop] !== 'object') {
-      return
-    }
+  let components = ['pages', 'usingComponents', 'publicComponents'].map(
+    c => config[c]
+  )
 
-    urls = [...urls, ...Object.keys(config[prop]).map(tag => config[prop][tag])]
+  if (Array.isArray(config['subPages'])) {
+    config['subPages'].forEach(subPage => {
+      const { root, pages } = subPage
+      if (Array.isArray(pages)) {
+        pages.forEach(page => {
+          components.push(path.join(root, page))
+        })
+      }
+    })
+  }
+
+  components.filter(c => typeof c === 'object').forEach(c => {
+    urls = [...urls, ...Object.keys(c).map(tag => c[tag])]
   })
   return urls
 }
