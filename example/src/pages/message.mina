@@ -4,8 +4,8 @@
     <view>Now: {{ now }}</view>
 
     <wxs module="random">
-      var MAX = 100
-      module.exports = Math.floor(Math.random() * MAX)
+      var MAX = 100;
+      module.exports = Math.floor(Math.random() * MAX);
     </wxs>
     <wxs src="../wxs/now.wxs" module="now" />
   </view>

@@ -38,9 +38,9 @@ Page({
     msg: '',
   },
 
-  onLoad () {
+  onLoad() {
     this.setData({
-      msg: 'Hello from Home-Page!'
+      msg: 'Hello from Home-Page!',
     })
   },
 })
