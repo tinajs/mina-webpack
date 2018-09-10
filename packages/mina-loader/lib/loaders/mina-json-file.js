@@ -24,7 +24,7 @@ function mapObject(object, iteratee) {
   return result
 }
 
-function resolveFile(source, target, context) {
+function resolveFile(source, target, context, workdir = './') {
   let resolve = target =>
     compose(
       ensurePosix,
@@ -46,12 +46,16 @@ function resolveFile(source, target, context) {
     source,
     target,
     context,
+    workdir,
     transformedSource,
     transformedTarget,
   })
 
   // relative url
-  return path.relative(path.dirname(transformedSource), transformedTarget)
+  return path.relative(
+    path.resolve(path.dirname(transformedSource), workdir),
+    transformedTarget
+  )
 }
 
 function resolveFromModule(context, filename) {
@@ -125,7 +129,8 @@ module.exports = function(source) {
             resolveFile(
               this.resourcePath,
               path.join(root, page),
-              this.rootContext
+              this.rootContext,
+              root
             )
           ),
         })),
