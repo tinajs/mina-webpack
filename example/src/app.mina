@@ -6,9 +6,9 @@
   ],
   "subPackages": [
     {
-      "root": "anotherSubPackage",
+      "root": "packages/a",
       "pages": [
-        "pages/index.mina"
+        "pages/home.mina"
       ]
     }
   ],

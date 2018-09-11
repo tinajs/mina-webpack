@@ -5,8 +5,8 @@
   </view>
 </template>
 
-<style lang="postcss" scoped>
-@import '../../common.wxss';
+<style lang="postcss">
+@import '../../../common.wxss';
 </style>
 
 

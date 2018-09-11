@@ -26,7 +26,7 @@ image {
 <template>
   <view>
     <text class="blue">{{msg}} </text>
-    <navigator url="/anotherSubPackage/pages/index">Go to a page in a subpackage</navigator>
+    <navigator url="/packages/a/pages/home">Go to a page in a subpackage</navigator>
     <image src="../images/logo.png" />
     <tina-logo />
     <foobar />
