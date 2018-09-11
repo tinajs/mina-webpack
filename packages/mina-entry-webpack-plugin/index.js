@@ -9,6 +9,14 @@ const { parseComponent } = require('vue-template-compiler')
 const SingleEntryPlugin = require('webpack/lib/SingleEntryPlugin')
 const MultiEntryPlugin = require('webpack/lib/MultiEntryPlugin')
 
+function values(object) {
+  return Object.keys(object).map(key => object[key])
+}
+
+function uniq(array) {
+  return [...new Set(array)]
+}
+
 function isModuleUrl(url) {
   return !!url.match(/^~/)
 }
@@ -32,31 +40,28 @@ function readConfig(fullpath) {
 
 function getUrlsFromConfig(config) {
   let urls = []
+
   if (!config) {
     return urls
   }
-  if (Array.isArray(config.pages)) {
-    urls = [...urls, ...config.pages]
-  }
 
-  let components = ['pages', 'usingComponents', 'publicComponents'].map(
-    c => config[c]
-  )
+  ;['pages', 'usingComponents', 'publicComponents'].forEach(key => {
+    if (typeof config[key] !== 'object') {
+      return
+    }
+    urls = [...urls, ...values(config[key])]
+  })
 
-  const subPackages = config['subPackages']
-  if (Array.isArray(subPackages)) {
-    subPackages.forEach(subPackage => {
+  if (Array.isArray(config.subPackages)) {
+    config.subPackages.forEach(subPackage => {
       const { root, pages } = subPackage
       if (Array.isArray(pages)) {
-        components = [...components, pages.map(page => path.join(root, page))]
+        urls = [...urls, ...pages.map(page => path.join(root || '', page))]
       }
     })
   }
 
-  components.filter(c => typeof c === 'object').forEach(c => {
-    urls = [...urls, ...Object.keys(c).map(tag => c[tag])]
-  })
-  return urls
+  return uniq(urls)
 }
 
 function getItems(rootContext, url) {
