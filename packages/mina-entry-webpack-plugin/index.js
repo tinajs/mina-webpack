@@ -9,6 +9,14 @@ const { parseComponent } = require('vue-template-compiler')
 const SingleEntryPlugin = require('webpack/lib/SingleEntryPlugin')
 const MultiEntryPlugin = require('webpack/lib/MultiEntryPlugin')
 
+function values(object) {
+  return Object.keys(object).map(key => object[key])
+}
+
+function uniq(array) {
+  return [...new Set(array)]
+}
+
 function isModuleUrl(url) {
   return !!url.match(/^~/)
 }
@@ -32,21 +40,28 @@ function readConfig(fullpath) {
 
 function getUrlsFromConfig(config) {
   let urls = []
+
   if (!config) {
     return urls
   }
-  if (Array.isArray(config.pages)) {
-    urls = [...urls, ...config.pages]
-  }
 
-  ;['pages', 'usingComponents', 'publicComponents'].forEach(prop => {
-    if (typeof config[prop] !== 'object') {
+  ;['pages', 'usingComponents', 'publicComponents'].forEach(key => {
+    if (typeof config[key] !== 'object') {
       return
     }
-
-    urls = [...urls, ...Object.keys(config[prop]).map(tag => config[prop][tag])]
+    urls = [...urls, ...values(config[key])]
   })
-  return urls
+
+  if (Array.isArray(config.subPackages)) {
+    config.subPackages.forEach(subPackage => {
+      const { root, pages } = subPackage
+      if (Array.isArray(pages)) {
+        urls = [...urls, ...pages.map(page => path.join(root || '', page))]
+      }
+    })
+  }
+
+  return uniq(urls)
 }
 
 function getItems(rootContext, url) {

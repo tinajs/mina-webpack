@@ -1,0 +1,15 @@
+<template>
+  <view>
+    <view>This is subPage A</view>
+    <text>this page should be lazy-loaded</text>
+  </view>
+</template>
+
+<style lang="postcss">
+@import '../../../common.wxss';
+</style>
+
+
+<script>
+Page({})
+</script>

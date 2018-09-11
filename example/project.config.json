@@ -1,0 +1,10 @@
+{
+  "setting": {
+    "newFeature": true
+  },
+  "appid": "",
+  "projectname": "mina-webpack-example",
+  "miniprogramRoot": "./dist",
+  "libVersion": "2.2.5",
+  "condition": {}
+}

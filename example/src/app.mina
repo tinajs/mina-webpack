@@ -4,6 +4,14 @@
     "pages/home.mina",
     "pages/message.mina"
   ],
+  "subPackages": [
+    {
+      "root": "packages/a",
+      "pages": [
+        "pages/home.mina"
+      ]
+    }
+  ],
   "tabBar": {
     "list": [
       {
@@ -27,8 +35,8 @@
 const { say } = require('cowsay')
 require('./utils/dependency.js')
 App({
-  onLaunch () {
+  onLaunch() {
     console.log(say({ text: 'Hello from App!' }))
-  }
+  },
 })
 </script>
