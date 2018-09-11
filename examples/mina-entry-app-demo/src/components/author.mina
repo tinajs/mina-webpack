@@ -1,0 +1,14 @@
+<config>
+{
+  "component": true
+}
+</config>
+
+<template>
+  <view> 苏寒 </view>
+</template>
+
+<script>
+Component({
+})
+</script>

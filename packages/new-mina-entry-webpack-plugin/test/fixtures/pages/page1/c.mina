@@ -1,0 +1,8 @@
+<config>
+{
+  "usingComponents": {
+    "local-component-one": "~local-component-one/index.mina",
+    "local-component-two": "~local-component-two/index.js"
+  }
+}
+</config>

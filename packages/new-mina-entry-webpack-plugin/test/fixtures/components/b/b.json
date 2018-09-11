@@ -1,0 +1,6 @@
+{
+  "usingComponents": {
+    "a": "../a/a",
+    "b": "/components/e/e"
+  }
+}

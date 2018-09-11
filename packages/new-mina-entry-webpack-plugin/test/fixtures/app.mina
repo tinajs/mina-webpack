@@ -1,0 +1,13 @@
+<config>
+{
+  "pages": [
+    "pages/page1/page1",
+    "/pages/page2/page2",
+    "./pages/page3/page3",
+    "pages/notExisted"
+  ]
+}
+</config>
+
+<script>
+</script>
