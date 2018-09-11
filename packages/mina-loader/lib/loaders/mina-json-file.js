@@ -114,7 +114,7 @@ module.exports = function(source) {
       })
     })
     /**
-     * subPages
+     * subPackages
      */
     .then(config => {
       const { subPackages } = config

@@ -43,13 +43,12 @@ function getUrlsFromConfig(config) {
     c => config[c]
   )
 
-  if (Array.isArray(config['subPages'])) {
-    config['subPages'].forEach(subPage => {
-      const { root, pages } = subPage
+  const subPackages = config['subPackages']
+  if (Array.isArray(subPackages)) {
+    subPackages.forEach(subPackage => {
+      const { root, pages } = subPackage
       if (Array.isArray(pages)) {
-        pages.forEach(page => {
-          components.push(path.join(root, page))
-        })
+        components = [...components, pages.map(page => path.join(root, page))]
       }
     })
   }

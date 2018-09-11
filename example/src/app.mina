@@ -4,9 +4,9 @@
     "pages/home.mina",
     "pages/message.mina"
   ],
-  "subPages": [
+  "subPackages": [
     {
-      "root": "subPageA",
+      "root": "anotherSubPackage",
       "pages": [
         "pages/index.mina"
       ]
