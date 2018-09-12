@@ -30,9 +30,9 @@ module.exports = function() {
           return loadModule.call(this, request)
         } else if (~TAGS_FOR_FILE_LOADER.indexOf(tag)) {
           if (isSameDiretory(resourcePath, request)) {
-            return loadModule
-              .call(this, request)
-              .then(source => this.exec(source, request))
+            return loadModule.call(this, request).then(source => {
+              return this.exec(source, request)
+            })
           }
           this.emitError(
             new Error(

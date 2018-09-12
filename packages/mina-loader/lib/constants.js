@@ -24,12 +24,9 @@ const LOADERS = {
       enforceRelativePath: true,
       root: context,
       minimize,
-      raw: true,
+      raw: false,
     })}`,
-  style: ({ publicPath }) =>
-    `${resolve('extract-loader')}?${JSON.stringify({ publicPath })}!${resolve(
-      'css-loader'
-    )}`,
+  style: () => resolve('css-loader'),
   script: () => '',
   config: ({ publicPath, minimize }) =>
     `${resolve('./loaders/mina-json-file')}?${JSON.stringify({

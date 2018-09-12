@@ -7,6 +7,7 @@ const ensurePosix = require('ensure-posix-path')
 const debug = require('debug')('loaders:mina')
 
 const fileLoaderPath = require.resolve('file-loader')
+const extractLoaderPath = require.resolve('extract-loader')
 const selectorLoaderPath = require.resolve('./selector')
 const parserLoaderPath = require.resolve('./parser')
 
@@ -66,6 +67,7 @@ module.exports = function() {
   const options = merge(
     {},
     {
+      select: '',
       loaders: {},
       languages: {},
       publicPath: helpers.getPublicPath(webpackOptions, this),
@@ -80,6 +82,21 @@ module.exports = function() {
 
   getBlocks(this, originalRequest)
     .then(blocks => {
+      if (options.select) {
+        let tag = options.select
+        let request =
+          '!!' +
+          [
+            getLoaders(this, tag, options, blocks[tag].attributes),
+            select(originalRequest, tag),
+          ]
+            .filter(Boolean)
+            .join('!')
+        return helpers.loadModule
+          .call(this, request)
+          .then(source => done(null, source))
+      }
+
       // compute output
       let output = TAGS_FOR_OUTPUT.reduce((result, tag) => {
         if (!blocks[tag]) {
@@ -124,6 +141,9 @@ module.exports = function() {
                 '!!' +
                 [
                   `${fileLoaderPath}?name=${dirname}/[name]${EXTNAMES[tag]}`,
+                  `${extractLoaderPath}?${JSON.stringify({
+                    publicPath: options.publicPath,
+                  })}`,
                   getLoaders(this, tag, options, blocks[tag].attributes),
                   select(originalRequest, tag),
                 ]

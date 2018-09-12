@@ -219,7 +219,12 @@ module.exports = function(source) {
       )
     })
     .then(config =>
-      done(null, JSON.stringify(config, null, webpackOptions.minimize ? 0 : 2))
+      done(
+        null,
+        `module.exports = ${JSON.stringify(
+          JSON.stringify(config, null, webpackOptions.minimize ? 0 : 2)
+        )}`
+      )
     )
     .catch(error => done(error))
 }

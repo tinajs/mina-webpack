@@ -22,12 +22,21 @@ test('load separated source files', async t => {
         },
         {
           test: /\.wxss$/,
-          use: {
-            loader: 'postcss-loader',
-            options: {
-              plugins: [precss],
+          use: [
+            {
+              loader: require.resolve('css-loader'),
+              options: {
+                importLoaders: 2,
+                publicPath: '/',
+              },
             },
-          },
+            {
+              loader: 'postcss-loader',
+              options: {
+                plugins: [precss],
+              },
+            },
+          ],
         },
       ],
     },
