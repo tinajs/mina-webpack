@@ -1,0 +1,12 @@
+<config>
+{
+  "pages": [
+    "page-a.mina",
+    "page-g.yaml",
+  ]
+}
+</config>
+
+<script>
+App({})
+</script>

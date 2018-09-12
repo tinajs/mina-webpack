@@ -6,7 +6,9 @@ const { urlToRequest } = require('loader-utils')
 const SingleEntryPlugin = require('webpack/lib/SingleEntryPlugin')
 const MultiEntryPlugin = require('webpack/lib/MultiEntryPlugin')
 const compose = require('compose-function')
+const { Minimatch } = require('minimatch')
 
+const ConfigReader = require('./interfaces/config-reader')
 const MinaConfigReader = require('./config-readers/mina')
 const ClassicalConfigReader = require('./config-readers/classical')
 const {
@@ -60,7 +62,7 @@ function getRequestsFromConfig(config) {
   return uniq(requests)
 }
 
-function getItems(rootContext, entry) {
+function getItems(rootContext, entry, rules) {
   let memory = []
 
   function search(currentContext, originalRequest) {
@@ -104,9 +106,16 @@ function getItems(rootContext, entry) {
     }
     memory.push(current)
 
-    let config = isClassical
-      ? ClassicalConfigReader.getConfig(resourcePath)
-      : MinaConfigReader.getConfig(resourcePath)
+    let matchedRule = rules.find(({ pattern }) =>
+      pattern.match(path.relative(rootContext, resourcePath))
+    )
+
+    let config = matchedRule
+      ? matchedRule.reader.getConfig(resourcePath)
+      : isClassical
+        ? ClassicalConfigReader.getConfig(resourcePath)
+        : MinaConfigReader.getConfig(resourcePath)
+
     let requests = getRequestsFromConfig(config)
     if (requests.length > 0) {
       requests.forEach(req => {
@@ -129,6 +138,11 @@ module.exports = class MinaEntryWebpackPlugin {
       function(entry) {
         return entry
       }
+    this.rules = (options.rules || []).map(rule => {
+      return Object.assign({}, rule, {
+        pattern: new Minimatch(rule.pattern, { matchBase: true }),
+      })
+    })
 
     /**
      * cache items to prevent duplicate `addEntry` operations
@@ -145,7 +159,7 @@ module.exports = class MinaEntryWebpackPlugin {
         entry = entry[entry.length - 1]
       }
 
-      getItems(context, entry).forEach(item => {
+      getItems(context, entry, this.rules).forEach(item => {
         if (this._items.some(({ request }) => request === item.request)) {
           return
         }
@@ -179,3 +193,5 @@ module.exports = class MinaEntryWebpackPlugin {
     )
   }
 }
+
+module.exports.ConfigReader = ConfigReader

@@ -2,6 +2,7 @@ import path from 'path'
 import test from 'ava'
 import MinaEntryPlugin from '@tinajs/mina-entry-webpack-plugin'
 import compiler from './helpers/compiler'
+import YamlConfigReader from './helpers/config-readers/yaml-to-mina-config-reader'
 
 const resolveRelative = path.resolve.bind(null, __dirname)
 
@@ -185,6 +186,68 @@ test('pages / usingComponents could be defined as classical component with MinaE
     '<view>Component A</view>'
   )
   t.true(mfs.readFileSync('/component-a.js', 'utf8').includes('Component({})'))
+  t.deepEqual(JSON.parse(mfs.readFileSync('/component-b.json', 'utf8')), {
+    component: true,
+  })
+  t.deepEqual(JSON.parse(mfs.readFileSync('/component-c.json', 'utf8')), {
+    component: true,
+  })
+  t.is(
+    mfs.readFileSync('/component-c.wxml', 'utf8'),
+    '<view>Component C</view>'
+  )
+  t.true(mfs.readFileSync('/component-c.js', 'utf8').includes('Component({})'))
+
+  t.pass()
+})
+
+test('pages / usingComponents could be unknown file type with MinaEntryPlugin', async t => {
+  const { compile, mfs } = compiler({
+    context: resolveRelative('fixtures/entry'),
+    entry: './app-unknown-file-type.mina',
+    output: {
+      filename: '[name]',
+    },
+    module: {
+      rules: [
+        {
+          test: /\.yaml$/,
+          use: [
+            require.resolve('..'),
+            require.resolve('./helpers/loaders/yaml-to-mina-loader'),
+          ],
+        },
+      ],
+    },
+    plugins: [
+      new MinaEntryPlugin({
+        rules: [
+          {
+            pattern: '**/*.yaml',
+            reader: YamlConfigReader,
+          },
+        ],
+      }),
+    ],
+  })
+  const stats = await compile()
+
+  t.deepEqual(stats.compilation.errors, [], stats.compilation.errors[0])
+
+  t.true(mfs.existsSync('/app-unknown-file-type.js'))
+  t.true(mfs.existsSync('/app-unknown-file-type.json'))
+  t.deepEqual(
+    JSON.parse(mfs.readFileSync('/app-unknown-file-type.json', 'utf8')),
+    {
+      pages: ['page-a', 'page-g'],
+    }
+  )
+  t.deepEqual(JSON.parse(mfs.readFileSync('/page-g.json', 'utf8')), {
+    usingComponents: {
+      b: 'component-b',
+      c: 'component-c',
+    },
+  })
   t.deepEqual(JSON.parse(mfs.readFileSync('/component-b.json', 'utf8')), {
     component: true,
   })
