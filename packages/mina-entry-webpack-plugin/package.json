@@ -2,7 +2,10 @@
   "name": "@tinajs/mina-entry-webpack-plugin",
   "version": "1.0.0-6",
   "description": "Automaticly generates entries-list from mina files for Webpack",
-  "main": "index.js",
+  "main": "lib/index.js",
+  "files": [
+    "lib"
+  ],
   "author": "yelo",
   "license": "Apache-2.0",
   "publishConfig": {

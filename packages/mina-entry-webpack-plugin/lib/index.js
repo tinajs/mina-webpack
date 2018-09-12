@@ -7,13 +7,17 @@ const SingleEntryPlugin = require('webpack/lib/SingleEntryPlugin')
 const MultiEntryPlugin = require('webpack/lib/MultiEntryPlugin')
 const compose = require('compose-function')
 
-const { MinaConfigReader, ClassicalConfigReader } = require('./config-readers')
+const MinaConfigReader = require('./config-readers/mina')
+const ClassicalConfigReader = require('./config-readers/classical')
 const {
   values,
   uniq,
   toSafeOutputPath,
   getResourceUrlFromRequest,
 } = require('./helpers')
+
+const minaLoader = require.resolve('@tinajs/mina-loader')
+const virtualMinaLoader = require.resolve('./loaders/virtual-mina-loader.js')
 
 const RESOLVE_EXTENSIONS = ['.js', '.wxml', '.json', '.wxss']
 
@@ -79,9 +83,7 @@ function getItems(rootContext, entry) {
         basedir: rootContext,
         extensions: RESOLVE_EXTENSIONS,
       })
-      request = `!${require.resolve('@tinajs/mina-loader')}!${require.resolve(
-        './virtual-mina-loader.js'
-      )}!${resourcePath}`
+      request = `!${minaLoader}!${virtualMinaLoader}!${resourcePath}`
       isClassical = true
     }
 
