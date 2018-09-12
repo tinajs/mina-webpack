@@ -17,7 +17,8 @@
   "dependencies": {
     "@tinajs/tina-logo.mina": "^0.2.1",
     "cowsay": "^1.2.1",
-    "es6-promise": "^4.2.4"
+    "es6-promise": "^4.2.4",
+    "iview-weapp": "^2.0.0"
   },
   "devDependencies": {
     "@tinajs/mina-entry-webpack-plugin": "^1.0.0-6",
