@@ -91,6 +91,7 @@ module.exports = {
   ],
   optimization: {
     splitChunks: {
+      chunks: 'all',
       name: "common.js",
       minChunks: 2,
       minSize: 0
