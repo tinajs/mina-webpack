@@ -1,7 +1,7 @@
 {
   "name": "@tinajs/mina-webpack-examples",
   "private": true,
-  "version": "1.0.0-7",
+  "version": "1.0.0-8",
   "description": "",
   "main": "index.js",
   "author": "yelo",
@@ -21,9 +21,9 @@
     "iview-weapp": "^2.0.0"
   },
   "devDependencies": {
-    "@tinajs/mina-entry-webpack-plugin": "^1.0.0-7",
-    "@tinajs/mina-loader": "^1.0.0-7",
-    "@tinajs/mina-runtime-webpack-plugin": "^1.0.0-7",
+    "@tinajs/mina-entry-webpack-plugin": "^1.0.0-8",
+    "@tinajs/mina-loader": "^1.0.0-8",
+    "@tinajs/mina-runtime-webpack-plugin": "^1.0.0-8",
     "babel": "^6.23.0",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.4",
