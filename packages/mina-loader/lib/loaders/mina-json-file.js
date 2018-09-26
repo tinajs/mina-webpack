@@ -56,9 +56,11 @@ function resolveFile(source, target, context, workdir = './') {
   })
 
   // relative url
-  return path.relative(
-    path.resolve(path.dirname(transformedSource), workdir),
-    transformedTarget
+  return ensurePosix(
+    path.relative(
+      path.resolve(path.dirname(transformedSource), workdir),
+      transformedTarget
+    )
   )
 }
 
