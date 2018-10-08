@@ -1,4 +1,5 @@
 const path = require('path')
+const fs = require('fs')
 const replaceExt = require('replace-ext')
 const resolve = require('resolve')
 const ensurePosix = require('ensure-posix-path')
@@ -88,6 +89,8 @@ function getItems(rootContext, entry, rules) {
       request = `!${minaLoader}!${virtualMinaLoader}!${resourcePath}`
       isClassical = true
     }
+
+    resourcePath = fs.realpathSync(resourcePath)
 
     let name = compose(
       ensurePosix,

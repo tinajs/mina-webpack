@@ -1,0 +1,11 @@
+<config>
+{
+  "pages": [
+    "symbolic.mina",
+  ]
+}
+</config>
+
+<script>
+App({})
+</script>

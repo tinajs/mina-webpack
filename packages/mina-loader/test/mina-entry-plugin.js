@@ -64,6 +64,40 @@ test('basic usage with MinaEntryPlugin', async t => {
   t.pass()
 })
 
+test('use symbolic links with MinaEntryPlugin', async t => {
+  const { compile, mfs } = compiler({
+    context: resolveRelative('fixtures/entry'),
+    entry: './app-symbolic.mina',
+    output: {
+      filename: '[name]',
+    },
+    plugins: [new MinaEntryPlugin()],
+  })
+  await compile()
+
+  t.true(mfs.existsSync('/app-symbolic.json'))
+  t.true(mfs.existsSync('/app-symbolic.js'))
+  t.true(mfs.existsSync('/_/extra-resources/symbolic.wxml'))
+  t.true(mfs.existsSync('/_/extra-resources/symbolic.js'))
+
+  t.is(
+    mfs.readFileSync('/app-symbolic.json', 'utf8'),
+    JSON.stringify({ pages: ['symbolic'] }, null, '  ')
+  )
+  t.true(
+    mfs
+      .readFileSync('/_/extra-resources/symbolic.wxml', 'utf8')
+      .includes('<view>Symbolic</view>')
+  )
+  t.true(
+    mfs
+      .readFileSync('/_/extra-resources/symbolic.js', 'utf8')
+      .includes('Component({}) // Symbolic')
+  )
+
+  t.pass()
+})
+
 test('entry could be defined as requests with custom loaders', async t => {
   const { compile, mfs } = compiler({
     context: resolveRelative('fixtures/entry'),
