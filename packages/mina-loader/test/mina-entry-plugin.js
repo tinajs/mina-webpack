@@ -75,24 +75,47 @@ test('use symbolic links with MinaEntryPlugin', async t => {
   })
   await compile()
 
+  /** fs **/
   t.true(mfs.existsSync('/app-symbolic.json'))
   t.true(mfs.existsSync('/app-symbolic.js'))
-  t.true(mfs.existsSync('/_/extra-resources/symbolic.wxml'))
-  t.true(mfs.existsSync('/_/extra-resources/symbolic.js'))
-
+  t.true(mfs.existsSync('/_/extra-resources/symbolic-a.wxml'))
+  t.true(mfs.existsSync('/_/extra-resources/symbolic-a.js'))
+  t.true(mfs.existsSync('/_/extra-resources/subdir/symbolic-b.wxml'))
+  t.true(mfs.existsSync('/_/extra-resources/subdir/symbolic-b.js')) *
+    /** app **/
+    t.is(
+      mfs.readFileSync('/app-symbolic.json', 'utf8'),
+      JSON.stringify({ pages: ['_/extra-resources/symbolic-a'] }, null, '  ')
+    )
+  /** symbolic a **/
   t.is(
-    mfs.readFileSync('/app-symbolic.json', 'utf8'),
-    JSON.stringify({ pages: ['symbolic'] }, null, '  ')
+    mfs.readFileSync('/_/extra-resources/symbolic-a.json', 'utf8'),
+    JSON.stringify({ usingComponents: { b: 'subdir/symbolic-b' } }, null, '  ')
   )
   t.true(
     mfs
-      .readFileSync('/_/extra-resources/symbolic.wxml', 'utf8')
-      .includes('<view>Symbolic</view>')
+      .readFileSync('/_/extra-resources/symbolic-a.wxml', 'utf8')
+      .includes('<view>Symbolic A</view>')
   )
   t.true(
     mfs
-      .readFileSync('/_/extra-resources/symbolic.js', 'utf8')
-      .includes('Component({}) // Symbolic')
+      .readFileSync('/_/extra-resources/symbolic-a.js', 'utf8')
+      .includes('Page({}) // Symbolic A')
+  )
+  /** symbolic b **/
+  t.is(
+    mfs.readFileSync('/_/extra-resources/subdir/symbolic-b.json', 'utf8'),
+    JSON.stringify({ component: true }, null, '  ')
+  )
+  t.true(
+    mfs
+      .readFileSync('/_/extra-resources/subdir/symbolic-b.wxml', 'utf8')
+      .includes('<view>Symbolic B</view>')
+  )
+  t.true(
+    mfs
+      .readFileSync('/_/extra-resources/subdir/symbolic-b.js', 'utf8')
+      .includes('Component({}) // Symbolic B')
   )
 
   t.pass()

@@ -1,0 +1,13 @@
+<config>
+{
+  "component": true
+}
+</config>
+
+<template>
+  <view>Symbolic B</view>
+</template>
+
+<script>
+Component({}) // Symbolic B
+</script>

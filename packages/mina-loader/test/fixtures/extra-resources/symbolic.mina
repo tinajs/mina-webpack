@@ -1,7 +1,0 @@
-<template>
-  <view>Symbolic</view>
-</template>
-
-<script>
-Component({}) // Symbolic
-</script>

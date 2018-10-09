@@ -1,0 +1,15 @@
+<config>
+{
+  "usingComponents": {
+    "b": "/symbolic-b.mina"
+  }
+}
+</config>
+
+<template>
+  <view>Symbolic A</view>
+</template>
+
+<script>
+Page({}) // Symbolic A
+</script>
