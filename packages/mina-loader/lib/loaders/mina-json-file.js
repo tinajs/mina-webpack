@@ -1,3 +1,4 @@
+const fs = require('fs')
 const path = require('path')
 const JSON5 = require('json5')
 const resolve = require('resolve')
@@ -67,10 +68,12 @@ function resolveFile(source, target, context, workdir = './') {
 function resolveFromModule(context, filename) {
   return path.relative(
     context,
-    resolve.sync(loaderUtils.urlToRequest(filename), {
-      basedir: context,
-      extensions: RESOLVE_EXTENSIONS,
-    })
+    fs.realpathSync(
+      resolve.sync(loaderUtils.urlToRequest(filename), {
+        basedir: context,
+        extensions: RESOLVE_EXTENSIONS,
+      })
+    )
   )
 }
 
