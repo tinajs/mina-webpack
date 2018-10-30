@@ -1,7 +1,7 @@
-import { resolve } from 'path'
-import webpack from 'webpack'
-import MinaEntryPlugin from '@tinajs/mina-entry-webpack-plugin'
-import MinaRuntimePlugin from '@tinajs/mina-runtime-webpack-plugin'
+const { resolve } = require('path')
+const webpack = require('webpack')
+const MinaEntryPlugin = require('@tinajs/mina-entry-webpack-plugin')
+const MinaRuntimePlugin = require('@tinajs/mina-runtime-webpack-plugin')
 
 const isProduction = process.env.NODE_ENV === 'production'
 
@@ -17,7 +17,7 @@ const loaders = {
   },
 }
 
-export default {
+module.exports = {
   context: resolve('src'),
   entry: './app.mina',
   output: {
