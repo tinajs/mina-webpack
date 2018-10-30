@@ -7,7 +7,7 @@
   "author": "yelo",
   "license": "MIT",
   "scripts": {
-    "clean": "rimraf \"./dist/!(app.json|project.config.json)**\"",
+    "clean": "rimraf \"./dist/!(app.json)**\"",
     "precommit": "lint-staged",
     "prestart": "run-s clean",
     "prebuild": "run-s clean",
