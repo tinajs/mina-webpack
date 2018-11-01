@@ -10,6 +10,12 @@ const logo =
   'image/png;base64,' +
   fs.readFileSync(fixture('basic/logo.png.txt'), 'utf8').trim()
 
+test.afterEach(() => {
+  return new Promise(resolve => {
+    rimraf(fixture('wxss/.dist'), () => resolve())
+  })
+})
+
 test('url in wxss should be encoded as base64 inlined url by default', async t => {
   const { compile, mfs } = compiler({
     entry: './fixtures/wxss/page.mina',
@@ -22,6 +28,46 @@ test('url in wxss should be encoded as base64 inlined url by default', async t =
           test: /\.mina$/,
           use: {
             loader: require.resolve('..'),
+          },
+        },
+      ],
+    },
+  })
+
+  const stats = await compile()
+
+  t.is(
+    mfs.readFileSync('/fixtures/wxss/page.wxss', 'utf8'),
+    `text.blue {\n  color: #00f;\n  background: url(data:${logo});\n}`
+  )
+
+  t.pass()
+})
+
+test('url in wxss could be process with other inline url replacer', async t => {
+  const { compile, mfs } = compiler({
+    entry: './fixtures/wxss/page.mina',
+    output: {
+      filename: 'fixtures/wxss/page.js',
+    },
+    module: {
+      rules: [
+        {
+          test: /\.mina$/,
+          use: {
+            loader: require.resolve('..'),
+            options: {
+              loaders: {
+                style: {
+                  loader: 'postcss-loader',
+                  options: {
+                    config: {
+                      path: path.resolve(__dirname, './fixtures/wxss/url/'),
+                    },
+                  },
+                },
+              },
+            },
           },
         },
       ],
@@ -56,7 +102,7 @@ test('url in wxss could be process with other loaders', async t => {
                   loader: 'postcss-loader',
                   options: {
                     config: {
-                      path: path.resolve(__dirname, './fixtures/wxss/'),
+                      path: path.resolve(__dirname, './fixtures/wxss/cdn/'),
                     },
                   },
                 },
@@ -76,8 +122,6 @@ test('url in wxss could be process with other loaders', async t => {
   )
 
   t.true(fs.existsSync(fixture('wxss/.dist/cdn/logo_511d9d.png')))
-
-  rimraf.sync(fixture('wxss/.dist'))
 
   t.pass()
 })

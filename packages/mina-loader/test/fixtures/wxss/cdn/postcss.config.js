@@ -2,7 +2,7 @@ const path = require('path')
 const CDN_PREFIX = 'https://cdn.url/'
 const CDN_DIR = path.relative(
   process.cwd(),
-  path.resolve(__dirname, '.dist/cdn/')
+  path.resolve(__dirname, '..', '.dist/cdn/')
 )
 
 module.exports = {
@@ -10,7 +10,7 @@ module.exports = {
     require('postcss-url')([
       {
         url: 'copy',
-        basePath: __dirname,
+        basePath: path.resolve(__dirname, '..'),
         assetsPath: CDN_DIR,
         useHash: true,
         hashOptions: {
