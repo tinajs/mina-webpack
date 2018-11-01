@@ -1,8 +1,13 @@
+import fs from 'fs'
 import path from 'path'
 import test from 'ava'
 import compiler from './helpers/compiler'
 
 const resolveRelative = path.resolve.bind(null, __dirname)
+
+const logo =
+  'image/png;base64,' +
+  fs.readFileSync(__dirname + '/fixtures/basic/logo.png.txt', 'utf8').trim()
 
 test('basic', async t => {
   const { compile, mfs } = compiler({
@@ -34,7 +39,7 @@ test('basic', async t => {
   )
   t.is(
     mfs.readFileSync('/fixtures/basic/page.wxss', 'utf8'),
-    'text.blue {\n  color: #00f;\n  background: url(/assets/logo.7bd732.png);\n}'
+    `text.blue {\n  color: #00f;\n  background: url(data:${logo});\n}`
   )
   t.deepEqual(
     JSON.parse(mfs.readFileSync('/fixtures/basic/page.json', 'utf8')),
@@ -75,7 +80,7 @@ test('pack multiple files with specified context', async t => {
   )
   t.is(
     mfs.readFileSync('/page.wxss', 'utf8'),
-    'text.blue {\n  color: #00f;\n  background: url(/assets/logo.7bd732.png);\n}'
+    `text.blue {\n  color: #00f;\n  background: url(data:${logo});\n}`
   )
   t.deepEqual(JSON.parse(mfs.readFileSync('/page.json', 'utf8')), {
     name: 'mina',
@@ -157,7 +162,7 @@ test('pack with options', async t => {
   )
   t.is(
     mfs.readFileSync('/fixtures/basic/page.wxss', 'utf8'),
-    'text.blue {\n  color: #00f;\n  background: url(/assets/logo.7bd732.png);\n}'
+    `text.blue {\n  color: #00f;\n  background: url(data:${logo});\n}`
   )
   t.deepEqual(
     JSON.parse(mfs.readFileSync('/fixtures/basic/page.json', 'utf8')),

@@ -29,7 +29,7 @@ const LOADERS = {
   style: ({ publicPath }) =>
     `${resolve('extract-loader')}?${JSON.stringify({ publicPath })}!${resolve(
       'css-loader'
-    )}`,
+    )}?${JSON.stringify({ url: false })}!${resolve('./loaders/wxss-url')}`,
   script: () => '',
   config: ({ publicPath, minimize }) =>
     `${resolve('./loaders/mina-json-file')}?${JSON.stringify({
