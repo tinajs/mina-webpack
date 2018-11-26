@@ -76,18 +76,28 @@ function getItems(rootContext, entry, rules) {
 
     let resourcePath, isClassical
     try {
-      resourcePath = resolve.sync(request, {
-        basedir: rootContext,
-        extensions: [],
-      })
-      isClassical = false
+      try {
+        resourcePath = resolve.sync(request, {
+          basedir: rootContext,
+          extensions: [],
+        })
+        isClassical = false
+      } catch (error) {
+        resourcePath = resolve.sync(request, {
+          basedir: rootContext,
+          extensions: RESOLVE_EXTENSIONS,
+        })
+        request = `!${minaLoader}!${virtualMinaLoader}!${resourcePath}`
+        isClassical = true
+      }
     } catch (error) {
-      resourcePath = resolve.sync(request, {
-        basedir: rootContext,
-        extensions: RESOLVE_EXTENSIONS,
+      // Do not throw an exception when the module does not exist.
+      // Just mark it up and move on to the next module.
+      memory.push({
+        name: '<ERROR:NOT_FOUND>',
+        request: request,
       })
-      request = `!${minaLoader}!${virtualMinaLoader}!${resourcePath}`
-      isClassical = true
+      return
     }
 
     resourcePath = fs.realpathSync(resourcePath)
