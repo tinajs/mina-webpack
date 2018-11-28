@@ -45,6 +45,8 @@ Page({
   },
 
   onLoad() {
+    console.log('parseInt: ', parseInt(4.2))
+    console.log('parseFloat: ', parseFloat(4.2))
     this.setData({
       msg: 'Hello from Home-Page!',
     })
