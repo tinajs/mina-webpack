@@ -68,7 +68,7 @@ test('use lang attribute with extra rules', async t => {
   }
 })
 
-test('use lang attribute should override loaders options', async t => {
+test('use lang before attribute should prepend loaders options', async t => {
   try {
     const { compile, mfs } = compiler({
       entry: './fixtures/lang/override-loader.mina',
@@ -83,10 +83,10 @@ test('use lang attribute should override loaders options', async t => {
               loader: require.resolve('..'),
               options: {
                 loaders: {
-                  script: 'babel-loader',
+                  script: './helpers/loaders/number-multiply-two-loader.js',
                 },
                 languages: {
-                  yellowify: './helpers/loaders/replace-blue-to-yellow',
+                  'number:before': './helpers/loaders/number-add-one-loader.js', // (9*2)+1
                 },
               },
             },
@@ -94,31 +94,94 @@ test('use lang attribute should override loaders options', async t => {
         ],
       },
     })
-    const stats = await compile()
+    await compile()
 
     t.true(
       mfs
         .readFileSync('/fixtures/lang/override-loader.js', 'utf8')
-        .includes("console.log('yellow')")
+        .includes("console.log(19)")
     )
-    t.false(
-      mfs
-        .readFileSync('/fixtures/lang/override-loader.js', 'utf8')
-        .includes("console.log('blue')")
-    )
+  } catch (error) {
+    console.error(error)
+  }
+})
+
+test('use lang after attribute should append loaders options', async t => {
+  try {
+    const { compile, mfs } = compiler({
+      entry: './fixtures/lang/override-loader.mina',
+      output: {
+        filename: 'fixtures/lang/override-loader.js',
+      },
+      module: {
+        rules: [
+          {
+            test: /\.mina$/,
+            use: {
+              loader: require.resolve('..'),
+              options: {
+                loaders: {
+                  script: './helpers/loaders/number-multiply-two-loader.js',
+                },
+                languages: {
+                  'number:after': './helpers/loaders/number-add-one-loader.js', // (9+1)*2
+                },
+              },
+            },
+          },
+        ],
+      },
+    })
+    await compile()
 
     t.true(
       mfs
         .readFileSync('/fixtures/lang/override-loader.js', 'utf8')
-        .includes('onLoad () {')
+        .includes("console.log(20)")
+    )
+  } catch (error) {
+    console.error(error)
+  }
+})
+
+test('use lang main attribute should override loaders options', async t => {
+  try {
+    const { compile, mfs } = compiler({
+      entry: './fixtures/lang/override-loader.mina',
+      output: {
+        filename: 'fixtures/lang/override-loader.js',
+      },
+      module: {
+        rules: [
+          {
+            test: /\.mina$/,
+            use: {
+              loader: require.resolve('..'),
+              options: {
+                loaders: {
+                  script: './helpers/loaders/number-multiply-two-loader.js',
+                },
+                languages: {
+                  'number:main': './helpers/loaders/number-add-one-loader.js', // 9+1
+                },
+              },
+            },
+          },
+        ],
+      },
+    })
+    await compile()
+
+    t.true(
+      mfs
+        .readFileSync('/fixtures/lang/override-loader.js', 'utf8')
+        .includes("console.log(10)")
     )
     t.false(
       mfs
         .readFileSync('/fixtures/lang/override-loader.js', 'utf8')
-        .includes('onLoad: function onLoad() {')
+        .includes("console.log(18)")
     )
-
-    t.pass()
   } catch (error) {
     console.error(error)
   }

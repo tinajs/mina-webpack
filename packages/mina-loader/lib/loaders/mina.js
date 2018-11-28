@@ -36,9 +36,22 @@ const getLoaders = (loaderContext, tag, options, attributes = {}) => {
     return ''
   }
 
-  // append custom loader
-  let custom = lang
-    ? options.languages[lang] || `${lang}-loader`
+  const getCustomizedLoader = (lang, { loaders = {}, languages = {} }) => {
+    const beforeLoader = languages[`${lang}:before`]
+    const mainLoader =  languages[`${lang}:main`] || loaders[tag]
+    const afterLoader = languages[`${lang}:after`] || languages[lang]
+    const toArray = val => {
+      if (val === undefined || val === null || val === '') {
+        return []
+      }
+      return Array.isArray(val) ? val : [val]
+    }
+    return [...toArray(beforeLoader), ...toArray(mainLoader), ...toArray(afterLoader)]
+  }
+
+  // HACK: 一旦getLoaders函数内发生异常，测试代码没有显示任何异常，应该是在某个地方压制住了它。望改善！
+  let custom = lang 
+    ? (Object.keys(options.languages).length === 0 ? `${lang}-loader` : getCustomizedLoader(lang, options))
     : options.loaders[tag] || ''
   if (custom) {
     custom = helpers.stringifyLoaders(
