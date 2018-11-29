@@ -58,7 +58,7 @@
     "css-loader": "^0.28.7",
     "debug": "^3.1.0",
     "ensure-posix-path": "^1.0.2",
-    "extract-loader": "^2.0.1",
+    "extract-loader": "^3.1.0",
     "file-loader": "^1.1.11",
     "json5": "^0.5.1",
     "loader-utils": "^1.1.0",
