@@ -1,6 +1,6 @@
 {
   "name": "@tinajs/mina-loader",
-  "version": "1.1.0",
+  "version": "1.1.2",
   "description": "MINA single-file-component loader for Webpack",
   "main": "lib/index.js",
   "files": [
@@ -24,8 +24,8 @@
   },
   "homepage": "https://github.com/tinajs/mina-webpack/tree/master/packages/mina-loader#readme",
   "devDependencies": {
-    "@tinajs/mina-entry-webpack-plugin": "^1.0.2",
-    "@tinajs/mina-runtime-webpack-plugin": "^1.0.1",
+    "@tinajs/mina-entry-webpack-plugin": "^1.0.4",
+    "@tinajs/mina-runtime-webpack-plugin": "^1.0.2",
     "@tinajs/tina-logo.mina": "^0.2.1",
     "ava": "^0.25.0",
     "babel": "^6.23.0",
@@ -58,7 +58,7 @@
     "css-loader": "^0.28.7",
     "debug": "^3.1.0",
     "ensure-posix-path": "^1.0.2",
-    "extract-loader": "^2.0.1",
+    "extract-loader": "^3.1.0",
     "file-loader": "^1.1.11",
     "json5": "^0.5.1",
     "loader-utils": "^1.1.0",

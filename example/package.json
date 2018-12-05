@@ -1,7 +1,7 @@
 {
   "name": "@tinajs/mina-webpack-examples",
   "private": true,
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "",
   "main": "index.js",
   "author": "yelo",
@@ -18,7 +18,8 @@
     "@tinajs/tina-logo.mina": "^0.2.1",
     "cowsay": "^1.2.1",
     "es6-promise": "^4.2.4",
-    "iview-weapp": "^2.0.0"
+    "iview-weapp": "^2.0.0",
+    "vant-weapp": "^0.4.7"
   },
   "devDependencies": {
     "@babel/core": "^7.1.0",
@@ -27,9 +28,9 @@
     "@babel/plugin-transform-runtime": "^7.1.0",
     "@babel/preset-env": "^7.1.0",
     "@babel/runtime-corejs2": "^7.0.0",
-    "@tinajs/mina-entry-webpack-plugin": "^1.0.2",
-    "@tinajs/mina-loader": "^1.1.0",
-    "@tinajs/mina-runtime-webpack-plugin": "^1.0.1",
+    "@tinajs/mina-entry-webpack-plugin": "^1.0.4",
+    "@tinajs/mina-loader": "^1.1.2",
+    "@tinajs/mina-runtime-webpack-plugin": "^1.0.2",
     "babel-loader": "^8.0.4",
     "cross-env": "^5.1.1",
     "file-loader": "^1.1.11",

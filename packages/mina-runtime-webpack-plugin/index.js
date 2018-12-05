@@ -1,7 +1,7 @@
 /*
  * forked from https://github.com/Cap32/wxapp-webpack-plugin/
  */
-
+const fs = require('fs')
 const path = require('path')
 const ensurePosix = require('ensure-posix-path')
 const { ConcatSource } = require('webpack-sources')
@@ -17,6 +17,8 @@ function isRuntimeExtracted(compilation) {
 function script({ dependencies }) {
   return ';' + dependencies.map(file => `require('${file}');`).join('')
 }
+
+const POLYFILL = fs.readFileSync(path.join(__dirname, './polyfill.js'), 'utf8')
 
 module.exports = class MinaRuntimeWebpackPlugin {
   constructor(options = {}) {
@@ -66,6 +68,14 @@ module.exports = class MinaRuntimeWebpackPlugin {
           }
         )
       }
+
+      compilation.mainTemplate.hooks.bootstrap.tap(
+        'MinaRuntimePlugin',
+        (source, chunk) => {
+          debug('bootstrap chunk name', chunk.name)
+          return POLYFILL + source
+        }
+      )
     })
   }
 }
