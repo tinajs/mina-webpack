@@ -1,0 +1,12 @@
+<config>
+{
+  "pages": [
+    "page-a.mina",
+    "page-not-existed.mina",
+  ]
+}
+</config>
+
+<script>
+App({})
+</script>

@@ -324,3 +324,22 @@ test('pages / usingComponents could be unknown file type with MinaEntryPlugin', 
 
   t.pass()
 })
+
+test('do not crash with MinaEntryPlugin when some pathes in pages / usingComponents are not existed', async t => {
+  const { compile, mfs } = compiler({
+    context: resolveRelative('fixtures/entry'),
+    entry: './app-not-existed-file.mina',
+    output: {
+      filename: '[name]',
+    },
+    plugins: [new MinaEntryPlugin()],
+  })
+  const stats = await compile()
+
+  t.true(stats.compilation.errors.length > 0)
+
+  t.true(mfs.existsSync('/app-not-existed-file.js'))
+  t.true(mfs.existsSync('/page-a.js'))
+  t.true(mfs.existsSync('/page-a.wxml'))
+  t.pass()
+})
