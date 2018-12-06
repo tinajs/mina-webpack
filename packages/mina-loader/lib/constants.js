@@ -26,10 +26,16 @@ const LOADERS = {
       minimize,
       raw: true,
     })}`,
-  style: ({ publicPath }) =>
-    `${resolve('extract-loader')}?${JSON.stringify({ publicPath })}!${resolve(
-      'css-loader'
-    )}?${JSON.stringify({ url: false })}!${resolve('./loaders/wxss-url')}`,
+  style: ({ publicPath, useWxssUrl }) => {
+    let arrLoader = [
+      `${resolve('extract-loader')}?${JSON.stringify({ publicPath })}`,
+      `${resolve('css-loader')}?${JSON.stringify({ url: false })}`,
+    ]
+    if (useWxssUrl) {
+      arrLoader.push(`${resolve('./loaders/wxss-url')}`)
+    }
+    return arrLoader.join('!')
+  },
   script: () => '',
   config: ({ publicPath, minimize }) =>
     `${resolve('./loaders/mina-json-file')}?${JSON.stringify({

@@ -69,6 +69,7 @@ module.exports = function() {
       loaders: {},
       languages: {},
       publicPath: helpers.getPublicPath(webpackOptions, this),
+      useWxssUrl: true,
       context: this.rootContext,
       minimize: process.env.NODE_ENV === 'production',
     },

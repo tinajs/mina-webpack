@@ -125,3 +125,34 @@ test('url in wxss could be process with other loaders', async t => {
 
   t.pass()
 })
+
+test('disable base64 inlined by url in wxss ', async t => {
+  const { compile, mfs } = compiler({
+    entry: './fixtures/wxss/page.mina',
+    output: {
+      filename: 'fixtures/wxss/page.js',
+    },
+    module: {
+      rules: [
+        {
+          test: /\.mina$/,
+          use: {
+            loader: require.resolve('..'),
+            options: {
+              useWxssUrl: false,
+            },
+          },
+        },
+      ],
+    },
+  })
+
+  const stats = await compile()
+
+  t.is(
+    mfs.readFileSync('/fixtures/wxss/page.wxss', 'utf8'),
+    `text.blue {\n  color: #00f;\n  background: url(../basic/logo.png);\n}`
+  )
+
+  t.pass()
+})
