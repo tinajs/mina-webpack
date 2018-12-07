@@ -6,6 +6,7 @@ const ensurePosix = require('ensure-posix-path')
 const { urlToRequest } = require('loader-utils')
 const SingleEntryPlugin = require('webpack/lib/SingleEntryPlugin')
 const MultiEntryPlugin = require('webpack/lib/MultiEntryPlugin')
+const WebpackError = require('webpack/lib/WebpackError')
 const compose = require('compose-function')
 const { Minimatch } = require('minimatch')
 
@@ -94,8 +95,7 @@ function getItems(rootContext, entry, rules) {
       // Do not throw an exception when the module does not exist.
       // Just mark it up and move on to the next module.
       memory.push({
-        name: '<ERROR:NOT_FOUND>',
-        request: request,
+        error: new MinaEntryPluginError(error),
       })
       return
     }
@@ -144,6 +144,18 @@ function getItems(rootContext, entry, rules) {
   return memory
 }
 
+class MinaEntryPluginError extends WebpackError {
+  constructor(error) {
+    super()
+
+    this.name = 'MinaEntryPluginError'
+    this.message = `MinaEntryPlugin: ${error.message}`
+    this.error = error
+
+    Error.captureStackTrace(this, this.constructor)
+  }
+}
+
 module.exports = class MinaEntryWebpackPlugin {
   constructor(options = {}) {
     this.map =
@@ -157,6 +169,8 @@ module.exports = class MinaEntryWebpackPlugin {
       })
     })
 
+    this._errors = []
+
     /**
      * cache items to prevent duplicate `addEntry` operations
      */
@@ -167,12 +181,17 @@ module.exports = class MinaEntryWebpackPlugin {
     try {
       let { context, entry } = compiler.options
 
+      this._errors = []
+
       // assume the latest file in array is the app.mina
       if (Array.isArray(entry)) {
         entry = entry[entry.length - 1]
       }
 
       getItems(context, entry, this.rules).forEach(item => {
+        if (item.error) {
+          return this._errors.push(item.error)
+        }
         if (this._items.some(({ request }) => request === item.request)) {
           return
         }
@@ -204,6 +223,9 @@ module.exports = class MinaEntryWebpackPlugin {
     compiler.hooks.watchRun.tap('MinaEntryPlugin', (compiler, done) =>
       this.rewrite(compiler, done)
     )
+    compiler.hooks.compilation.tap('MinaEntryPlugin', compilation => {
+      this._errors.forEach(error => compilation.errors.push(error))
+    })
   }
 }
 
