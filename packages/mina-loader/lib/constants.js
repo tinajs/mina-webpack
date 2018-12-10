@@ -29,7 +29,7 @@ const LOADERS = {
   style: ({ publicPath, useWxssUrl }) => {
     let arrLoader = [
       `${resolve('extract-loader')}?${JSON.stringify({ publicPath })}`,
-      `${resolve('css-loader')}?${JSON.stringify({ url: false })}`,
+      `${resolve('css-loader')}?${JSON.stringify({ url: !useWxssUrl })}`,
     ]
     if (useWxssUrl) {
       arrLoader.push(`${resolve('./loaders/wxss-url')}`)
