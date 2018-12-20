@@ -1,0 +1,3 @@
+module.exports = function (no) {
+  return 'No.' + no
+}

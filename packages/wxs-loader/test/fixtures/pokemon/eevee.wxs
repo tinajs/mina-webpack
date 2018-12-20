@@ -1,0 +1,4 @@
+const constants = require('../constants.wxs')
+const greet = require('../greet.wxs')
+
+module.exports = greet(constants.EEVEE)
