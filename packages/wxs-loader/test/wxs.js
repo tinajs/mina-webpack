@@ -19,22 +19,3 @@ test('require', async t => {
 
   t.pass()
 })
-
-test('import', async t => {
-  const { compile, mfs } = compiler(config => {
-    config.entry('entry').add('./fixtures/pokemon/pikachu.wxs')
-  })
-  const stats = await compile()
-
-  t.is(stats.compilation.errors.length, 0, stats.compilation.errors)
-
-  t.is(
-    mfs.readFileSync('/assets/pikachu.f4526b.wxs', 'utf8'),
-    'import constants from "/assets/constants.8d11a1.wxs";\nimport greet from "/assets/greet.e4c88c.wxs";\nmodule.exports = greet(constants.PIKACHU);'
-  )
-
-  t.true(mfs.existsSync('/assets/constants.8d11a1.wxs', 'utf8'))
-  t.true(mfs.existsSync('/assets/greet.e4c88c.wxs', 'utf8'))
-
-  t.pass()
-})

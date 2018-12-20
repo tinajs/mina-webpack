@@ -1,4 +1,0 @@
-import constants from '../constants.wxs'
-import greet from '../greet.wxs'
-
-module.exports = greet(constants.PIKACHU)

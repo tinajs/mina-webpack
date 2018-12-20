@@ -1,4 +1,3 @@
 module.exports = {
-  PIKACHU: 25,
   EEVEE: 133,
 }
