@@ -1,0 +1,10 @@
+import constants from './constants.wxs'
+
+const padding = (digits) => {
+  return function pad (number) {
+    var ceil = Math.pow(10, digits) + number;
+    return ceil.toString().slice(1);
+  };
+};
+
+module.exports = padding;
