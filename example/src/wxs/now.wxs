@@ -1,9 +1,4 @@
-function padding (digits) {
-  return function pad (number) {
-    var ceil = Math.pow(10, digits) + number;
-    return ceil.toString().slice(1);
-  };
-};
+var padding = require('./padding.wxs')
 
 var now = getDate();
 
