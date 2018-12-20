@@ -10,11 +10,11 @@ test('require', async t => {
   t.is(stats.compilation.errors.length, 0, stats.compilation.errors)
 
   t.is(
-    mfs.readFileSync('/assets/eevee.2f7f17.wxs', 'utf8'),
-    'const constants = require("/assets/constants.8d11a1.wxs");\n\nconst greet = require("/assets/greet.e4c88c.wxs");\n\nmodule.exports = greet(constants.EEVEE);'
+    mfs.readFileSync('/assets/eevee.12b494.wxs', 'utf8'),
+    'const constants = require("./constants.39caca.wxs");\n\nconst greet = require("./greet.e4c88c.wxs");\n\nmodule.exports = greet(constants.EEVEE);'
   )
 
-  t.true(mfs.existsSync('/assets/constants.8d11a1.wxs', 'utf8'))
+  t.true(mfs.existsSync('/assets/constants.39caca.wxs', 'utf8'))
   t.true(mfs.existsSync('/assets/greet.e4c88c.wxs', 'utf8'))
 
   t.pass()
