@@ -13,9 +13,6 @@ module.exports = function loader(source) {
   let dependencies = new Map()
 
   visit(source, () => ({
-    ImportDeclaration(path) {
-      dependencies.set(path.node.source.value, '')
-    },
     CallExpression(path) {
       if (path.node.callee.name === 'require') {
         dependencies.set(path.node.arguments[0].value)
@@ -36,11 +33,6 @@ module.exports = function loader(source) {
   )
     .then(() => {
       let { code } = visit(source, t => ({
-        ImportDeclaration(path) {
-          path.node.source = t.stringLiteral(
-            dependencies.get(path.node.source.value)
-          )
-        },
         CallExpression(path) {
           if (path.node.callee.name === 'require') {
             path.node.arguments[0] = t.stringLiteral(
