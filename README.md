@@ -40,13 +40,20 @@ And see how to use with [TinaJS](https://tinajs.github.io/tina/#/guide/package-m
   [![npm](https://img.shields.io/npm/dw/@tinajs/mina-entry-webpack-plugin.svg?style=flat-square)](https://www.npmjs.com/package/@tinajs/mina-entry-webpack-plugin)
   [![license](https://img.shields.io/npm/l/@tinajs/mina-entry-webpack-plugin.svg?style=flat-square)](./LICENSE)
 
+- [wxs-loader](./packages/wxs-loader)
+
+  [![npm](https://img.shields.io/npm/v/@tinajs/wxs-loader.svg?style=flat-square)](https://www.npmjs.com/package/@tinajs/wxs-loader)
+  [![npm](https://img.shields.io/npm/dw/@tinajs/wxs-loader.svg?style=flat-square)](https://www.npmjs.com/package/@tinajs/wxs-loader)
+  [![license](https://img.shields.io/npm/l/@tinajs/wxs-loader.svg?style=flat-square)](./LICENSE)
+
 ## Manual Installation
 
 ```bash
 npm i --save-dev \
   @tinajs/mina-entry-webpack-plugin \
   @tinajs/mina-runtime-webpack-plugin \
-  @tinajs/mina-loader
+  @tinajs/mina-loader \
+  @tinajs/wxs-loader
 ```
 
 ## Simplest Usage
@@ -73,14 +80,25 @@ module.exports = {
       {
         test: /\.mina$/,
         use: {
-          loader: "mina-loader",
+          loader: "@tinajs/mina-loader",
           options: {
             loaders: {
               script: "babel-loader"
             }
           }
         }
-      }
+      },
+      {
+        test: /\.wxs$/,
+        use: [
+          {
+            loader: '@tinajs/wxs-loader',
+            options: {
+              name: 'wxs/[name].[hash:6].[ext]',
+            },
+          },
+        ],
+      },
     ]
   },
   plugins: [
@@ -164,6 +182,7 @@ Page({
 
 - [mina-webpack - Full Example](./example)
 - [mina-loader - test](./packages/mina-loader/test)
+- [wxs-loader - test](./packages/wxs-loader/test)
 - [TinaJS - HackerNews Reader](https://github.com/tinajs/tina-hackernews)
 
 ## Related Projects
