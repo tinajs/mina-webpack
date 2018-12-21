@@ -38,6 +38,8 @@
   "dependencies": {
     "@babel/core": "^7.2.2",
     "co": "^4.6.0",
-    "loader-utils": "^1.1.0"
+    "ensure-posix-path": "^1.0.2",
+    "loader-utils": "^1.1.0",
+    "required-path": "^1.0.1"
   }
 }
