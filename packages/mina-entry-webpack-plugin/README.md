@@ -39,7 +39,7 @@ module.exports = {
       {
         test: /\.mina$/,
         use: {
-          loader: 'mina-loader',
+          loader: '@tinajs/mina-loader',
         },
       },
     ],
