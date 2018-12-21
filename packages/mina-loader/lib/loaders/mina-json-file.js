@@ -172,7 +172,9 @@ module.exports = function(source) {
             return file
           }
 
-          return tryResolveFile(this.resourcePath, file, this.rootContext)
+          return (
+            './' + tryResolveFile(this.resourcePath, file, this.rootContext)
+          )
         }),
       })
     })
