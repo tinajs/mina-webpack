@@ -16,14 +16,11 @@ export default (use = () => {}) => {
   config.module
     .rule('wxs')
     .test(/\.wxs$/)
-    .use('file')
-    .loader(require.resolve('file-loader'))
+    .use('wxs')
+    .loader(require.resolve('../..'))
     .options({
       name: 'assets/[name].[hash:6].[ext]',
     })
-    .end()
-    .use('wxs')
-    .loader(require.resolve('../..'))
     .end()
 
   use(config)
