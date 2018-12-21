@@ -40,7 +40,7 @@ test('basic usage with MinaEntryPlugin', async t => {
   )
   t.deepEqual(JSON.parse(mfs.readFileSync('/page.json', 'utf8')), {
     name: 'mina',
-    usingComponents: { github: '_/extra-resources/github' },
+    usingComponents: { github: './_/extra-resources/github' },
   })
 
   t.true(
@@ -95,7 +95,11 @@ test('use symbolic links with MinaEntryPlugin', async t => {
   /** symbolic a **/
   t.is(
     mfs.readFileSync('/_/extra-resources/symbolic-a.json', 'utf8'),
-    JSON.stringify({ usingComponents: { b: 'subdir/symbolic-b' } }, null, '  ')
+    JSON.stringify(
+      { usingComponents: { b: './subdir/symbolic-b' } },
+      null,
+      '  '
+    )
   )
   t.true(
     mfs
@@ -226,7 +230,7 @@ test('pages / usingComponents could be defined as classical component with MinaE
   )
   t.deepEqual(JSON.parse(mfs.readFileSync('/page-c.json', 'utf8')), {
     usingComponents: {
-      a: 'component-a',
+      a: './component-a',
     },
   })
   t.is(
@@ -235,8 +239,8 @@ test('pages / usingComponents could be defined as classical component with MinaE
   )
   t.deepEqual(JSON.parse(mfs.readFileSync('/page-e.json', 'utf8')), {
     usingComponents: {
-      b: 'component-b',
-      c: 'component-c',
+      b: './component-b',
+      c: './component-c',
     },
   })
   t.is(mfs.readFileSync('/page-f.wxss', 'utf8'), 'view {\n  display: none;\n}')
@@ -306,8 +310,8 @@ test('pages / usingComponents could be unknown file type with MinaEntryPlugin', 
   )
   t.deepEqual(JSON.parse(mfs.readFileSync('/page-g.json', 'utf8')), {
     usingComponents: {
-      b: 'component-b',
-      c: 'component-c',
+      b: './component-b',
+      c: './component-c',
     },
   })
   t.deepEqual(JSON.parse(mfs.readFileSync('/component-b.json', 'utf8')), {
