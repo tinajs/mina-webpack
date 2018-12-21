@@ -70,7 +70,8 @@ module.exports = {
           {
             loader: '@tinajs/wxs-loader',
             options: {
-              name: 'wxs/[name].[hash:6].[ext]',
+              name: 'wxs/[path]/[name].[hash:6].[ext]',
+              context: resolve('src/wxs'),
             },
           },
         ],
