@@ -11,17 +11,17 @@ module.exports = function loader(source) {
   const options = Object.assign(
     {},
     {
-      name: '',
-      context: '',
-      regExp: '',
+      name: '[hash].[ext]',
+      context: this.rootContext,
+      regExp: void 0,
     },
     utils.getOptions(this)
   )
   const publicPath = getPublicPath({}, this)
   const interpolateName = (content = 'PLACEHOLDER') =>
     utils.interpolateName(this, options.name, {
-      context: options.context || this.rootContext,
       content,
+      context: options.context,
       regExp: options.regExp,
     })
 
