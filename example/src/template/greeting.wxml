@@ -1,0 +1,2 @@
+<text>{{ greeting() }}</text>
+<wxs src="../wxs/greeting.wxs" module="greeting" />

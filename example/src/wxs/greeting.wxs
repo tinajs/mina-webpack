@@ -1,0 +1,13 @@
+function random (array) {
+  return array[Math.floor(Math.random() * array.length)]
+}
+
+var GREETING = [
+  'Hi',
+  'Glad to see you',
+  'How was your day',
+]
+
+module.exports = function greeting () {
+  return random(GREETING)
+}

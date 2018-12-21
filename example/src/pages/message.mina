@@ -1,5 +1,8 @@
 <template>
   <view>
+    <include src="../template/greeting.wxml" />
+    <wxs src="../wxs/greeting.wxs" module="greeting" />
+
     <view>Roll: {{ random }}</view>
     <view>Now: {{ now }}</view>
 

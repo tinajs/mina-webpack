@@ -76,6 +76,25 @@ module.exports = {
           },
         ],
       },
+      {
+        test: /\.wxml$/,
+        use: [
+          {
+            loader: 'relative-file-loader',
+            options: {
+              name: 'wxml/[name].[hash:6].[ext]',
+            },
+          },
+          {
+            loader: '@tinajs/wxml-loader',
+            options: {
+              raw: true,
+              enforceRelativePath: true,
+              root: resolve('src'),
+            },
+          },
+        ],
+      },
     ],
   },
   resolve: {
