@@ -68,12 +68,11 @@ module.exports = {
         test: /\.wxs$/,
         use: [
           {
-            loader: 'file-loader',
+            loader: '@tinajs/wxs-loader',
             options: {
               name: 'wxs/[name].[hash:6].[ext]',
             },
           },
-          '@tinajs/wxs-loader',
         ],
       },
     ],
