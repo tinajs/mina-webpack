@@ -71,8 +71,7 @@
     "replace-ext": "^1.0.0",
     "resolve": "^1.8.1",
     "style-loader": "^0.19.0",
-    "vue-template-compiler": "^2.5.3",
-    "wxml-loader": "^0.2.1"
+    "vue-template-compiler": "^2.5.3"
   },
   "ava": {
     "source": [
