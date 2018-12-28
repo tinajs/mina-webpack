@@ -174,3 +174,34 @@ test('pack with options', async t => {
 
   t.pass()
 })
+
+test('handle cloud-url in template', async t => {
+  const { compile, mfs } = compiler({
+    entry: './fixtures/basic/cloud-url.mina',
+    output: {
+      filename: 'fixtures/basic/cloud-url.js',
+    },
+    module: {
+      rules: [
+        {
+          test: /\.mina$/,
+          use: {
+            loader: require.resolve('..'),
+            options: {
+              loaders: {
+                script: 'babel-loader',
+              },
+            },
+          },
+        },
+      ],
+    },
+  })
+  const stats = await compile()
+  t.is(
+    mfs.readFileSync('/fixtures/basic/cloud-url.wxml', 'utf8'),
+    '<image src="cloud://foobar.test/logo.png" />'
+  )
+
+  t.pass()
+})
