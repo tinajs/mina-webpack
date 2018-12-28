@@ -1,0 +1,3 @@
+<template>
+  <image src="cloud://foobar.test/logo.png" />
+</template>
