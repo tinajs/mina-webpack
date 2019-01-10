@@ -7,7 +7,7 @@ node_js:
 
 cache:
   directoreis:
-  - $HOME/.npm
+    - $HOME/.npm
 
 before_install:
   - npm install --global npm@latest
@@ -22,4 +22,3 @@ script:
 
 notifications:
   webhooks: "https://www.travisbuddy.com/"
-
