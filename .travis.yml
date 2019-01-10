@@ -12,13 +12,12 @@ cache:
 before_install:
   - npm install --global npm@latest
   - npm --version
-  - npm install --global lerna
 
 install:
-  - lerna bootstrap
+  - npx lerna bootstrap
 
 script:
-  - lerna run test
+  - npx lerna run test
 
 notifications:
   webhooks: "https://www.travisbuddy.com/"
