@@ -1,7 +1,7 @@
-<script lang="yellowify">
+<script lang="number">
 Page({
   onLoad () {
-    console.log('blue');
+    console.log(9);
   }
 })
 </script>
