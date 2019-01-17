@@ -32,6 +32,8 @@ test('use custom extensions', async t => {
   })
   const stats = await compile()
 
+  t.deepEqual(stats.compilation.errors, [], stats.compilation.errors[0])
+
   t.true(mfs.existsSync('/assets/logo.7bd732.png'))
   t.true(
     mfs.readFileSync('/fixtures/basic/page.js', 'utf8').includes('onLoad () {')
