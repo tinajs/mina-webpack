@@ -12,7 +12,7 @@ const debug = require('debug')('loaders:mina')
 
 const helpers = require('../helpers')
 
-const { RESOLVE_EXTENSIONS } = require('../constants')
+const { RESOLVABLE_EXTENSIONS } = require('../constants')
 
 function stripExt(path) {
   return replaceExt(path, '')
@@ -83,7 +83,7 @@ function resolveFromModule(context, filename) {
     fs.realpathSync(
       resolve.sync(loaderUtils.urlToRequest(filename), {
         basedir: context,
-        extensions: RESOLVE_EXTENSIONS,
+        extensions: RESOLVABLE_EXTENSIONS,
       })
     )
   )

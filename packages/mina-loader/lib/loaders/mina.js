@@ -12,7 +12,7 @@ const parserLoaderPath = require.resolve('./parser')
 
 const helpers = require('../helpers')
 const {
-  EXTNAMES,
+  DEFAULT_EXTENSIONS,
   TAGS_FOR_FILE_LOADER,
   TAGS_FOR_OUTPUT,
   LOADERS,
@@ -69,9 +69,9 @@ module.exports = function() {
       loaders: {},
       languages: {},
       extensions: {
-        config: EXTNAMES.config,
-        template: EXTNAMES.template,
-        style: EXTNAMES.style,
+        config: DEFAULT_EXTENSIONS.CONFIG,
+        template: DEFAULT_EXTENSIONS.TEMPLATE,
+        style: DEFAULT_EXTENSIONS.STYLE,
       },
       publicPath: helpers.getPublicPath(webpackOptions, this),
       useWxssUrl: true,
