@@ -51,6 +51,19 @@ const getLoaders = (loaderContext, tag, options, attributes = {}) => {
     loader = loader ? `${loader}!${custom}` : custom
   }
 
+  // prepend transition
+  let transition = options.translations[tag]
+  if (transition) {
+    transition = helpers.stringifyLoaders(
+      helpers.parseLoaders(transition).map(object => {
+        return merge({}, object, {
+          loader: resolveFrom(loaderContext.rootContext, object.loader),
+        })
+      })
+    )
+    loader = loader ? `${transition}!${loader}` : transition
+  }
+
   return loader
 }
 
@@ -77,6 +90,12 @@ module.exports = function() {
         config: DEFAULT_EXTENSIONS.CONFIG,
         template: DEFAULT_EXTENSIONS.TEMPLATE,
         style: DEFAULT_EXTENSIONS.STYLE,
+      },
+      translations: {
+        config: '',
+        template: '',
+        script: '',
+        style: '',
       },
       publicPath: helpers.getPublicPath(webpackOptions, this),
       useWxssUrl: true,
