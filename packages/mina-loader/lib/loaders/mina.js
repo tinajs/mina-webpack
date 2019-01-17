@@ -39,7 +39,7 @@ const getLoaders = (loaderContext, tag, options, attributes = {}) => {
   // append custom loader
   let custom = lang
     ? options.languages[lang] || `${lang}-loader`
-    : options.loaders[tag] || ''
+    : options.loaders[tag]
   if (custom) {
     custom = helpers.stringifyLoaders(
       helpers.parseLoaders(custom).map(object => {
@@ -66,7 +66,12 @@ module.exports = function() {
   const options = merge(
     {},
     {
-      loaders: {},
+      loaders: {
+        config: '',
+        template: '',
+        script: '',
+        style: '',
+      },
       languages: {},
       extensions: {
         config: DEFAULT_EXTENSIONS.CONFIG,
