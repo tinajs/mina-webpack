@@ -68,6 +68,11 @@ module.exports = function() {
     {
       loaders: {},
       languages: {},
+      extensions: {
+        config: EXTNAMES.config,
+        template: EXTNAMES.template,
+        style: EXTNAMES.style,
+      },
       publicPath: helpers.getPublicPath(webpackOptions, this),
       useWxssUrl: true,
       context: this.rootContext,
@@ -124,7 +129,9 @@ module.exports = function() {
               let request =
                 '!!' +
                 [
-                  `${fileLoaderPath}?name=${dirname}/[name]${EXTNAMES[tag]}`,
+                  `${fileLoaderPath}?name=${dirname}/[name]${
+                    options.extensions[tag]
+                  }`,
                   getLoaders(this, tag, options, blocks[tag].attributes),
                   select(originalRequest, tag),
                 ]
