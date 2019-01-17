@@ -64,7 +64,7 @@ function getRequestsFromConfig(config) {
   return uniq(requests)
 }
 
-function getItems(rootContext, entry, rules) {
+function getItems(rootContext, entry, rules, minaLoaderOptions) {
   let memory = []
 
   function search(currentContext, originalRequest) {
@@ -88,7 +88,9 @@ function getItems(rootContext, entry, rules) {
           basedir: rootContext,
           extensions: RESOLVE_EXTENSIONS,
         })
-        request = `!${minaLoader}!${virtualMinaLoader}!${resourcePath}`
+        request = `!${minaLoader}?${JSON.stringify(
+          minaLoaderOptions
+        )}!${virtualMinaLoader}!${resourcePath}`
         isClassical = true
       }
     } catch (error) {
@@ -168,6 +170,8 @@ module.exports = class MinaEntryWebpackPlugin {
         pattern: new Minimatch(rule.pattern, { matchBase: true }),
       })
     })
+    // TODO: redefine a better struct for this option
+    this.minaLoaderOptions = options.minaLoaderOptions || {}
 
     this._errors = []
 
@@ -188,19 +192,23 @@ module.exports = class MinaEntryWebpackPlugin {
         entry = entry[entry.length - 1]
       }
 
-      getItems(context, entry, this.rules).forEach(item => {
-        if (item.error) {
-          return this._errors.push(item.error)
-        }
-        if (this._items.some(({ request }) => request === item.request)) {
-          return
-        }
-        this._items.push(item)
+      getItems(context, entry, this.rules, this.minaLoaderOptions).forEach(
+        item => {
+          if (item.error) {
+            return this._errors.push(item.error)
+          }
+          if (this._items.some(({ request }) => request === item.request)) {
+            return
+          }
+          this._items.push(item)
 
-        addEntry(context, this.map(ensurePosix(item.request)), item.name).apply(
-          compiler
-        )
-      })
+          addEntry(
+            context,
+            this.map(ensurePosix(item.request)),
+            item.name
+          ).apply(compiler)
+        }
+      )
     } catch (error) {
       if (typeof done === 'function') {
         console.error(error)
