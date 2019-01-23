@@ -32,7 +32,7 @@ test('use MinaRuntimePlugin', async t => {
 
   await compile()
 
-  const expectedStartsWith = `;require('runtime.js');require('common.js');(wx["webpackJsonp"] = wx["webpackJsonp"] || []).push(`
+  const expectedStartsWith = `;require('./runtime.js');require('./common.js');(wx["webpackJsonp"] = wx["webpackJsonp"] || []).push(`
   const expectedRuntimeIncludes = `polyfill('parseInt', parseInt)`
 
   t.true(mfs.existsSync('/runtime.js'))
