@@ -5,6 +5,7 @@ const fs = require('fs')
 const path = require('path')
 const ensurePosix = require('ensure-posix-path')
 const { ConcatSource } = require('webpack-sources')
+const requiredPath = require('required-path')
 const debug = require('debug')('plugins:mina-runtime')
 
 function isRuntimeExtracted(compilation) {
@@ -15,7 +16,9 @@ function isRuntimeExtracted(compilation) {
 }
 
 function script({ dependencies }) {
-  return ';' + dependencies.map(file => `require('${file}');`).join('')
+  return (
+    ';' + dependencies.map(file => `require('${requiredPath(file)}');`).join('')
+  )
 }
 
 const POLYFILL = fs.readFileSync(path.join(__dirname, './polyfill.js'), 'utf8')
