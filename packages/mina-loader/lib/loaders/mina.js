@@ -110,11 +110,6 @@ module.exports = function() {
         [...TAGS_FOR_FILE_LOADER, ...TAGS_FOR_OUTPUT].map(tag => {
           let result = {
             tag,
-            name: loaderUtils.interpolateName(
-              this,
-              `${dirname}/[name]${options.extensions[tag]}`,
-              {}
-            ),
             content: '',
           }
 
@@ -145,11 +140,10 @@ module.exports = function() {
           return helpers.loadModule
             .call(this, request)
             .then(raw => this.exec(raw, originalRequest))
-            .then(content =>
-              Object.assign({}, result, {
-                content,
-              })
-            )
+            .then(content => {
+              result.content = content
+              return result
+            })
         })
       )
         .then(async blocks => {
@@ -163,7 +157,12 @@ module.exports = function() {
           // emit files
           blocks
             .filter(({ tag }) => ~TAGS_FOR_FILE_LOADER.indexOf(tag))
-            .forEach(({ content, name }) => {
+            .forEach(({ tag, content }) => {
+              let name = loaderUtils.interpolateName(
+                this,
+                `${dirname}/[name]${options.extensions[tag]}`,
+                {}
+              )
               this.emitFile(name, content)
             })
 
