@@ -88,6 +88,14 @@ module.exports = function() {
     webpackOptions
   )
 
+  if (options.translations) {
+    this.emitWarning(
+      new Error(
+        'The api `translations` of mina-loader is deprecated. Please use `transform` instead.'
+      )
+    )
+  }
+
   const originalRequest = loaderUtils.getRemainingRequest(this)
   const filePath = this.resourcePath
   const dirname = compose(
