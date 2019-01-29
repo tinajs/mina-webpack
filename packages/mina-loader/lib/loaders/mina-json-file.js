@@ -65,7 +65,7 @@ function resolveFile(source, target, context, workdir = './') {
   )
 }
 
-function tryResolveFile() {
+function tryResolveFile(source, target, context, workdir) {
   try {
     return resolveFile(...arguments)
   } catch (error) {
