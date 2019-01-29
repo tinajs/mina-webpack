@@ -32,7 +32,7 @@ const LOADERS = {
   },
   script: () => '',
   config: ({ publicPath, minimize }) =>
-    `${resolve('./loaders/mina-json-file')}?${JSON.stringify({
+    `${resolve('./loaders/mina-json')}?${JSON.stringify({
       publicPath,
       minimize,
     })}`,
