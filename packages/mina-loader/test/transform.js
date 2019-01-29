@@ -2,9 +2,6 @@ import test from 'ava'
 import compiler from './helpers/compiler'
 
 test('use translations', async t => {
-  const scopeIdLoader = require.resolve('./helpers/loaders/scope-id-loader')
-  const extractScopeIdLoader = `extract-loader!${scopeIdLoader}`
-
   const { compile, mfs } = compiler({
     entry: './fixtures/basic/page.mina',
     output: {
@@ -17,12 +14,7 @@ test('use translations', async t => {
           use: {
             loader: require.resolve('..'),
             options: {
-              translations: {
-                config: extractScopeIdLoader,
-                template: extractScopeIdLoader,
-                script: scopeIdLoader,
-                style: extractScopeIdLoader,
-              },
+              transform: require('./helpers/transform/scope-id'),
             },
           },
         },
@@ -38,11 +30,11 @@ test('use translations', async t => {
   t.true(
     mfs
       .readFileSync('/fixtures/basic/page.js', 'utf8')
-      .includes('module.exports = "3d3b9153"')
+      .includes('module.exports = "a2fce32d"')
   )
-  t.is(mfs.readFileSync('/fixtures/basic/page.wxml', 'utf8'), '3d3b9153')
-  t.is(mfs.readFileSync('/fixtures/basic/page.wxss', 'utf8'), '3d3b9153')
-  t.is(mfs.readFileSync('/fixtures/basic/page.json', 'utf8'), '3d3b9153')
+  t.is(mfs.readFileSync('/fixtures/basic/page.wxml', 'utf8'), 'a2fce32d')
+  t.is(mfs.readFileSync('/fixtures/basic/page.wxss', 'utf8'), 'a2fce32d')
+  t.is(mfs.readFileSync('/fixtures/basic/page.json', 'utf8'), 'a2fce32d')
 
   t.pass()
 })
