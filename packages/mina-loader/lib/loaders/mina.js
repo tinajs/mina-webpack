@@ -1,4 +1,5 @@
 const path = require('path')
+const chain = require('object-path')
 const merge = require('lodash.merge')
 const compose = require('compose-function')
 const loaderUtils = require('loader-utils')
@@ -6,7 +7,7 @@ const resolveFrom = require('resolve-from')
 const ensurePosix = require('ensure-posix-path')
 const debug = require('debug')('loaders:mina')
 
-const fileLoaderPath = require.resolve('file-loader')
+const rawLoaderPath = require.resolve('raw-loader')
 const selectorLoaderPath = require.resolve('./selector')
 const parserLoaderPath = require.resolve('./parser')
 
@@ -51,19 +52,6 @@ const getLoaders = (loaderContext, tag, options, attributes = {}) => {
     loader = loader ? `${loader}!${custom}` : custom
   }
 
-  // prepend transition
-  let transition = options.translations[tag]
-  if (transition) {
-    transition = helpers.stringifyLoaders(
-      helpers.parseLoaders(transition).map(object => {
-        return merge({}, object, {
-          loader: resolveFrom(loaderContext.rootContext, object.loader),
-        })
-      })
-    )
-    loader = loader ? `${transition}!${loader}` : transition
-  }
-
   return loader
 }
 
@@ -91,12 +79,7 @@ module.exports = function() {
         template: DEFAULT_EXTENSIONS.TEMPLATE,
         style: DEFAULT_EXTENSIONS.STYLE,
       },
-      translations: {
-        config: '',
-        template: '',
-        script: '',
-        style: '',
-      },
+      transform: ast => ast,
       publicPath: helpers.getPublicPath(webpackOptions, this),
       useWxssUrl: true,
       context: this.rootContext,
@@ -107,66 +90,83 @@ module.exports = function() {
 
   const originalRequest = loaderUtils.getRemainingRequest(this)
   const filePath = this.resourcePath
+  const dirname = compose(
+    ensurePosix,
+    helpers.toSafeOutputPath,
+    path.dirname
+  )(path.relative(this.rootContext, filePath))
 
   getBlocks(this, originalRequest)
-    .then(blocks => {
-      // compute output
-      let output = TAGS_FOR_OUTPUT.reduce((result, tag) => {
-        if (!blocks[tag]) {
-          return result
-        }
+    .then(blocks =>
+      Promise.all(
+        [...TAGS_FOR_FILE_LOADER, ...TAGS_FOR_OUTPUT].map(tag => {
+          let result = {
+            tag,
+            name: loaderUtils.interpolateName(
+              this,
+              `${dirname}/[name]${options.extensions[tag]}`,
+              {}
+            ),
+            content: '',
+          }
 
-        let request =
-          '!!' +
-          [
-            getLoaders(this, tag, options, blocks[tag].attributes),
-            select(originalRequest, tag),
-          ]
-            .filter(Boolean)
-            .join('!')
-        return `${result};require(${loaderUtils.stringifyRequest(
-          this,
-          request
-        )})`
-      }, '')
+          if (
+            !blocks[tag] ||
+            !(
+              blocks[tag].content ||
+              (blocks[tag].attributes && blocks[tag].attributes.src)
+            )
+          ) {
+            return Promise.resolve(result)
+          }
 
-      return (
-        Promise
-          // emit files
-          .all(
-            TAGS_FOR_FILE_LOADER.map(tag => {
-              if (
-                !blocks[tag] ||
-                !(
-                  blocks[tag].content ||
-                  (blocks[tag].attributes && blocks[tag].attributes.src)
-                )
-              ) {
-                return Promise.resolve()
-              }
-
-              let dirname = compose(
-                ensurePosix,
-                helpers.toSafeOutputPath,
-                path.dirname
-              )(path.relative(this.rootContext, filePath))
-              let request =
-                '!!' +
-                [
-                  `${fileLoaderPath}?name=${dirname}/[name]${
-                    options.extensions[tag]
-                  }`,
-                  getLoaders(this, tag, options, blocks[tag].attributes),
-                  select(originalRequest, tag),
-                ]
-                  .filter(Boolean)
-                  .join('!')
-              return helpers.loadModule.call(this, request)
-            })
-          )
-          .then(() => done(null, output))
+          let request =
+            '!!' +
+            [
+              rawLoaderPath,
+              getLoaders(
+                this,
+                tag,
+                options,
+                chain.get(blocks, `${tag}.attributes`)
+              ),
+              select(originalRequest, tag),
+            ]
+              .filter(Boolean)
+              .join('!')
+          return helpers.loadModule
+            .call(this, request)
+            .then(raw => this.exec(raw, originalRequest))
+            .then(content =>
+              Object.assign({}, result, {
+                content,
+              })
+            )
+        })
       )
-    })
+        .then(async blocks => {
+          let ast = {
+            name: loaderUtils.interpolateName(this, `${dirname}/[name]`, {}),
+            blocks,
+          }
+          return await options.transform(ast)
+        })
+        .then(({ blocks }) => {
+          // emit files
+          blocks
+            .filter(({ tag }) => ~TAGS_FOR_FILE_LOADER.indexOf(tag))
+            .forEach(({ content, name }) => {
+              this.emitFile(name, content)
+            })
+
+          // pipe out
+          let output = blocks
+            .filter(({ tag }) => ~TAGS_FOR_OUTPUT.indexOf(tag))
+            .reduce((memo, { content }) => `${memo};${content}`, '')
+
+          done(null, output)
+        })
+    )
     .catch(error => {
       debug('error', error)
       done(error)
