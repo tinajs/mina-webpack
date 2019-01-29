@@ -151,7 +151,8 @@ module.exports = function() {
             name: loaderUtils.interpolateName(this, `${dirname}/[name]`, {}),
             blocks,
           }
-          return await options.transform(ast)
+          let warning = error => this.emitWarning(error)
+          return await options.transform(ast, { warning })
         })
         .then(({ blocks }) => {
           // emit files
