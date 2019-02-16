@@ -10,6 +10,12 @@ const RESOLVABLE_EXTENSIONS = ['.js', '.wxml', '.json', '.wxss']
 
 const TAGS_FOR_FILE_LOADER = ['template', 'style', 'config']
 const TAGS_FOR_OUTPUT = ['script']
+const DEFAULT_CONTENT_OF_TAG = {
+  template: '',
+  style: '',
+  config: '{}',
+  script: '',
+}
 
 const LOADERS = {
   template: ({ publicPath, context, minimize }) =>
@@ -42,4 +48,5 @@ exports.DEFAULT_EXTENSIONS = DEFAULT_EXTENSIONS
 exports.RESOLVABLE_EXTENSIONS = RESOLVABLE_EXTENSIONS
 exports.TAGS_FOR_FILE_LOADER = TAGS_FOR_FILE_LOADER
 exports.TAGS_FOR_OUTPUT = TAGS_FOR_OUTPUT
+exports.DEFAULT_CONTENT_OF_TAG = DEFAULT_CONTENT_OF_TAG
 exports.LOADERS = LOADERS

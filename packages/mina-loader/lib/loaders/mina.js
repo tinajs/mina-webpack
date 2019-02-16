@@ -16,6 +16,7 @@ const {
   DEFAULT_EXTENSIONS,
   TAGS_FOR_FILE_LOADER,
   TAGS_FOR_OUTPUT,
+  DEFAULT_CONTENT_OF_TAG,
   LOADERS,
 } = require('../constants')
 
@@ -110,7 +111,7 @@ module.exports = function() {
         [...TAGS_FOR_FILE_LOADER, ...TAGS_FOR_OUTPUT].map(tag => {
           let result = {
             tag,
-            content: '',
+            content: DEFAULT_CONTENT_OF_TAG[tag],
           }
 
           if (

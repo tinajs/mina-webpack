@@ -205,3 +205,29 @@ test('handle cloud-url in template', async t => {
 
   t.pass()
 })
+
+test('empty mina file should emit files with default content', async t => {
+  const { compile, mfs } = compiler({
+    entry: './fixtures/basic/empty.mina',
+    output: {
+      filename: 'fixtures/basic/empty.js',
+    },
+    module: {
+      rules: [
+        {
+          test: /\.mina$/,
+          use: {
+            loader: require.resolve('..'),
+          },
+        },
+      ],
+    },
+  })
+  const stats = await compile()
+  t.is(mfs.readFileSync('/fixtures/basic/empty.wxml', 'utf8'), '')
+  t.is(mfs.readFileSync('/fixtures/basic/empty.wxss', 'utf8'), '')
+  t.is(mfs.readFileSync('/fixtures/basic/empty.json', 'utf8'), '{}')
+  t.true(mfs.existsSync('/fixtures/basic/empty.js'))
+
+  t.pass()
+})
