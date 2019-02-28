@@ -9,10 +9,13 @@
     "husky": "^1.3.1",
     "lerna": "^3.13.1"
   },
-  "scripts": {
-    "precommit": "lerna run --concurrency 1 --stream precommit"
-  },
+  "scripts": {},
   "dependencies": {
     "debug": "^4.1.1"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lerna run --concurrency 1 --stream precommit"
+    }
   }
 }
