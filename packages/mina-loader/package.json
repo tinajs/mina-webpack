@@ -74,7 +74,7 @@
     "vue-template-compiler": "^2.6.7"
   },
   "ava": {
-    "source": [
+    "sources": [
       "lib/**/*.js",
       "../mina-entry-webpack-plugin/**/*.js",
       "../mina-runtime-webpack-plugin/**/*.js"
