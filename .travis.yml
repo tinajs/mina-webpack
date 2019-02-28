@@ -13,7 +13,7 @@ before_install:
   - npm --version
 
 install:
-  - npx lerna bootstrap
+  - npx lerna bootstrap --ci
 
 script:
   - npx lerna run test
