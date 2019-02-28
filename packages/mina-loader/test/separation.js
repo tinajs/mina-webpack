@@ -113,7 +113,7 @@ test('load separated .es source file', async t => {
           use: {
             loader: 'babel-loader',
             options: {
-              presets: [['env']],
+              presets: [['@babel/preset-env']],
             },
           },
         },
