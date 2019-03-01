@@ -126,7 +126,12 @@ test('pack with options', async t => {
             loader: require.resolve('..'),
             options: {
               loaders: {
-                script: 'babel-loader',
+                script: {
+                  loader: 'babel-loader',
+                  options: {
+                    extends: resolveRelative('./helpers/babelrc'),
+                  },
+                },
               },
             },
           },

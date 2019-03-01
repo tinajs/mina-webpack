@@ -1,0 +1,13 @@
+{
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "targets": [
+          "iOS 8",
+          "ChromeAndroid 53"
+        ]
+      }
+    ]
+  ]
+}
