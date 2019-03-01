@@ -8,6 +8,8 @@
   ],
   "scripts": {
     "precommit": "lint-staged",
+    "prepare": "npm run build",
+    "build": "tsc -p .",
     "test": "ava test/*.js"
   },
   "author": "yelo",
@@ -29,6 +31,7 @@
     "@tinajs/mina-entry-webpack-plugin": "^1.0.16",
     "@tinajs/mina-runtime-webpack-plugin": "^1.1.0",
     "@tinajs/tina-logo.mina": "^0.2.1",
+    "@types/node": "^11.9.6",
     "ava": "^1.2.1",
     "babel-loader": "^8.0.5",
     "chai": "^4.2.0",
