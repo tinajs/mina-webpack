@@ -8,6 +8,8 @@
   ],
   "scripts": {
     "precommit": "lint-staged",
+    "prepare": "npm run build",
+    "build": "tsc -p .",
     "test": "ava test/*.js"
   },
   "author": "yelo",
@@ -24,11 +26,13 @@
   },
   "homepage": "https://github.com/tinajs/mina-webpack/tree/master/packages/mina-loader#readme",
   "devDependencies": {
+    "@types/node": "^11.9.6",
     "ava": "^1.2.1",
     "file-loader": "^3.0.1",
     "lint-staged": "^8.1.4",
     "memory-fs": "^0.4.1",
     "prettier": "^1.16.4",
+    "typescript": "^3.3.3333",
     "webpack": "^4.29.6",
     "webpack-chain": "^5.2.0"
   },
