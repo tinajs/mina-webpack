@@ -1,7 +1,7 @@
-const postcss = require('postcss')
-const postcssUrl = require('postcss-url')
+import postcss from 'postcss'
+import postcssUrl from 'postcss-url'
 
-module.exports = function loader(source) {
+export default function loader(this: any, source: string): void {
   const done = this.async()
 
   const file = this.resourcePath
@@ -15,5 +15,5 @@ module.exports = function loader(source) {
   postcss(plugins)
     .process(source, options)
     .then(({ css }) => done(null, css))
-    .catch(error => done(error))
+    .catch((error: Error) => done(error))
 }
