@@ -1,6 +1,10 @@
 {
   "compilerOptions": {
     "outDir": "./lib",
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "strict": true,
+    "allowSyntheticDefaultImports": true,
     "allowJs": true,
     "target": "es5"
   },
