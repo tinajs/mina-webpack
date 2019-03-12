@@ -1,24 +1,32 @@
-const resolve = module => require.resolve(module)
+const resolve = (module: string) => require.resolve(module)
 
-const DEFAULT_EXTENSIONS = {
+export const DEFAULT_EXTENSIONS = {
   TEMPLATE: '.wxml',
   STYLE: '.wxss',
   CONFIG: '.json',
 }
 
-const RESOLVABLE_EXTENSIONS = ['.js', '.wxml', '.json', '.wxss']
+export const RESOLVABLE_EXTENSIONS = ['.js', '.wxml', '.json', '.wxss']
 
-const TAGS_FOR_FILE_LOADER = ['template', 'style', 'config']
-const TAGS_FOR_OUTPUT = ['script']
-const DEFAULT_CONTENT_OF_TAG = {
+export const TAGS_FOR_FILE_LOADER = ['template', 'style', 'config']
+export const TAGS_FOR_OUTPUT = ['script']
+export const DEFAULT_CONTENT_OF_TAG = {
   template: '',
   style: '',
   config: '{}',
   script: '',
 }
 
-const LOADERS = {
-  template: ({ publicPath, context, minimize }) =>
+export const LOADERS = {
+  template: ({
+    publicPath,
+    context,
+    minimize,
+  }: {
+    publicPath: string
+    context: any
+    minimize: boolean
+  }) =>
     `${resolve('@tinajs/wxml-loader')}?${JSON.stringify({
       publicPath,
       enforceRelativePath: true,
@@ -26,7 +34,13 @@ const LOADERS = {
       minimize,
       raw: true,
     })}`,
-  style: ({ publicPath, useWxssUrl }) => {
+  style: ({
+    publicPath,
+    useWxssUrl,
+  }: {
+    publicPath: string
+    useWxssUrl: boolean
+  }) => {
     let arrLoader = [
       `${resolve('extract-loader')}?${JSON.stringify({ publicPath })}`,
       `${resolve('css-loader')}?${JSON.stringify({ url: !useWxssUrl })}`,
@@ -37,16 +51,15 @@ const LOADERS = {
     return arrLoader.join('!')
   },
   script: () => '',
-  config: ({ publicPath, minimize }) =>
+  config: ({
+    publicPath,
+    minimize,
+  }: {
+    publicPath: string
+    minimize: boolean
+  }) =>
     `${resolve('./loaders/mina-json')}?${JSON.stringify({
       publicPath,
       minimize,
     })}`,
 }
-
-exports.DEFAULT_EXTENSIONS = DEFAULT_EXTENSIONS
-exports.RESOLVABLE_EXTENSIONS = RESOLVABLE_EXTENSIONS
-exports.TAGS_FOR_FILE_LOADER = TAGS_FOR_FILE_LOADER
-exports.TAGS_FOR_OUTPUT = TAGS_FOR_OUTPUT
-exports.DEFAULT_CONTENT_OF_TAG = DEFAULT_CONTENT_OF_TAG
-exports.LOADERS = LOADERS

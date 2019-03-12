@@ -5,6 +5,8 @@
     "esModuleInterop": true,
     "strict": true,
     "allowSyntheticDefaultImports": true,
+    "listEmittedFiles": true,
+    "listFiles": true,
     "allowJs": true,
     "target": "es5"
   },
