@@ -1,0 +1,6 @@
+<template>
+  <view>
+    <image src="/fixtures/basic/logo.png" />
+    <image src="../basic/logo.png" />
+  </view>
+</template>

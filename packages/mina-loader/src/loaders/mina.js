@@ -85,6 +85,7 @@ module.exports = function() {
       useWxssUrl: true,
       context: this.rootContext,
       minimize: process.env.NODE_ENV === 'production',
+      enforceRelativePath: true,
     },
     webpackOptions
   )
