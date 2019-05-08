@@ -13,9 +13,9 @@ test.afterEach(() => {
 
 test('enforceRelativePath: keep enforce', async t => {
   const { compile, mfs } = compiler({
-    entry: './fixtures/enforce-relative-path/enforce.mina',
+    entry: './fixtures/enforce-relative-path/page.mina',
     output: {
-      filename: 'fixtures/enforce-relative-path/enforce.js',
+      filename: 'fixtures/enforce-relative-path/page.js',
     },
     module: {
       rules: [
@@ -24,7 +24,7 @@ test('enforceRelativePath: keep enforce', async t => {
           use: {
             loader: require.resolve('..'),
             options: {
-              enforceRelativePath: false,
+              enforceRelativePath: true,
             },
           },
         },
@@ -35,8 +35,12 @@ test('enforceRelativePath: keep enforce', async t => {
   const stats = await compile()
 
   t.is(
-    mfs.readFileSync('/fixtures/enforce-relative-path/enforce.wxml', 'utf8'),
-    `<image src="../../assets/logo.7bd732.png" />`
+    mfs.readFileSync('/fixtures/enforce-relative-path/page.wxml', 'utf8'),
+    ['<view>',
+      '  <image src="../../assets/logo.7bd732.png" />',
+      '  <image src="../../assets/logo.7bd732.png" />',
+      '</view>'
+    ].join('\n')
   )
 
   t.pass()
@@ -44,9 +48,9 @@ test('enforceRelativePath: keep enforce', async t => {
 
 test('enforceRelativePath: use loose mode to allow absolute path', async t => {
   const { compile, mfs } = compiler({
-    entry: './fixtures/enforce-relative-path/loose.mina',
+    entry: './fixtures/enforce-relative-path/page.mina',
     output: {
-      filename: 'fixtures/enforce-relative-path/loose.js',
+      filename: 'fixtures/enforce-relative-path/page.js',
     },
     module: {
       rules: [
@@ -66,10 +70,10 @@ test('enforceRelativePath: use loose mode to allow absolute path', async t => {
   const stats = await compile()
 
   t.is(
-    mfs.readFileSync('/fixtures/enforce-relative-path/loose.wxml', 'utf8'),
+    mfs.readFileSync('/fixtures/enforce-relative-path/page.wxml', 'utf8'),
     ['<view>',
-      '  <image src="../../assets/logo.7bd732.png" />',
-      '  <image src="../../assets/logo.7bd732.png" />',
+      '  <image src="/assets/logo.7bd732.png" />',
+      '  <image src="/assets/logo.7bd732.png" />',
       '</view>'
     ].join('\n')
   )
