@@ -22,14 +22,16 @@ export const LOADERS = {
     publicPath,
     context,
     minimize,
+    enforceRelativePath,
   }: {
     publicPath: string
     context: any
     minimize: boolean
+    enforceRelativePath: boolean,
   }) =>
     `${resolve('@tinajs/wxml-loader')}?${JSON.stringify({
       publicPath,
-      enforceRelativePath: true,
+      enforceRelativePath,
       root: context,
       minimize,
       raw: true,
