@@ -7,7 +7,9 @@
     "lib"
   ],
   "scripts": {
+    "clean": "rimraf lib",
     "precommit": "lint-staged",
+    "prebuild": "npm run clean",
     "prepare": "npm run build",
     "build": "tsc -p .",
     "test": "ava test/*.js"
