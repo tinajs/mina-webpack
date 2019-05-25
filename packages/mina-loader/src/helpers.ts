@@ -1,6 +1,10 @@
-const vm = require('vm')
-const Module = require('module')
-const loaderUtils = require('loader-utils')
+import vm from 'vm'
+import Module from 'module'
+import loaderUtils, { OptionObject } from 'loader-utils'
+import { loader } from 'webpack'
+
+type LoaderOptions = Record<string, any>
+type WebpackContext = any
 
 /**
  * Retrieves the public path from the loader options, context.options (webpack <4) or context._compilation (webpack 4+).
@@ -12,7 +16,10 @@ const loaderUtils = require('loader-utils')
  * @param {Object} context - Webpack loader context
  * @returns {string}
  */
-exports.getPublicPath = function getPublicPath(options, context) {
+export function getPublicPath(
+  options: LoaderOptions,
+  context: WebpackContext
+): string {
   const property = 'publicPath'
 
   if (property in options) {
@@ -38,9 +45,14 @@ exports.getPublicPath = function getPublicPath(options, context) {
   return ''
 }
 
-exports.loadModule = function loadModule(request) {
+type LoadModuleRequest = any
+
+export function loadModule(
+  this: any,
+  request: LoadModuleRequest
+): Promise<string> {
   return new Promise((resolve, reject) => {
-    this.loadModule(request, (err, source) => {
+    this.loadModule(request, (err: Error, source: string) => {
       if (err) {
         return reject(err)
       }
@@ -49,7 +61,7 @@ exports.loadModule = function loadModule(request) {
   })
 }
 
-exports.ensureBang = function ensureBang(loader) {
+export function ensureBang(loader: string): string {
   if (loader.charAt(loader.length - 1) !== '!') {
     return loader + '!'
   } else {
@@ -57,7 +69,12 @@ exports.ensureBang = function ensureBang(loader) {
   }
 }
 
-exports.stringifyLoaders = function stringifyLoaders(loaders) {
+type Loader = Partial<{
+  loader: string
+  options: LoaderOptions
+}>
+
+export function stringifyLoaders(loaders: Loader[]): string {
   return loaders
     .map(obj =>
       obj && typeof obj === 'object' && typeof obj.loader === 'string'
@@ -67,7 +84,7 @@ exports.stringifyLoaders = function stringifyLoaders(loaders) {
     .join('!')
 }
 
-exports.parseLoaders = function parseLoaders(loaders) {
+export function parseLoaders(loaders: string | (string | LoaderOptions)[]) {
   if (!loaders) {
     return []
   }
@@ -81,13 +98,16 @@ exports.parseLoaders = function parseLoaders(loaders) {
     if (typeof raw !== 'string') {
       return raw
     }
-    let [loader, options] = raw.split('!')
-    options = loaderUtils.getOptions({ query: `?${options || ''}` })
+    const [loader, optionsString] = raw.split('!')
+    const loaderContext: loader.LoaderContext = {
+      query: `?${optionsString || ''}`,
+    } as loader.LoaderContext
+    const options: OptionObject = loaderUtils.getOptions(loaderContext)
     return { loader, options }
   })
 }
 
-exports.toSafeOutputPath = function(original) {
+export function toSafeOutputPath(original: string | undefined | null): string {
   return (original || '')
     .replace(/\.\./g, '_')
     .replace(/node_modules([\/\\])/g, '_node_modules_$1')
@@ -98,7 +118,7 @@ exports.toSafeOutputPath = function(original) {
  * https://github.com/peerigon/extract-loader/blob/f5a1946a7b54ef962e5af56aaf29d318efaabf66/src/extractLoader.js#L110
  * https://github.com/Cap32/wxml-loader/blob/986c2a07f195c0f8f4e35169148e4965061a50f6/src/index.js#L21
  */
-exports.extract = function(src, publicPath = '') {
+export function extract(src: string, publicPath = '') {
   const script = new vm.Script(src, {
     displayErrors: true,
   })
@@ -108,6 +128,7 @@ exports.extract = function(src, publicPath = '') {
   }
 
   script.runInNewContext(sandbox)
+  // @ts-ignore
   return sandbox.module.exports.toString()
 }
 
@@ -115,15 +136,17 @@ exports.extract = function(src, publicPath = '') {
  * Forked from:
  * https://github.com/webpack/webpack.js.org/issues/1268#issuecomment-313513988
  */
-exports.exec = function exec(context, code, filename) {
+export function exec(context: any, code: string, filename: string): any {
   const module = new Module(filename, context)
+  // @ts-ignore
   module.paths = Module._nodeModulePaths(context.context)
   module.filename = filename
+  // @ts-ignore
   module._compile(code, filename)
   delete require.cache[filename]
   return module.exports
 }
 
-exports.getResourcePathFromRequest = function(request) {
+export function getResourcePathFromRequest(request: string): string {
   return request.split('!').slice(-1)[0]
 }

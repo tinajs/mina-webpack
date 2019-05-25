@@ -1,27 +1,30 @@
-const loaderUtils = require('loader-utils')
-const { dirname } = require('path')
-const resolve = require('resolve')
-const parserLoaderPath = require.resolve('./parser')
+import loaderUtils from 'loader-utils'
+import { dirname } from 'path'
+import resolve from 'resolve'
+import { TAGS_FOR_FILE_LOADER, TAGS_FOR_OUTPUT } from '../constants'
+import { loadModule } from '../helpers'
 
-const { TAGS_FOR_FILE_LOADER, TAGS_FOR_OUTPUT } = require('../constants')
-const { loadModule } = require('../helpers')
+const parserLoaderPath: string = require.resolve('./parser')
 
-function isSameDiretory(currentResourcePath, requestUrl) {
+function isSameDiretory(
+  currentResourcePath: string,
+  requestUrl: string
+): boolean {
   let requestPath = requestUrl.split('!').slice(-1)[0]
   let currentDiretory = dirname(currentResourcePath)
   let requestFullpath = resolve.sync(requestPath, { basedir: currentDiretory })
   return currentDiretory === dirname(requestFullpath)
 }
 
-module.exports = function() {
+export default function selector(this: any) {
   this.cacheable()
   const cb = this.async()
-  const { tag } = loaderUtils.getOptions(this) || {}
+  const { tag } = loaderUtils.getOptions(this) || { tag: '' }
   const { resourcePath } = this
   const url = `!!${parserLoaderPath}!${loaderUtils.getRemainingRequest(this)}`
   loadModule
     .call(this, url)
-    .then(source => {
+    .then((source: string) => {
       const blocks = this.exec(source, url)
       const block = blocks[tag]
       if (block && block.attributes && block.attributes.src) {
@@ -32,7 +35,7 @@ module.exports = function() {
           if (isSameDiretory(resourcePath, request)) {
             return loadModule
               .call(this, request)
-              .then(source => this.exec(source, request))
+              .then((source: string) => this.exec(source, request))
           }
           this.emitError(
             new Error(
@@ -49,6 +52,6 @@ module.exports = function() {
       }
       return blocks[tag].content
     })
-    .then(content => cb(null, content))
+    .then((content: string) => cb(null, content))
     .catch(cb)
 }
