@@ -2,8 +2,8 @@ import vm from 'vm'
 import Module from 'module'
 import loaderUtils, { OptionObject } from 'loader-utils'
 import { loader } from 'webpack'
+import { LoaderOptions } from './constants'
 
-type LoaderOptions = Record<string, any>
 type WebpackContext = any
 
 /**
@@ -23,7 +23,10 @@ export function getPublicPath(
   const property = 'publicPath'
 
   if (property in options) {
-    return options[property]
+    const path = options[property]
+    if (path) {
+      return path
+    }
   }
 
   if (
@@ -84,7 +87,9 @@ export function stringifyLoaders(loaders: Loader[]): string {
     .join('!')
 }
 
-export function parseLoaders(loaders: string | (string | LoaderOptions)[]) {
+export function parseLoaders(
+  loaders: string | (string | LoaderOptions)[]
+): LoaderOptions[] {
   if (!loaders) {
     return []
   }
@@ -96,7 +101,7 @@ export function parseLoaders(loaders: string | (string | LoaderOptions)[]) {
   }
   return loaders.map(raw => {
     if (typeof raw !== 'string') {
-      return raw
+      return raw as LoaderOptions
     }
     const [loader, optionsString] = raw.split('!')
     const loaderContext: loader.LoaderContext = {
