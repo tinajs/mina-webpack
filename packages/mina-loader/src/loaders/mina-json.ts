@@ -1,33 +1,34 @@
-const fs = require('fs')
-const path = require('path')
-const JSON5 = require('json5')
-const resolve = require('resolve')
-const merge = require('lodash.merge')
-const compose = require('compose-function')
-const replaceExt = require('replace-ext')
-const loaderUtils = require('loader-utils')
-const ensurePosix = require('ensure-posix-path')
-const pMap = require('p-map')
-const debug = require('debug')('loaders:mina')
+import fs from 'fs'
+import path from 'path'
+import JSON5 from 'json5'
+import resolve from 'resolve'
+import merge from 'lodash/merge'
+import mapValues from 'lodash/mapValues'
+import compose from 'compose-function'
+import replaceExt from 'replace-ext'
+import loaderUtils from 'loader-utils'
+import ensurePosix from 'ensure-posix-path'
+import pMap from 'p-map'
+import Debug from 'debug'
+const debug = Debug('loaders:mina')
 
-const helpers = require('../helpers')
+import * as helpers from '../helpers'
 
-const { RESOLVABLE_EXTENSIONS } = require('../constants')
+import { RESOLVABLE_EXTENSIONS } from '../constants'
 
-function stripExt(path) {
+function stripExt(path: string): string {
   return replaceExt(path, '')
 }
 
-function mapObject(object, iteratee) {
-  let result = {}
-  for (let key in object) {
-    result[key] = iteratee(object[key], key, object)
-  }
-  return result
-}
+type LoaderContext = any
 
-function resolveFile(source, target, context, workdir = './') {
-  let resolve = target =>
+function resolveFile(
+  source: string,
+  target: string,
+  context: LoaderContext,
+  workdir: string = './'
+): string {
+  let resolve = (target: string) =>
     compose(
       ensurePosix,
       helpers.toSafeOutputPath,
@@ -65,9 +66,14 @@ function resolveFile(source, target, context, workdir = './') {
   )
 }
 
-function tryResolveFile(source, target, context, workdir) {
+function tryResolveFile(
+  source: string,
+  target: string,
+  context: LoaderContext,
+  workdir?: string
+) {
   try {
-    return resolveFile(...arguments)
+    return resolveFile(source, target, context, workdir)
   } catch (error) {
     if (error.code === 'MODULE_NOT_FOUND') {
       return target
@@ -77,7 +83,7 @@ function tryResolveFile(source, target, context, workdir) {
   }
 }
 
-function resolveFromModule(context, filename) {
+function resolveFromModule(context: LoaderContext, filename: string): string {
   return path.relative(
     context,
     fs.realpathSync(
@@ -89,7 +95,48 @@ function resolveFromModule(context, filename) {
   )
 }
 
-module.exports = function(source) {
+type PageConfig = string
+
+type WindowConfig = {
+  navigationBarBackgroundColor: string
+  navigationBarTextStyle: 'black' | 'white'
+  navigationBarTitleText: string
+  backgroundColor: string
+  backgroundTextStyle: 'light' | 'dark'
+}
+
+type TabConfig = {
+  pagePath: string
+  iconPath?: string
+  selectedIconPath?: string
+  text: string
+}
+
+type TabBarConfig = {
+  custom?: boolean
+  position: 'bottom' | 'top'
+  list: TabConfig[]
+}
+
+type MinaJsonConfig = {
+  usingComponents?: Record<string, string>
+  publicComponents?: Record<string, string>
+  pages: PageConfig[]
+  tabBar?: TabBarConfig
+  subPackages?: {
+    root: string
+    pages: string[]
+  }[]
+  window: WindowConfig
+  networkTimeout?: Partial<{
+    request: number
+    downloadFile: number
+  }>
+  debug?: boolean
+  navigateToMiniProgramAppIdList?: string[]
+}
+
+export default function minaJson(this: any, source: string): void {
   const done = this.async()
   const webpackOptions = loaderUtils.getOptions(this) || {}
   const options = merge(
@@ -99,13 +146,10 @@ module.exports = function(source) {
     },
     webpackOptions
   )
-  const relativeToRoot = path.relative(
-    path.dirname(this.resource),
-    this.rootContext
-  )
+
   const loadModule = helpers.loadModule.bind(this)
 
-  let config
+  let config: MinaJsonConfig
   try {
     config = JSON5.parse(source)
   } catch (error) {
@@ -120,7 +164,7 @@ module.exports = function(source) {
     /**
      * pages
      */
-    .then(config => {
+    .then((config: MinaJsonConfig) => {
       const { pages } = config
       if (!Array.isArray(pages) && typeof pages !== 'object') {
         return config
@@ -128,9 +172,9 @@ module.exports = function(source) {
 
       const map = Array.isArray(pages)
         ? [].map.bind(pages)
-        : mapObject.bind(null, pages)
+        : mapValues.bind(null, pages)
       return Object.assign(config, {
-        pages: map(page =>
+        pages: map((page: string) =>
           tryResolveFile(this.resourcePath, page, this.rootContext)
         ),
       })
@@ -138,7 +182,7 @@ module.exports = function(source) {
     /**
      * subPackages
      */
-    .then(config => {
+    .then((config: MinaJsonConfig) => {
       const { subPackages } = config
       if (!Array.isArray(subPackages)) {
         return config
@@ -147,7 +191,7 @@ module.exports = function(source) {
       return Object.assign(config, {
         subPackages: subPackages.map(({ root, pages }) => ({
           root,
-          pages: pages.map(page =>
+          pages: pages.map((page: string) =>
             tryResolveFile(
               this.resourcePath,
               path.join(root, page),
@@ -161,13 +205,13 @@ module.exports = function(source) {
     /**
      * usingComponents
      */
-    .then(config => {
+    .then((config: MinaJsonConfig) => {
       if (typeof config.usingComponents !== 'object') {
         return config
       }
 
       return Object.assign(config, {
-        usingComponents: mapObject(config.usingComponents, file => {
+        usingComponents: mapValues(config.usingComponents, (file: string) => {
           if (file.startsWith('plugin://')) {
             return file
           }
@@ -181,13 +225,13 @@ module.exports = function(source) {
     /**
      * publicComponents
      */
-    .then(config => {
+    .then((config: MinaJsonConfig) => {
       if (typeof config.publicComponents !== 'object') {
         return config
       }
 
       return Object.assign(config, {
-        publicComponents: mapObject(config.publicComponents, file =>
+        publicComponents: mapValues(config.publicComponents, (file: string) =>
           tryResolveFile(this.resourcePath, file, this.rootContext)
         ),
       })
@@ -195,12 +239,12 @@ module.exports = function(source) {
     /**
      * tabBar
      */
-    .then(config => {
+    .then((config: MinaJsonConfig) => {
       if (!config.tabBar || !Array.isArray(config.tabBar.list)) {
         return config
       }
 
-      function loadAndReplace(tab, field) {
+      function loadAndReplace(tab: TabConfig, field: keyof TabConfig) {
         return loadModule(tab[field])
           .then(source => helpers.extract(source, options.publicPath))
           .then(outputPath =>
@@ -210,35 +254,40 @@ module.exports = function(source) {
           )
       }
 
-      return pMap(config.tabBar.list, tab => {
-        if (tab.pagePath) {
-          tab = Object.assign(tab, {
-            pagePath: ensurePosix(stripExt(tab.pagePath)),
-          })
+      const result: Promise<MinaJsonConfig> = pMap(
+        config.tabBar.list,
+        (tab: TabConfig) => {
+          if (tab.pagePath) {
+            tab = Object.assign(tab, {
+              pagePath: ensurePosix(stripExt(tab.pagePath)),
+            })
+          }
+          return Promise.resolve(tab)
+            .then(tab => {
+              if (!tab.iconPath) {
+                return tab
+              }
+              return loadAndReplace(tab, 'iconPath')
+            })
+            .then(tab => {
+              if (!tab.selectedIconPath) {
+                return tab
+              }
+              return loadAndReplace(tab, 'selectedIconPath')
+            })
         }
-        return Promise.resolve(tab)
-          .then(tab => {
-            if (!tab.iconPath) {
-              return tab
-            }
-            return loadAndReplace(tab, 'iconPath')
-          })
-          .then(tab => {
-            if (!tab.selectedIconPath) {
-              return tab
-            }
-            return loadAndReplace(tab, 'selectedIconPath')
-          })
-      }).then(list =>
-        Object.assign(config, {
-          tabBar: Object.assign(config.tabBar, {
-            list,
-          }),
-        })
+      ).then(
+        (list: TabConfig[]) =>
+          Object.assign(config, {
+            tabBar: Object.assign(config.tabBar, {
+              list,
+            }),
+          }) as MinaJsonConfig
       )
+      return result
     })
-    .then(config =>
+    .then((config: MinaJsonConfig) =>
       done(null, JSON.stringify(config, null, webpackOptions.minimize ? 0 : 2))
     )
-    .catch(error => done(error))
+    .catch((error: Error) => done(error))
 }

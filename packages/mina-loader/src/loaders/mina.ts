@@ -1,33 +1,52 @@
-const path = require('path')
-const chain = require('object-path')
-const merge = require('lodash.merge')
-const compose = require('compose-function')
-const loaderUtils = require('loader-utils')
-const resolveFrom = require('resolve-from')
-const ensurePosix = require('ensure-posix-path')
-const debug = require('debug')('loaders:mina')
+import path from 'path'
+import chain from 'object-path'
+import merge from 'lodash/merge'
+import compose from 'compose-function'
+import loaderUtils from 'loader-utils'
+import resolveFrom from 'resolve-from'
+import ensurePosix from 'ensure-posix-path'
+import Debug from 'debug'
+import * as helpers from '../helpers'
+
+const debug = Debug('loaders:mina')
 
 const rawLoaderPath = require.resolve('raw-loader')
 const selectorLoaderPath = require.resolve('./selector')
 const parserLoaderPath = require.resolve('./parser')
 
-const helpers = require('../helpers')
-const {
+import {
   DEFAULT_EXTENSIONS,
   TAGS_FOR_FILE_LOADER,
   TAGS_FOR_OUTPUT,
   DEFAULT_CONTENT_OF_TAG,
   LOADERS,
-} = require('../constants')
+  Tag,
+  LoaderOptions,
+} from '../constants'
 
-function getBlocks(loaderContext, request) {
+type LoaderContext = any
+
+function getBlocks(
+  loaderContext: LoaderContext,
+  request: string
+): Promise<any> {
   request = `!${parserLoaderPath}!${request}`
   return helpers.loadModule
     .call(loaderContext, request)
-    .then(source => loaderContext.exec(source, request))
+    .then((source: string) => loaderContext.exec(source, request))
 }
 
-const getLoaders = (loaderContext, tag, options, attributes = {}) => {
+type LoaderAttributes = {
+  lang: string
+  src: string
+}
+
+const getLoaders = (
+  loaderContext: LoaderContext,
+  tag: Tag,
+  options: LoaderOptions,
+  attributes: Partial<LoaderAttributes> = {}
+) => {
   let loader = LOADERS[tag](options) || ''
   let lang = attributes.lang
 
@@ -40,13 +59,14 @@ const getLoaders = (loaderContext, tag, options, attributes = {}) => {
 
   // append custom loader
   let custom = lang
-    ? options.languages[lang] || `${lang}-loader`
-    : options.loaders[tag]
+    ? (options.languages || {})[lang] || `${lang}-loader`
+    : (options.loaders ||
+        ({} as Record<Tag, string | (string | LoaderOptions)[]>))[tag]
   if (custom) {
     custom = helpers.stringifyLoaders(
       helpers.parseLoaders(custom).map(object => {
         return merge({}, object, {
-          loader: resolveFrom(loaderContext.rootContext, object.loader),
+          loader: resolveFrom(loaderContext.rootContext, object.loader || ''),
         })
       })
     )
@@ -56,15 +76,25 @@ const getLoaders = (loaderContext, tag, options, attributes = {}) => {
   return loader
 }
 
-function select(originalRequest, tag) {
+function select(originalRequest: string, tag: string) {
   return `${selectorLoaderPath}?tag=${tag}!${originalRequest}`
 }
 
-module.exports = function() {
+type BlockResult = {
+  tag: Tag
+  content: string
+}
+
+export default function mina(this: any) {
   this.cacheable()
 
   const done = this.async()
   const webpackOptions = loaderUtils.getOptions(this) || {}
+  const extensions: Partial<Record<Tag, string>> = {
+    config: DEFAULT_EXTENSIONS.CONFIG,
+    template: DEFAULT_EXTENSIONS.TEMPLATE,
+    style: DEFAULT_EXTENSIONS.STYLE,
+  }
   const options = merge(
     {},
     {
@@ -75,12 +105,8 @@ module.exports = function() {
         style: '',
       },
       languages: {},
-      extensions: {
-        config: DEFAULT_EXTENSIONS.CONFIG,
-        template: DEFAULT_EXTENSIONS.TEMPLATE,
-        style: DEFAULT_EXTENSIONS.STYLE,
-      },
-      transform: ast => ast,
+      extensions,
+      transform: (ast: any, opts?: object) => ast,
       publicPath: helpers.getPublicPath(webpackOptions, this),
       useWxssUrl: true,
       context: this.rootContext,
@@ -109,8 +135,8 @@ module.exports = function() {
   getBlocks(this, originalRequest)
     .then(blocks =>
       Promise.all(
-        [...TAGS_FOR_FILE_LOADER, ...TAGS_FOR_OUTPUT].map(tag => {
-          let result = {
+        [...TAGS_FOR_FILE_LOADER, ...TAGS_FOR_OUTPUT].map((tag: Tag) => {
+          let result: BlockResult = {
             tag,
             content: DEFAULT_CONTENT_OF_TAG[tag],
           }
@@ -141,8 +167,8 @@ module.exports = function() {
               .join('!')
           return helpers.loadModule
             .call(this, request)
-            .then(raw => this.exec(raw, originalRequest))
-            .then(content => {
+            .then((raw: string) => this.exec(raw, originalRequest))
+            .then((content: string) => {
               result.content = content
               return result
             })
@@ -153,14 +179,16 @@ module.exports = function() {
             name: loaderUtils.interpolateName(this, `${dirname}/[name]`, {}),
             blocks,
           }
-          let warning = error => this.emitWarning(error)
+          let warning = (error: Error) => this.emitWarning(error)
           return await options.transform(ast, { warning })
         })
         .then(({ blocks }) => {
           // emit files
           blocks
-            .filter(({ tag }) => ~TAGS_FOR_FILE_LOADER.indexOf(tag))
-            .forEach(({ tag, content }) => {
+            .filter(
+              ({ tag }: BlockResult) => ~TAGS_FOR_FILE_LOADER.indexOf(tag)
+            )
+            .forEach(({ tag, content }: BlockResult) => {
               let name = loaderUtils.interpolateName(
                 this,
                 `${dirname}/[name]${options.extensions[tag]}`,
@@ -170,9 +198,12 @@ module.exports = function() {
             })
 
           // pipe out
-          let output = blocks
-            .filter(({ tag }) => ~TAGS_FOR_OUTPUT.indexOf(tag))
-            .reduce((memo, { content }) => `${memo};${content}`, '')
+          let output: string = blocks
+            .filter(({ tag }: BlockResult) => ~TAGS_FOR_OUTPUT.indexOf(tag))
+            .reduce(
+              (memo: string, { content }: BlockResult) => `${memo};${content}`,
+              ''
+            )
 
           done(null, output)
         })
