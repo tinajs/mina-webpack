@@ -30,6 +30,7 @@
   "devDependencies": {
     "@babel/core": "^7.3.4",
     "@babel/preset-env": "^7.3.4",
+    "@babel/preset-typescript": "^7.3.3",
     "@tinajs/mina-entry-webpack-plugin": "^1.1.1",
     "@tinajs/mina-runtime-webpack-plugin": "^1.2.1",
     "@tinajs/tina-logo.mina": "^0.2.1",

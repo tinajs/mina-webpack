@@ -267,10 +267,34 @@ test('pages / usingComponents could be defined as classical component with MinaE
   t.pass()
 })
 
-test('pages / usingComponents could use extra langs in classical component with MinaEntryPlugin', async t => {
+test('pages / usingComponents could use typescript in classical component with MinaEntryPlugin', async t => {
+  const babelLoader = {
+    loader: 'babel-loader',
+    options: {
+      presets: [
+        // use typescript with babel preset
+        '@babel/preset-typescript',
+      ],
+    },
+  }
   const { compile, mfs } = compiler({
     context: resolveRelative('fixtures/entry'),
-    entry: './app-extra-langs.mina',
+    entry: './app-ts.mina',
+    module: {
+      rules: [
+        {
+          test: /\.mina$/,
+          use: {
+            loader: require.resolve('..'),
+            options: {
+              loaders: {
+                script: babelLoader,
+              },
+            },
+          },
+        },
+      ],
+    },
     output: {
       filename: '[name]',
     },
@@ -280,9 +304,9 @@ test('pages / usingComponents could use extra langs in classical component with 
 
   t.deepEqual(stats.compilation.errors, [], stats.compilation.errors[0])
 
-  t.true(mfs.existsSync('/app-extra-langs.js'))
-  t.true(mfs.existsSync('/app-extra-langs.json'))
-  t.deepEqual(JSON.parse(mfs.readFileSync('/app-extra-langs.json', 'utf8')), {
+  t.true(mfs.existsSync('/app-ts.js'))
+  t.true(mfs.existsSync('/app-ts.json'))
+  t.deepEqual(JSON.parse(mfs.readFileSync('/app-ts.json', 'utf8')), {
     pages: ['page-h'],
   })
   t.true(
