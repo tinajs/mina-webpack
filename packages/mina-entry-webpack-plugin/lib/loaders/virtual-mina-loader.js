@@ -2,6 +2,7 @@ const { dirname } = require('path')
 const fs = require('fs-extra')
 const replaceExt = require('replace-ext')
 const pProps = require('p-props')
+const pAny = require('p-any')
 
 let JavascriptGenerator, JavascriptParser
 try {
@@ -73,14 +74,9 @@ module.exports = function() {
 
   pProps(EXTNAMES, extname => {
     if (Array.isArray(extname)) {
-      return Promise.all(extname.map(ext => part(ext))).then(files => {
-        for (const file of files) {
-          if (file && file.length > 0) {
-            return file
-          }
-        }
-        return
-      })
+      return pAny(extname.map(ext => part(ext)), { filter: c => !!c }).catch(
+        () => null
+      )
     } else {
       return part(extname)
     }
