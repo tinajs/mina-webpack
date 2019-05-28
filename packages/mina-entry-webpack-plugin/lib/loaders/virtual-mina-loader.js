@@ -21,26 +21,18 @@ const EXTNAMES = {
   config: 'json',
 }
 
-const EXTRA_LANGS = {
-  ts: 'ts',
-}
-
 const template = (parts = {}) => {
   let result =
     Object.keys(parts)
       .map(tag => {
-        if (!parts[tag].content) {
+        if (!parts[tag]) {
           return ''
         }
-        const lang = EXTRA_LANGS[parts[tag].extname]
         /**
          * We can assume that the generated virtual files are in the same directory as the source files,
          * so there is no need to consider the problem of resolving relative paths here.
          */
-        if (!lang) {
-          return `<${tag}>${parts[tag].content}</${tag}>`
-        }
-        return `<${tag} lang="${lang}">${parts[tag].content}</${tag}>`
+        return `<${tag}>${parts[tag]}</${tag}>`
       })
       .join('') || ''
   return result
@@ -73,27 +65,18 @@ module.exports = function() {
     let filePath = replaceExt(this.resourcePath, `.${extname}`)
     return fs.exists(filePath).then(isExist => {
       if (!isExist) {
-        return {
-          extname,
-          content: null,
-        }
+        return null
       }
       this.addDependency(filePath)
-      return fs.readFile(filePath, 'utf8').then(content => ({
-        extname,
-        content,
-      }))
+      return fs.readFile(filePath, 'utf8')
     })
   }
 
   pProps(EXTNAMES, extname => {
     if (Array.isArray(extname)) {
-      return pAny(extname.map(ext => part(ext)), {
-        filter: ({ content }) => !!content,
-      }).catch(() => ({
-        extname: null,
-        content: null,
-      }))
+      return pAny(extname.map(ext => part(ext)), { filter: c => !!c }).catch(
+        () => null
+      )
     } else {
       return part(extname)
     }
