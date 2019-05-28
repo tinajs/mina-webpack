@@ -267,6 +267,37 @@ test('pages / usingComponents could be defined as classical component with MinaE
   t.pass()
 })
 
+test('pages / usingComponents could use extra langs in classical component with MinaEntryPlugin', async t => {
+  const { compile, mfs } = compiler({
+    context: resolveRelative('fixtures/entry'),
+    entry: './app-extra-langs.mina',
+    output: {
+      filename: '[name]',
+    },
+    plugins: [new MinaEntryPlugin()],
+  })
+  const stats = await compile()
+
+  t.deepEqual(stats.compilation.errors, [], stats.compilation.errors[0])
+
+  t.true(mfs.existsSync('/app-extra-langs.js'))
+  t.true(mfs.existsSync('/app-extra-langs.json'))
+  t.deepEqual(JSON.parse(mfs.readFileSync('/app-extra-langs.json', 'utf8')), {
+    pages: ['page-h'],
+  })
+  t.true(
+    mfs.readFileSync('/page-h.js', 'utf8').includes("var page = 'H';") &&
+      mfs.readFileSync('/page-h.js', 'utf8').includes("'Hi'") &&
+      mfs
+        .readFileSync('/page-h.js', 'utf8')
+        .includes(
+          'module.exports = __webpack_require__.p + "assets/logo.97017d.png";'
+        )
+  )
+
+  t.pass()
+})
+
 test('pages / usingComponents could be unknown file type with MinaEntryPlugin', async t => {
   const { compile, mfs } = compiler({
     context: resolveRelative('fixtures/entry'),

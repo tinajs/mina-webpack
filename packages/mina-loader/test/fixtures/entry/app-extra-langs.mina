@@ -1,0 +1,11 @@
+<config>
+{
+  "pages": [
+    "page-h",
+  ]
+}
+</config>
+
+<script>
+App({})
+</script>
