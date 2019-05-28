@@ -16,7 +16,7 @@ try {
 const EXTNAMES = {
   template: 'wxml',
   style: 'wxss',
-  script: 'js',
+  script: ['ts', 'js'],
   config: 'json',
 }
 
@@ -60,7 +60,7 @@ module.exports = function() {
 
   this.addContextDependency(dirname(this.resourcePath))
 
-  pProps(EXTNAMES, extname => {
+  const part = extname => {
     let filePath = replaceExt(this.resourcePath, `.${extname}`)
     return fs.exists(filePath).then(isExist => {
       if (!isExist) {
@@ -69,6 +69,21 @@ module.exports = function() {
       this.addDependency(filePath)
       return fs.readFile(filePath, 'utf8')
     })
+  }
+
+  pProps(EXTNAMES, extname => {
+    if (Array.isArray(extname)) {
+      return Promise.all(extname.map(ext => part(ext))).then(files => {
+        for (const file of files) {
+          if (file && file.length > 0) {
+            return file
+          }
+        }
+        return
+      })
+    } else {
+      return part(extname)
+    }
   })
     .then(parts => done(null, template(parts)))
     .catch(done)
