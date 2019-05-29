@@ -15,17 +15,16 @@ const debug = Debug('loaders:mina')
 import * as helpers from '../helpers'
 
 import { RESOLVABLE_EXTENSIONS } from '../constants'
+import webpack from 'webpack'
 
 function stripExt(path: string): string {
   return replaceExt(path, '')
 }
 
-type LoaderContext = any
-
 function resolveFile(
   source: string,
   target: string,
-  context: LoaderContext,
+  context: string,
   workdir: string = './'
 ): string {
   let resolve = (target: string) =>
@@ -69,7 +68,7 @@ function resolveFile(
 function tryResolveFile(
   source: string,
   target: string,
-  context: LoaderContext,
+  context: string,
   workdir?: string
 ) {
   try {
@@ -83,7 +82,7 @@ function tryResolveFile(
   }
 }
 
-function resolveFromModule(context: LoaderContext, filename: string): string {
+function resolveFromModule(context: string, filename: string): string {
   return path.relative(
     context,
     fs.realpathSync(
@@ -136,7 +135,7 @@ type MinaJsonConfig = {
   navigateToMiniProgramAppIdList?: string[]
 }
 
-export default function minaJson(this: any, source: string): void {
+const minaJson: webpack.loader.Loader = function minaJson(source): void {
   const done = this.async()
   const webpackOptions = loaderUtils.getOptions(this) || {}
   const options = merge(
@@ -151,13 +150,15 @@ export default function minaJson(this: any, source: string): void {
 
   let config: MinaJsonConfig
   try {
-    config = JSON5.parse(source)
+    config = JSON5.parse(source as string)
   } catch (error) {
-    return done(error)
+    if (done) done(error)
+    return
   }
 
   if (!config) {
-    return done(null, '')
+    if (done) done(null, '')
+    return
   }
 
   Promise.resolve(config)
@@ -286,8 +287,19 @@ export default function minaJson(this: any, source: string): void {
       )
       return result
     })
-    .then((config: MinaJsonConfig) =>
-      done(null, JSON.stringify(config, null, webpackOptions.minimize ? 0 : 2))
-    )
-    .catch((error: Error) => done(error))
+    .then((config: MinaJsonConfig) => {
+      if (done) {
+        done(
+          null,
+          JSON.stringify(config, null, webpackOptions.minimize ? 0 : 2)
+        )
+      }
+    })
+    .catch((error: Error) => {
+      if (done) {
+        done(error)
+      }
+    })
 }
+
+export default minaJson
