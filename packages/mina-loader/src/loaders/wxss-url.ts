@@ -1,7 +1,8 @@
 import postcss from 'postcss'
 import postcssUrl from 'postcss-url'
+import webpack from 'webpack'
 
-export default function loader(this: any, source: string): void {
+const wxssUrlLoader: webpack.loader.Loader = function wxssUrlLoader(source) {
   const done = this.async()
 
   const file = this.resourcePath
@@ -14,6 +15,12 @@ export default function loader(this: any, source: string): void {
 
   postcss(plugins)
     .process(source, options)
-    .then(({ css }) => done(null, css))
-    .catch((error: Error) => done(error))
+    .then(({ css }) => {
+      if (done) {
+        done(null, css)
+      }
+    })
+    .catch((error: Error) => done && done(error))
 }
+
+export default wxssUrlLoader

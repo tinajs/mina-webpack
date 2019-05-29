@@ -1,6 +1,7 @@
 import loaderUtils from 'loader-utils'
 import { dirname } from 'path'
 import resolve from 'resolve'
+import webpack from 'webpack'
 import { TAGS_FOR_FILE_LOADER, TAGS_FOR_OUTPUT } from '../constants'
 import { loadModule } from '../helpers'
 
@@ -16,7 +17,7 @@ function isSameDiretory(
   return currentDiretory === dirname(requestFullpath)
 }
 
-export default function selector(this: any) {
+const selector: webpack.loader.Loader = function selector() {
   this.cacheable()
   const cb = this.async()
   const { tag } = loaderUtils.getOptions(this) || { tag: '' }
@@ -52,6 +53,8 @@ export default function selector(this: any) {
       }
       return blocks[tag].content
     })
-    .then((content: string) => cb(null, content))
+    .then((content: string) => cb && cb(null, content))
     .catch(cb)
 }
+
+export default selector

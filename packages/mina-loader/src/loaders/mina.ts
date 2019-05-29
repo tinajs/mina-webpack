@@ -23,11 +23,10 @@ import {
   Tag,
   LoaderOptions,
 } from '../constants'
-
-type LoaderContext = any
+import webpack = require('webpack')
 
 function getBlocks(
-  loaderContext: LoaderContext,
+  loaderContext: webpack.loader.LoaderContext,
   request: string
 ): Promise<any> {
   request = `!${parserLoaderPath}!${request}`
@@ -42,7 +41,7 @@ type LoaderAttributes = {
 }
 
 const getLoaders = (
-  loaderContext: LoaderContext,
+  loaderContext: webpack.loader.LoaderContext,
   tag: Tag,
   options: LoaderOptions,
   attributes: Partial<LoaderAttributes> = {}
@@ -85,7 +84,7 @@ type BlockResult = {
   content: string
 }
 
-export default function mina(this: any) {
+const mina: webpack.loader.Loader = function mina() {
   this.cacheable()
 
   const done = this.async()
@@ -194,7 +193,7 @@ export default function mina(this: any) {
                 `${dirname}/[name]${options.extensions[tag]}`,
                 {}
               )
-              this.emitFile(name, content)
+              this.emitFile(name, content, /* source map */ undefined)
             })
 
           // pipe out
@@ -205,11 +204,17 @@ export default function mina(this: any) {
               ''
             )
 
-          done(null, output)
+          if (done) {
+            done(null, output)
+          }
         })
     )
     .catch(error => {
       debug('error', error)
-      done(error)
+      if (done) {
+        done(error)
+      }
     })
 }
+
+export default mina
