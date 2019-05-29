@@ -1,9 +1,9 @@
-const { dirname } = require('path')
-const fs = require('fs-extra')
-const replaceExt = require('replace-ext')
-const pProps = require('p-props')
+import { dirname } from 'path'
+import fs from 'fs-extra'
+import replaceExt from 'replace-ext'
+import pProps from 'p-props'
 
-let JavascriptGenerator, JavascriptParser
+let JavascriptGenerator: any, JavascriptParser: any
 try {
   JavascriptGenerator = require('webpack/lib/JavascriptGenerator')
   JavascriptParser = require('webpack/lib/Parser')
@@ -13,31 +13,33 @@ try {
   }
 }
 
-const EXTNAMES = {
+type Tag = 'template' | 'style' | 'script' | 'config'
+
+const EXTNAMES: Record<Tag, string> = {
   template: 'wxml',
   style: 'wxss',
   script: 'js',
   config: 'json',
 }
 
-const template = (parts = {}) => {
+const template = (parts: Partial<Record<Tag, string>> = {}) => {
   let result =
     Object.keys(parts)
       .map(tag => {
-        if (!parts[tag]) {
+        if (!parts[tag as Tag]) {
           return ''
         }
         /**
          * We can assume that the generated virtual files are in the same directory as the source files,
          * so there is no need to consider the problem of resolving relative paths here.
          */
-        return `<${tag}>${parts[tag]}</${tag}>`
+        return `<${tag}>${parts[tag as Tag]}</${tag}>`
       })
       .join('') || ''
   return result
 }
 
-module.exports = function() {
+export default function VirtualMinaLoader(this: any) {
   this.cacheable()
 
   /**
@@ -60,16 +62,16 @@ module.exports = function() {
 
   this.addContextDependency(dirname(this.resourcePath))
 
-  pProps(EXTNAMES, extname => {
+  pProps(EXTNAMES, (extname: string) => {
     let filePath = replaceExt(this.resourcePath, `.${extname}`)
-    return fs.exists(filePath).then(isExist => {
+    return fs.pathExists(filePath).then((isExist: boolean) => {
       if (!isExist) {
-        return
+        return ''
       }
       this.addDependency(filePath)
       return fs.readFile(filePath, 'utf8')
     })
   })
-    .then(parts => done(null, template(parts)))
+    .then((parts: Partial<Record<Tag, string>>) => done(null, template(parts)))
     .catch(done)
 }

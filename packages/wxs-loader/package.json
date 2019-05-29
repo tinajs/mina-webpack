@@ -35,11 +35,11 @@
     "memory-fs": "^0.4.1",
     "prettier": "^1.16.4",
     "typescript": "^3.3.3333",
-    "webpack": "^4.29.6",
+    "webpack": "^4.32.2",
     "webpack-chain": "^5.2.0"
   },
   "peerDependencies": {
-    "webpack": "^4.0.0"
+    "webpack": "^4.32.2"
   },
   "dependencies": {
     "@babel/core": "^7.3.4",
