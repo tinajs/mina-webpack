@@ -59,6 +59,6 @@
     "replace-ext": "^1.0.0",
     "resolve": "^1.10.0",
     "resolve-from": "^5.0.0",
-    "vue-template-compiler": "^2.6.7"
+    "vue-template-compiler": "^2.6.10"
   }
 }

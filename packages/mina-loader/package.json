@@ -85,7 +85,7 @@
     "resolve": "^1.10.0",
     "resolve-from": "^5.0.0",
     "style-loader": "^0.23.1",
-    "vue-template-compiler": "^2.6.7"
+    "vue-template-compiler": "^2.6.10"
   },
   "ava": {
     "sources": [
