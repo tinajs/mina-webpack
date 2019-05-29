@@ -12,8 +12,9 @@ import {
   WebpackError,
 } from 'webpack'
 import compose from 'compose-function'
-import { Minimatch, IMinimatch } from 'minimatch'
+import { Minimatch } from 'minimatch'
 import ConfigReader from './interfaces/config-reader'
+export { default as ConfigReader } from './interfaces/config-reader'
 import MinaConfigReader from './config-readers/mina'
 import ClassicalConfigReader from './config-readers/classical'
 import {
@@ -298,5 +299,3 @@ export default class MinaEntryWebpackPlugin {
     })
   }
 }
-
-module.exports.ConfigReader = ConfigReader
