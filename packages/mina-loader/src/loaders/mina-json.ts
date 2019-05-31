@@ -135,7 +135,7 @@ type MinaJsonConfig = {
   navigateToMiniProgramAppIdList?: string[]
 }
 
-const minaJson: webpack.loader.Loader = function minaJson(source): void {
+const minaJson: webpack.loader.Loader = function minaJson(source) {
   const done = this.async()
   const webpackOptions = loaderUtils.getOptions(this) || {}
   const options = merge(
@@ -245,37 +245,31 @@ const minaJson: webpack.loader.Loader = function minaJson(source): void {
         return config
       }
 
-      function loadAndReplace(tab: TabConfig, field: keyof TabConfig) {
-        return loadModule(tab[field])
-          .then(source => helpers.extract(source, options.publicPath))
-          .then(outputPath =>
-            Object.assign(tab, {
-              [field]: outputPath,
-            })
-          )
+      async function loadAndReplace(tab: TabConfig, field: keyof TabConfig) {
+        const source = await loadModule(tab[field])
+        const outputPath = helpers.extract(source, options.publicPath)
+        return Object.assign(tab, {
+          [field]: outputPath,
+        })
       }
 
       const result: Promise<MinaJsonConfig> = pMap(
         config.tabBar.list,
-        (tab: TabConfig) => {
+        async (tab: TabConfig) => {
           if (tab.pagePath) {
             tab = Object.assign(tab, {
               pagePath: ensurePosix(stripExt(tab.pagePath)),
             })
           }
-          return Promise.resolve(tab)
-            .then(tab => {
-              if (!tab.iconPath) {
-                return tab
-              }
-              return loadAndReplace(tab, 'iconPath')
-            })
-            .then(tab => {
-              if (!tab.selectedIconPath) {
-                return tab
-              }
-              return loadAndReplace(tab, 'selectedIconPath')
-            })
+          const tab_1 = await Promise.resolve(tab)
+          if (!tab_1.iconPath) {
+            return tab_1
+          }
+          const tab_3 = await loadAndReplace(tab_1, 'iconPath')
+          if (!tab_3.selectedIconPath) {
+            return tab_3
+          }
+          return loadAndReplace(tab_3, 'selectedIconPath')
         }
       ).then(
         (list: TabConfig[]) =>
