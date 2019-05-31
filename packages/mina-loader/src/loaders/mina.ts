@@ -25,14 +25,13 @@ import {
 } from '../constants'
 import webpack = require('webpack')
 
-function getBlocks(
+async function getBlocks(
   loaderContext: webpack.loader.LoaderContext,
   request: string
 ): Promise<any> {
   request = `!${parserLoaderPath}!${request}`
-  return helpers.loadModule
-    .call(loaderContext, request)
-    .then((source: string) => loaderContext.exec(source, request))
+  const source = await helpers.loadModule.call(loaderContext, request)
+  return loaderContext.exec(source, request)
 }
 
 type LoaderAttributes = {
@@ -134,7 +133,7 @@ const mina: webpack.loader.Loader = function mina() {
   getBlocks(this, originalRequest)
     .then(blocks =>
       Promise.all(
-        [...TAGS_FOR_FILE_LOADER, ...TAGS_FOR_OUTPUT].map((tag: Tag) => {
+        [...TAGS_FOR_FILE_LOADER, ...TAGS_FOR_OUTPUT].map(async (tag: Tag) => {
           let result: BlockResult = {
             tag,
             content: DEFAULT_CONTENT_OF_TAG[tag],
@@ -164,13 +163,10 @@ const mina: webpack.loader.Loader = function mina() {
             ]
               .filter(Boolean)
               .join('!')
-          return helpers.loadModule
-            .call(this, request)
-            .then((raw: string) => this.exec(raw, originalRequest))
-            .then((content: string) => {
-              result.content = content
-              return result
-            })
+          const raw = await helpers.loadModule.call(this, request)
+          const content = this.exec(raw, originalRequest)
+          result.content = content
+          return result
         })
       )
         .then(async blocks => {
