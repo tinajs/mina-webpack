@@ -62,13 +62,19 @@ For the best particle, you might also be interested in [mina-webpack](https://gi
 
 ## Options
 
-| Name              | Default      | Description                                                                                                                                                  |
-| ----------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| map               | (e) => e     | Mapper function for each entry. Useful for adding polyfill scripts.                                                                                          |
-| rules             | []           | Rules of custom config readers. See https://github.com/tinajs/mina-webpack/blob/master/packages/mina-loader/test/mina-entry-plugin.js#L204-L264 for examples |
-| rules[].pattern   | ''           | [Pattern, using glob expressions](https://www.npmjs.com/package/minimatch)                                                                                   |
-| rules[].reader    | ConfigReader | Custom config reader, should inherit from [ConfigReader](./lib/interfaces/config-reader.js) and implement its `getConfig` interface                          |
-| minaLoaderOptions | {}           | Options of `mina-loader` for classical components, usually you can just leave it by default.                                                                 |
+| Name                | Default                              | Description                                                                                                                                                  |
+| ------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| map                 | (e) => e                             | Mapper function for each entry. Useful for adding polyfill scripts.                                                                                          |
+| rules               | []                                   | Rules of custom config readers. See https://github.com/tinajs/mina-webpack/blob/master/packages/mina-loader/test/mina-entry-plugin.js#L204-L264 for examples |
+| rules[].pattern     | ''                                   | [Pattern, using glob expressions](https://www.npmjs.com/package/minimatch)                                                                                   |
+| rules[].reader      | ConfigReader                         | Custom config reader, should inherit from [ConfigReader](./lib/interfaces/config-reader.js) and implement its `getConfig` interface                          |
+| extensions          | ...                                  | The extension names of each block for the separation (classical) files.                                                                                      |
+| extensions.template | `['.wxml']`                          | The extension name of the `<template>` block                                                                                                                 |
+| extensions.style    | `['.wxss']`                          | The extension name of the `<style>` block                                                                                                                    |
+| extensions.script   | `['.js']`                            | The extension name of the `<script>` block                                                                                                                   |
+| extensions.config   | `['.json']`                          | The extension name of the `<config>` block                                                                                                                   |
+| extensions.resolve  | `['.js', '.wxml', '.json', '.wxss']` | The resolving order of extensions for the separation (classical) files.                                                                                      |
+| minaLoaderOptions   | {}                                   | Options of `mina-loader` for classical components, usually you can just leave it by default.                                                                 |
 
 ## Example
 

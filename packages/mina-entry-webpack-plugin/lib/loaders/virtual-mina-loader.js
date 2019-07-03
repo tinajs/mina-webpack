@@ -1,5 +1,6 @@
 const { dirname } = require('path')
 const fs = require('fs-extra')
+const loaderUtils = require('loader-utils')
 const replaceExt = require('replace-ext')
 const pProps = require('p-props')
 const pAny = require('p-any')
@@ -12,13 +13,6 @@ try {
   if (error.code !== 'MODULE_NOT_FOUND') {
     throw error
   }
-}
-
-const EXTNAMES = {
-  template: ['wxml'],
-  style: ['wxss'],
-  script: ['js'],
-  config: ['json'],
 }
 
 const template = (parts = {}) => {
@@ -59,9 +53,13 @@ module.exports = function() {
 
   const done = this.async()
 
+  const options = loaderUtils.getOptions(this) || {
+    extensions: {},
+  }
+
   this.addContextDependency(dirname(this.resourcePath))
 
-  pProps(EXTNAMES, extnames => {
+  pProps(options.extensions, extnames => {
     let findFileWithExtname = extname => {
       let filePath = replaceExt(this.resourcePath, `.${extname}`)
       return fs.exists(filePath).then(isExist => ({ isExist, filePath }))
