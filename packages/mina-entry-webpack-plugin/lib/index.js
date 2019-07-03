@@ -1,5 +1,6 @@
 const path = require('path')
 const fs = require('fs')
+const merge = require('lodash/merge')
 const replaceExt = require('replace-ext')
 const resolve = require('resolve')
 const ensurePosix = require('ensure-posix-path')
@@ -23,7 +24,13 @@ const {
 const minaLoader = require.resolve('@tinajs/mina-loader')
 const virtualMinaLoader = require.resolve('./loaders/virtual-mina-loader.js')
 
-const RESOLVE_EXTENSIONS = ['.js', '.wxml', '.json', '.wxss']
+const DEFAULT_EXTENSIONS = {
+  template: ['wxml'],
+  style: ['wxss'],
+  script: ['js'],
+  config: ['json'],
+  resolve: ['.js', '.wxml', '.json', '.wxss'],
+}
 
 function isAbsoluteUrl(url) {
   return !!url.startsWith('/')
@@ -64,7 +71,7 @@ function getRequestsFromConfig(config) {
   return uniq(requests)
 }
 
-function getItems(rootContext, entry, rules, minaLoaderOptions) {
+function getItems(rootContext, entry, rules, extensions, minaLoaderOptions) {
   let memory = []
 
   function search(currentContext, originalRequest) {
@@ -86,11 +93,13 @@ function getItems(rootContext, entry, rules, minaLoaderOptions) {
       } catch (error) {
         resourcePath = resolve.sync(request, {
           basedir: rootContext,
-          extensions: RESOLVE_EXTENSIONS,
+          extensions: extensions.resolve,
         })
         request = `!${minaLoader}?${JSON.stringify(
           minaLoaderOptions
-        )}!${virtualMinaLoader}!${resourcePath}`
+        )}!${virtualMinaLoader}?${JSON.stringify({
+          extensions,
+        })}!${resourcePath}`
         isClassical = true
       }
     } catch (error) {
@@ -128,8 +137,8 @@ function getItems(rootContext, entry, rules, minaLoaderOptions) {
     let config = matchedRule
       ? matchedRule.reader.getConfig(resourcePath)
       : isClassical
-        ? ClassicalConfigReader.getConfig(resourcePath)
-        : MinaConfigReader.getConfig(resourcePath)
+      ? ClassicalConfigReader.getConfig(resourcePath)
+      : MinaConfigReader.getConfig(resourcePath)
 
     let requests = getRequestsFromConfig(config)
     if (requests.length > 0) {
@@ -170,6 +179,7 @@ module.exports = class MinaEntryWebpackPlugin {
         pattern: new Minimatch(rule.pattern, { matchBase: true }),
       })
     })
+    this.extensions = merge({}, DEFAULT_EXTENSIONS, options.extensions)
     // TODO: redefine a better struct for this option
     this.minaLoaderOptions = options.minaLoaderOptions || {}
 
@@ -192,23 +202,25 @@ module.exports = class MinaEntryWebpackPlugin {
         entry = entry[entry.length - 1]
       }
 
-      getItems(context, entry, this.rules, this.minaLoaderOptions).forEach(
-        item => {
-          if (item.error) {
-            return this._errors.push(item.error)
-          }
-          if (this._items.some(({ request }) => request === item.request)) {
-            return
-          }
-          this._items.push(item)
-
-          addEntry(
-            context,
-            this.map(ensurePosix(item.request)),
-            item.name
-          ).apply(compiler)
+      getItems(
+        context,
+        entry,
+        this.rules,
+        this.extensions,
+        this.minaLoaderOptions
+      ).forEach(item => {
+        if (item.error) {
+          return this._errors.push(item.error)
         }
-      )
+        if (this._items.some(({ request }) => request === item.request)) {
+          return
+        }
+        this._items.push(item)
+
+        addEntry(context, this.map(ensurePosix(item.request)), item.name).apply(
+          compiler
+        )
+      })
     } catch (error) {
       if (typeof done === 'function') {
         console.error(error)
