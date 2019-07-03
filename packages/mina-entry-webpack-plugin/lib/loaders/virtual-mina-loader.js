@@ -2,6 +2,7 @@ const { dirname } = require('path')
 const fs = require('fs-extra')
 const replaceExt = require('replace-ext')
 const pProps = require('p-props')
+const pAny = require('p-any')
 
 let JavascriptGenerator, JavascriptParser
 try {
@@ -14,10 +15,10 @@ try {
 }
 
 const EXTNAMES = {
-  template: 'wxml',
-  style: 'wxss',
-  script: 'js',
-  config: 'json',
+  template: ['wxml'],
+  style: ['wxss'],
+  script: ['js'],
+  config: ['json'],
 }
 
 const template = (parts = {}) => {
@@ -60,15 +61,20 @@ module.exports = function() {
 
   this.addContextDependency(dirname(this.resourcePath))
 
-  pProps(EXTNAMES, extname => {
-    let filePath = replaceExt(this.resourcePath, `.${extname}`)
-    return fs.exists(filePath).then(isExist => {
-      if (!isExist) {
-        return
-      }
-      this.addDependency(filePath)
-      return fs.readFile(filePath, 'utf8')
-    })
+  pProps(EXTNAMES, extnames => {
+    let findFileWithExtname = extname => {
+      let filePath = replaceExt(this.resourcePath, `.${extname}`)
+      return fs.exists(filePath).then(isExist => ({ isExist, filePath }))
+    }
+    return pAny(extnames.map(findFileWithExtname), {
+      filter: ({ isExist }) => isExist,
+    }).then(
+      ({ filePath }) => {
+        this.addDependency(filePath)
+        return fs.readFile(filePath, 'utf8')
+      },
+      () => {}
+    )
   })
     .then(parts => done(null, template(parts)))
     .catch(done)
