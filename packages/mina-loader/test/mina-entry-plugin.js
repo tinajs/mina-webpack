@@ -329,6 +329,64 @@ test('pages / usingComponents could be unknown file type with MinaEntryPlugin', 
   t.pass()
 })
 
+test('pages / usingComponents could use custom extensions with MinaEntryPlugin', async t => {
+  const { compile, mfs } = compiler({
+    context: resolveRelative('fixtures/entry'),
+    entry: './app-custom-extensions.mina',
+    output: {
+      filename: '[name]',
+    },
+    plugins: [
+      new MinaEntryPlugin({
+        extensions: {
+          template: ['wxml', 'ttml'],
+          style: ['wxss', 'ttss'],
+          script: ['js'],
+          config: ['json'],
+          resolve: ['.js', 'wxml', '.ttml', '.json', 'wxss', '.ttss'],
+        },
+        minaLoaderOptions: {
+          extensions: {
+            template: '.ttml',
+            style: '.ttss',
+          },
+        },
+      }),
+    ],
+  })
+  const stats = await compile()
+
+  t.deepEqual(stats.compilation.errors, [], stats.compilation.errors[0])
+
+  t.true(mfs.existsSync('/app-custom-extensions.js'))
+  t.true(mfs.existsSync('/app-custom-extensions.json'))
+  t.deepEqual(
+    JSON.parse(mfs.readFileSync('/app-custom-extensions.json', 'utf8')),
+    {
+      pages: ['page-h', 'page-i'],
+    }
+  )
+  t.is(
+    mfs.readFileSync('/page-h.ttml', 'utf8'),
+    '<view>Page H<image src="./assets/logo.97017d.png" /></view>'
+  )
+  t.is(
+    mfs.readFileSync('/page-i.ttml', 'utf8'),
+    '<view>Page I<image src="./assets/logo.97017d.png" /></view>'
+  )
+  t.true(
+    mfs.readFileSync('/page-i.js', 'utf8').includes("'Page I'") &&
+      mfs.readFileSync('/page-i.js', 'utf8').includes("'Hi'") &&
+      mfs
+        .readFileSync('/page-i.js', 'utf8')
+        .includes(
+          'module.exports = __webpack_require__.p + "assets/logo.97017d.png";'
+        )
+  )
+
+  t.pass()
+})
+
 test('do not crash with MinaEntryPlugin when some pathes in pages / usingComponents are not existed', async t => {
   const { compile, mfs } = compiler({
     context: resolveRelative('fixtures/entry'),
