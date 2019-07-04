@@ -28,5 +28,6 @@
   "devDependencies": {
     "lint-staged": "^8.1.4",
     "prettier": "^1.16.4"
-  }
+  },
+  "gitHead": "1be88492c3caad72b677320eb61d5774f2d480cc"
 }

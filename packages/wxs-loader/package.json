@@ -47,5 +47,6 @@
     "ensure-posix-path": "^1.1.1",
     "loader-utils": "^1.2.3",
     "required-path": "^1.0.1"
-  }
+  },
+  "gitHead": "1be88492c3caad72b677320eb61d5774f2d480cc"
 }
