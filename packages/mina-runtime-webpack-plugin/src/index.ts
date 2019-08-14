@@ -1,42 +1,49 @@
 /*
  * forked from https://github.com/Cap32/wxapp-webpack-plugin/
  */
-const fs = require('fs')
-const path = require('path')
-const ensurePosix = require('ensure-posix-path')
-const { ConcatSource } = require('webpack-sources')
-const requiredPath = require('required-path')
-const debug = require('debug')('plugins:mina-runtime')
+import webpack from 'webpack'
+import fs from 'fs'
+import path from 'path'
+import ensurePosix from 'ensure-posix-path'
+import { ConcatSource } from 'webpack-sources'
+// @ts-ignore
+import requiredPath from 'required-path'
+import Debug from 'debug'
 
-function isRuntimeExtracted(compilation) {
+const debug = Debug('plugins:mina-runtime')
+
+function isRuntimeExtracted(compilation: webpack.compilation.Compilation) {
   return compilation.chunks.some(
     chunk =>
       chunk.isOnlyInitial() && chunk.hasRuntime() && !chunk.hasEntryModule()
   )
 }
 
-function script({ dependencies }) {
+function script({ dependencies }: { dependencies: Array<string> }) {
   return (
     ';' + dependencies.map(file => `require('${requiredPath(file)}');`).join('')
   )
 }
 
-const POLYFILL = fs.readFileSync(path.join(__dirname, './polyfill.js'), 'utf8')
+const POLYFILL = fs.readFileSync(path.join(__dirname, '../polyfill.js'), 'utf8')
 
-module.exports = class MinaRuntimeWebpackPlugin {
-  constructor(options = {}) {
+module.exports = class MinaRuntimeWebpackPlugin implements webpack.Plugin {
+  runtime: string
+
+  constructor(options: { runtime?: string } = {}) {
     this.runtime = options.runtime || ''
   }
 
-  apply(compiler) {
+  apply(compiler: webpack.Compiler) {
     compiler.hooks.compilation.tap('MinaRuntimePlugin', compilation => {
       for (let template of [
         compilation.mainTemplate,
         compilation.chunkTemplate,
       ]) {
+        // @ts-ignore
         template.hooks.renderWithEntry.tap(
           'MinaRuntimePlugin',
-          (source, entry) => {
+          (source: any, entry: webpack.compilation.Chunk) => {
             if (!isRuntimeExtracted(compilation)) {
               throw new Error(
                 [
@@ -50,9 +57,9 @@ module.exports = class MinaRuntimeWebpackPlugin {
               return source
             }
 
-            let dependencies = []
+            let dependencies: Array<string> = []
             entry.groupsIterable.forEach(group => {
-              group.chunks.forEach(chunk => {
+              group.chunks.forEach((chunk: webpack.compilation.Chunk) => {
                 /**
                  * assume output.filename is chunk.name here
                  */
@@ -72,9 +79,10 @@ module.exports = class MinaRuntimeWebpackPlugin {
         )
       }
 
+      // @ts-ignore
       compilation.mainTemplate.hooks.bootstrap.tap(
         'MinaRuntimePlugin',
-        (source, chunk) => {
+        (source: any, chunk: webpack.compilation.Chunk) => {
           debug('bootstrap chunk name', chunk.name)
           return POLYFILL + source
         }

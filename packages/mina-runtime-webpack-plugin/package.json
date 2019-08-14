@@ -2,9 +2,13 @@
   "name": "@tinajs/mina-runtime-webpack-plugin",
   "version": "1.2.3",
   "description": "A runtime patch for compiling mina project by Webpack",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
-    "precommit": "lint-staged"
+    "clean": "rimraf lib",
+    "precommit": "lint-staged",
+    "prebuild": "npm run clean",
+    "prepare": "npm run build",
+    "build": "tsc -p ."
   },
   "author": "yelo",
   "license": "MIT",
@@ -26,8 +30,13 @@
     "webpack-sources": "^1.3.0"
   },
   "devDependencies": {
+    "@types/debug": "^4.1.5",
+    "@types/node": "^12.7.1",
+    "@types/webpack": "^4.32.1",
+    "@types/webpack-sources": "^0.1.5",
     "lint-staged": "^8.1.4",
-    "prettier": "^1.16.4"
+    "prettier": "^1.16.4",
+    "typescript": "^3.5.3"
   },
   "gitHead": "1be88492c3caad72b677320eb61d5774f2d480cc"
 }
