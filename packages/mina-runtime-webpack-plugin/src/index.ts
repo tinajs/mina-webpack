@@ -36,48 +36,43 @@ module.exports = class MinaRuntimeWebpackPlugin implements webpack.Plugin {
 
   apply(compiler: webpack.Compiler) {
     compiler.hooks.compilation.tap('MinaRuntimePlugin', compilation => {
-      for (let template of [
-        compilation.mainTemplate,
-        compilation.chunkTemplate,
-      ]) {
-        // @ts-ignore
-        template.hooks.renderWithEntry.tap(
-          'MinaRuntimePlugin',
-          (source: any, entry: webpack.compilation.Chunk) => {
-            if (!isRuntimeExtracted(compilation)) {
-              throw new Error(
-                [
-                  'Please reuse the runtime chunk to avoid duplicate loading of javascript files.',
-                  "Simple solution: set `optimization.runtimeChunk` to `{ name: 'runtime.js' }` .",
-                  'Detail of `optimization.runtimeChunk`: https://webpack.js.org/configuration/optimization/#optimization-runtimechunk .',
-                ].join('\n')
-              )
-            }
-            if (!entry.hasEntryModule()) {
-              return source
-            }
-
-            let dependencies: Array<string> = []
-            entry.groupsIterable.forEach(group => {
-              group.chunks.forEach((chunk: webpack.compilation.Chunk) => {
-                /**
-                 * assume output.filename is chunk.name here
-                 */
-                let filename = ensurePosix(
-                  path.relative(path.dirname(entry.name), chunk.name)
-                )
-                if (chunk === entry || ~dependencies.indexOf(filename)) {
-                  return
-                }
-                dependencies.push(filename)
-              })
-            })
-            debug(`dependencies of ${entry.name}:`, dependencies)
-            source = new ConcatSource(script({ dependencies }), source)
+      // @ts-ignore
+      compilation.chunkTemplate.hooks.renderWithEntry.tap(
+        'MinaRuntimePlugin',
+        (source: any, entry: webpack.compilation.Chunk) => {
+          if (!isRuntimeExtracted(compilation)) {
+            throw new Error(
+              [
+                'Please reuse the runtime chunk to avoid duplicate loading of javascript files.',
+                "Simple solution: set `optimization.runtimeChunk` to `{ name: 'runtime.js' }` .",
+                'Detail of `optimization.runtimeChunk`: https://webpack.js.org/configuration/optimization/#optimization-runtimechunk .',
+              ].join('\n')
+            )
+          }
+          if (!entry.hasEntryModule()) {
             return source
           }
-        )
-      }
+
+          let dependencies: Array<string> = []
+          entry.groupsIterable.forEach(group => {
+            group.chunks.forEach((chunk: webpack.compilation.Chunk) => {
+              /**
+               * assume output.filename is chunk.name here
+               */
+              let filename = ensurePosix(
+                path.relative(path.dirname(entry.name), chunk.name)
+              )
+              if (chunk === entry || ~dependencies.indexOf(filename)) {
+                return
+              }
+              dependencies.push(filename)
+            })
+          })
+          debug(`dependencies of ${entry.name}:`, dependencies)
+          source = new ConcatSource(script({ dependencies }), source)
+          return source
+        }
+      )
 
       // @ts-ignore
       compilation.mainTemplate.hooks.bootstrap.tap(
