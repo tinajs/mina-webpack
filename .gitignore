@@ -4,4 +4,3 @@ node_modules
 !/packages/mina-loader/test/fixtures/resolve-components/node_modules
 npm-debug.log
 lerna-debug.log
-package-lock.json
