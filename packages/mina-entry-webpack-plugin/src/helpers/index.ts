@@ -1,4 +1,4 @@
-exports.toSafeOutputPath = function(original) {
+export function toSafeOutputPath(original: string) {
   return (
     (original || '')
       // replace '..' to '_'
@@ -8,14 +8,14 @@ exports.toSafeOutputPath = function(original) {
   )
 }
 
-exports.getResourceUrlFromRequest = function(request) {
+export function getResourceUrlFromRequest(request: string) {
   return request.split('!').slice(-1)[0]
 }
 
-exports.values = function(object) {
+export function values(object: any) {
   return Object.keys(object).map(key => object[key])
 }
 
-exports.uniq = function(array) {
+export function uniq<T>(array: Array<T>) {
   return [...new Set(array)]
 }

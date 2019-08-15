@@ -1,11 +1,11 @@
-const fs = require('fs')
-const replaceExt = require('replace-ext')
-const ConfigReader = require('../interfaces/config-reader')
+import fs from 'fs'
+import replaceExt from 'replace-ext'
+import ConfigReader from '../interfaces/config-reader'
 
 const CONFIG_EXTENSION = '.json'
 
 class ClassicalConfigReader extends ConfigReader {
-  static getConfig(filePath) {
+  static getConfig(filePath: string) {
     let configPath = replaceExt(filePath, CONFIG_EXTENSION)
     if (!fs.existsSync(configPath)) {
       return {}
@@ -15,4 +15,4 @@ class ClassicalConfigReader extends ConfigReader {
   }
 }
 
-module.exports = ClassicalConfigReader
+export default ClassicalConfigReader
