@@ -14,8 +14,7 @@ before_install:
   - npm --version
 
 install:
-  # no ci because this is library code
-  - npx lerna bootstrap --no-ci
+  - npx lerna bootstrap --ci
 
 script:
   - npx lerna run test
