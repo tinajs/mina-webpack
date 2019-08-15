@@ -1,7 +1,7 @@
 class ConfigReader {
-  static getConfig() {
+  static getConfig(_filePath: string): object {
     throw new Error('getConfig method not implemented')
   }
 }
 
-module.exports = ConfigReader
+export default ConfigReader

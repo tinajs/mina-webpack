@@ -1,30 +1,42 @@
-const path = require('path')
-const fs = require('fs')
-const merge = require('lodash/merge')
-const replaceExt = require('replace-ext')
-const resolve = require('resolve')
-const ensurePosix = require('ensure-posix-path')
-const { urlToRequest } = require('loader-utils')
-const SingleEntryPlugin = require('webpack/lib/SingleEntryPlugin')
-const MultiEntryPlugin = require('webpack/lib/MultiEntryPlugin')
-const WebpackError = require('webpack/lib/WebpackError')
-const compose = require('compose-function')
-const { Minimatch } = require('minimatch')
+import path from 'path'
+import fs from 'fs'
+import merge from 'lodash/merge'
+import replaceExt from 'replace-ext'
+import resolve from 'resolve'
+import ensurePosix from 'ensure-posix-path'
+import { urlToRequest } from 'loader-utils'
+// @ts-ignore
+import SingleEntryPlugin from 'webpack/lib/SingleEntryPlugin'
+// @ts-ignore
+import MultiEntryPlugin from 'webpack/lib/MultiEntryPlugin'
+// @ts-ignore
+import WebpackError from 'webpack/lib/WebpackError'
+import compose from 'compose-function'
+import { Minimatch } from 'minimatch'
 
-const ConfigReader = require('./interfaces/config-reader')
-const MinaConfigReader = require('./config-readers/mina')
-const ClassicalConfigReader = require('./config-readers/classical')
-const {
+import ConfigReader from './interfaces/config-reader'
+import MinaConfigReader from './config-readers/mina'
+import ClassicalConfigReader from './config-readers/classical'
+import {
   values,
   uniq,
   toSafeOutputPath,
   getResourceUrlFromRequest,
-} = require('./helpers')
+} from './helpers'
+import webpack = require('webpack')
 
 const minaLoader = require.resolve('@tinajs/mina-loader')
 const virtualMinaLoader = require.resolve('./loaders/virtual-mina-loader.js')
 
-const DEFAULT_EXTENSIONS = {
+interface Extensions {
+  template: Array<string>
+  style: Array<string>
+  script: Array<string>
+  config: Array<string>
+  resolve: Array<string>
+}
+
+const DEFAULT_EXTENSIONS: Extensions = {
   template: ['wxml'],
   style: ['wxss'],
   script: ['js'],
@@ -32,19 +44,19 @@ const DEFAULT_EXTENSIONS = {
   resolve: ['.js', '.wxml', '.json', '.wxss'],
 }
 
-function isAbsoluteUrl(url) {
+function isAbsoluteUrl(url: string) {
   return !!url.startsWith('/')
 }
 
-function addEntry(context, item, name) {
+function addEntry(context: string, item: string | Array<string>, name: string) {
   if (Array.isArray(item)) {
     return new MultiEntryPlugin(context, item, name)
   }
   return new SingleEntryPlugin(context, item, name)
 }
 
-function getRequestsFromConfig(config) {
-  let requests = []
+function getRequestsFromConfig(config: any) {
+  let requests: Array<string> = []
   if (!config) {
     return requests
   }
@@ -57,7 +69,7 @@ function getRequestsFromConfig(config) {
   })
 
   if (Array.isArray(config.subPackages)) {
-    config.subPackages.forEach(subPackage => {
+    config.subPackages.forEach((subPackage: any) => {
       const { root, pages } = subPackage
       if (Array.isArray(pages)) {
         requests = [
@@ -71,10 +83,27 @@ function getRequestsFromConfig(config) {
   return uniq(requests)
 }
 
-function getItems(rootContext, entry, rules, extensions, minaLoaderOptions) {
-  let memory = []
+interface GetItemsSuccessResult {
+  name: string
+  request: string
+}
 
-  function search(currentContext, originalRequest) {
+interface GetItemsFailedResult {
+  error: MinaEntryPluginError
+}
+
+type GetItemsResult = Array<GetItemsSuccessResult | GetItemsFailedResult>
+
+function getItems(
+  rootContext: string,
+  entry: string,
+  rules: Array<{ pattern: string; reader: typeof ConfigReader }>,
+  extensions: Extensions,
+  minaLoaderOptions: Record<string, any>
+) {
+  let memory: GetItemsResult = []
+
+  function search(currentContext: string, originalRequest: string) {
     let resourceUrl = getResourceUrlFromRequest(originalRequest)
     let request = urlToRequest(
       isAbsoluteUrl(resourceUrl)
@@ -82,7 +111,7 @@ function getItems(rootContext, entry, rules, extensions, minaLoaderOptions) {
         : path.relative(rootContext, path.resolve(currentContext, resourceUrl))
     )
 
-    let resourcePath, isClassical
+    let resourcePath: string, isClassical: boolean
     try {
       try {
         resourcePath = resolve.sync(request, {
@@ -120,12 +149,16 @@ function getItems(rootContext, entry, rules, extensions, minaLoaderOptions) {
       toSafeOutputPath
     )(path.relative(rootContext, resourcePath))
 
-    let current = {
+    const current: GetItemsSuccessResult = {
       name,
       request,
     }
 
-    if (memory.some(item => item.request === current.request)) {
+    if (
+      memory.some(
+        item => (item as GetItemsSuccessResult).request === current.request
+      )
+    ) {
       return
     }
     memory.push(current)
@@ -156,7 +189,11 @@ function getItems(rootContext, entry, rules, extensions, minaLoaderOptions) {
 }
 
 class MinaEntryPluginError extends WebpackError {
-  constructor(error) {
+  name: string
+  message: string
+  error: Error
+
+  constructor(error: Error) {
     super()
 
     this.name = 'MinaEntryPluginError'
@@ -167,11 +204,25 @@ class MinaEntryPluginError extends WebpackError {
   }
 }
 
-module.exports = class MinaEntryWebpackPlugin {
-  constructor(options = {}) {
+interface MinaEntryWebpackPluginOptions {
+  map: (entry: string) => string | Array<string>
+  rules: Array<{ pattern: string; reader: typeof ConfigReader }>
+  extensions: Extensions
+  minaLoaderOptions: Record<string, any>
+}
+
+module.exports = class MinaEntryWebpackPlugin implements webpack.Plugin {
+  private _errors: Array<any>
+  private _items: Array<any>
+  private map: MinaEntryWebpackPluginOptions['map']
+  private rules: MinaEntryWebpackPluginOptions['rules']
+  private extensions: MinaEntryWebpackPluginOptions['extensions']
+  private minaLoaderOptions: MinaEntryWebpackPluginOptions['minaLoaderOptions']
+
+  constructor(options: Partial<MinaEntryWebpackPluginOptions> = {}) {
     this.map =
       options.map ||
-      function(entry) {
+      function(entry: string) {
         return entry
       }
     this.rules = (options.rules || []).map(rule => {
@@ -191,7 +242,7 @@ module.exports = class MinaEntryWebpackPlugin {
     this._items = []
   }
 
-  rewrite(compiler, done) {
+  rewrite(compiler: webpack.Compiler, done?: Function) {
     try {
       let { context, entry } = compiler.options
 
@@ -203,23 +254,29 @@ module.exports = class MinaEntryWebpackPlugin {
       }
 
       getItems(
-        context,
-        entry,
+        context!,
+        entry! as string,
         this.rules,
         this.extensions,
         this.minaLoaderOptions
       ).forEach(item => {
-        if (item.error) {
-          return this._errors.push(item.error)
+        if ((item as GetItemsFailedResult).error) {
+          return this._errors.push((item as GetItemsFailedResult).error)
         }
-        if (this._items.some(({ request }) => request === item.request)) {
+        if (
+          this._items.some(
+            ({ request }) => request === (item as GetItemsSuccessResult).request
+          )
+        ) {
           return
         }
         this._items.push(item)
 
-        addEntry(context, this.map(ensurePosix(item.request)), item.name).apply(
-          compiler
-        )
+        addEntry(
+          context!,
+          this.map(ensurePosix((item as GetItemsSuccessResult).request)),
+          (item as GetItemsSuccessResult).name
+        ).apply(compiler)
       })
     } catch (error) {
       if (typeof done === 'function') {
@@ -236,7 +293,7 @@ module.exports = class MinaEntryWebpackPlugin {
     return true
   }
 
-  apply(compiler) {
+  apply(compiler: webpack.Compiler) {
     compiler.hooks.entryOption.tap('MinaEntryPlugin', () =>
       this.rewrite(compiler)
     )

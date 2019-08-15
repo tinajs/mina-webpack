@@ -1,11 +1,13 @@
-const { dirname } = require('path')
-const fs = require('fs-extra')
-const loaderUtils = require('loader-utils')
-const replaceExt = require('replace-ext')
-const pProps = require('p-props')
-const pAny = require('p-any')
+import webpack from 'webpack'
+import { dirname } from 'path'
+import fs from 'fs-extra'
+import loaderUtils from 'loader-utils'
+import replaceExt from 'replace-ext'
+// @ts-ignore
+import pProps from 'p-props'
+import pAny from 'p-any'
 
-let JavascriptGenerator, JavascriptParser
+let JavascriptGenerator: any, JavascriptParser: any
 try {
   JavascriptGenerator = require('webpack/lib/JavascriptGenerator')
   JavascriptParser = require('webpack/lib/Parser')
@@ -15,7 +17,7 @@ try {
   }
 }
 
-const template = (parts = {}) => {
+const template = (parts: Record<string, string> = {}) => {
   let result =
     Object.keys(parts)
       .map(tag => {
@@ -32,7 +34,7 @@ const template = (parts = {}) => {
   return result
 }
 
-module.exports = function() {
+const virtualMinaLoader: webpack.loader.Loader = function() {
   this.cacheable()
 
   /**
@@ -51,7 +53,7 @@ module.exports = function() {
     this._module.parser = new JavascriptParser()
   }
 
-  const done = this.async()
+  const done = this.async()!
 
   const options = loaderUtils.getOptions(this) || {
     extensions: {},
@@ -59,9 +61,10 @@ module.exports = function() {
 
   this.addContextDependency(dirname(this.resourcePath))
 
-  pProps(options.extensions, extnames => {
-    let findFileWithExtname = extname => {
+  pProps(options.extensions, (extnames: Array<string>) => {
+    let findFileWithExtname = (extname: string) => {
       let filePath = replaceExt(this.resourcePath, `.${extname}`)
+      // @ts-ignore
       return fs.exists(filePath).then(isExist => ({ isExist, filePath }))
     }
     return pAny(extnames.map(findFileWithExtname), {
@@ -74,6 +77,8 @@ module.exports = function() {
       () => {}
     )
   })
-    .then(parts => done(null, template(parts)))
+    .then((parts: Record<string, string>) => done(null, template(parts)))
     .catch(done)
 }
+
+module.exports = virtualMinaLoader
