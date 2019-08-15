@@ -1,13 +1,12 @@
 language: node_js
+
 node_js:
-  - "node"
   - "12"
-  - "11"
   - "10"
   - "8"
 
 cache:
-  directoreis:
+  directories:
     - $HOME/.npm
 
 before_install:
@@ -15,7 +14,8 @@ before_install:
   - npm --version
 
 install:
-  - npx lerna bootstrap --ci
+  # no ci because this is library code
+  - npx lerna bootstrap --no-ci
 
 script:
   - npx lerna run test
