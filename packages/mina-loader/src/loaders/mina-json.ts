@@ -47,6 +47,13 @@ function resolveFile(
     )
   )
 
+  // because entry plugin move some files into subpackages references in `.json` should also update
+  // @ts-ignore
+  const subpackageMapping = global.__subpackageMapping || {}
+  if (subpackageMapping[transformedTarget]) {
+    transformedTarget = subpackageMapping[transformedTarget]
+  }
+
   debug('resolve file in mina-json', {
     source,
     target,

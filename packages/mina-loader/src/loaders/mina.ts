@@ -24,6 +24,7 @@ import {
   LoaderOptions,
 } from '../constants'
 import webpack = require('webpack')
+import replaceExt from 'replace-ext'
 
 async function getBlocks(
   loaderContext: webpack.loader.LoaderContext,
@@ -124,11 +125,21 @@ const mina: webpack.loader.Loader = function mina() {
 
   const originalRequest = loaderUtils.getRemainingRequest(this)
   const filePath = this.resourcePath
+  let relativePath = path.relative(this.rootContext, filePath)
+
+  // move some files into subpackages
+  // .js files are moved in entry plugin but .json/.wxss/.wxml should be handled here
+  // @ts-ignore
+  const subpackageMapping = global.__subpackageMapping || {}
+  const entryName = replaceExt(helpers.toSafeOutputPath(relativePath), '')
+  if (subpackageMapping[entryName]) {
+    relativePath = subpackageMapping[entryName] + '.mina'
+  }
   const dirname = compose(
     ensurePosix,
     helpers.toSafeOutputPath,
     path.dirname
-  )(path.relative(this.rootContext, filePath))
+  )(relativePath)
 
   getBlocks(this, originalRequest)
     .then(blocks =>

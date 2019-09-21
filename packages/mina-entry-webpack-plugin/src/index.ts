@@ -83,25 +83,49 @@ function getRequestsFromConfig(config: any) {
   return uniq(requests)
 }
 
+function getSubpackageRootsFromConfig(config: any): Array<string> {
+  if (!config) {
+    return []
+  }
+  const subpackages = config.subpackages || config.subPackages || []
+  return subpackages.map((item: { root?: string }) => item.root).filter(Boolean)
+}
+
 interface GetItemsSuccessResult {
   name: string
   request: string
+  resourcePath: string
+  dependents: Array<string>
 }
 
-interface GetItemsFailedResult {
-  error: MinaEntryPluginError
-}
+const MAIN_PACKAGE = 'MAIN_PACKAGE'
 
-type GetItemsResult = Array<GetItemsSuccessResult | GetItemsFailedResult>
+const computeDependentPackages = (
+  dependents: Array<string>,
+  subpackageRoots: Array<string>
+): string | undefined => {
+  const packagesSet = new Set<string>()
+  for (const dependent of dependents) {
+    const matchedSubpackageRoot = subpackageRoots.find(root =>
+      dependent.startsWith(`${root}/`)
+    )
+    packagesSet.add(matchedSubpackageRoot || MAIN_PACKAGE)
+  }
+  if (packagesSet.size === 1 && !packagesSet.has(MAIN_PACKAGE)) {
+    return Array.from(packagesSet)[0]
+  }
+}
 
 function getItems(
   rootContext: string,
-  entry: string,
+  entryRequest: string,
   rules: Array<{ pattern: string; reader: typeof ConfigReader }>,
   extensions: Extensions,
   minaLoaderOptions: Record<string, any>
 ) {
-  let memory: GetItemsResult = []
+  const entries: Array<GetItemsSuccessResult> = []
+  const errors: Array<MinaEntryPluginError> = []
+  let subpackageRoots: Array<string> = []
 
   function search(currentContext: string, originalRequest: string) {
     let resourceUrl = getResourceUrlFromRequest(originalRequest)
@@ -134,9 +158,7 @@ function getItems(
     } catch (error) {
       // Do not throw an exception when the module does not exist.
       // Just mark it up and move on to the next module.
-      memory.push({
-        error: new MinaEntryPluginError(error),
-      })
+      errors.push(new MinaEntryPluginError(error))
       return
     }
 
@@ -149,19 +171,20 @@ function getItems(
       toSafeOutputPath
     )(path.relative(rootContext, resourcePath))
 
-    const current: GetItemsSuccessResult = {
-      name,
-      request,
-    }
-
-    if (
-      memory.some(
-        item => (item as GetItemsSuccessResult).request === current.request
-      )
-    ) {
+    const relativeCurrentContext = path.relative(rootContext, currentContext)
+    const found = entries.find(
+      item => (item as GetItemsSuccessResult).request === request
+    )
+    if (found) {
+      found.dependents.push(relativeCurrentContext)
       return
     }
-    memory.push(current)
+    entries.push({
+      name,
+      request,
+      resourcePath,
+      dependents: [relativeCurrentContext],
+    })
 
     let matchedRule = rules.find(({ pattern }) =>
       pattern.match(path.relative(rootContext, resourcePath))
@@ -174,6 +197,9 @@ function getItems(
       : MinaConfigReader.getConfig(resourcePath)
 
     let requests = getRequestsFromConfig(config)
+    if (originalRequest === entryRequest) {
+      subpackageRoots = getSubpackageRootsFromConfig(config)
+    }
     if (requests.length > 0) {
       requests.forEach(req => {
         if (req.startsWith('plugin://')) {
@@ -184,8 +210,38 @@ function getItems(
     }
   }
 
-  search(rootContext, entry)
-  return memory
+  search(rootContext, entryRequest)
+
+  // if a component was only used in the same subpackage
+  // it can be moved into that subpackage to reduce the bundle size of main package
+  // for example `components/myComponent` is only used by `packageA/pages/index`
+  // we can move it to `packageA/_/_/components/myComponent`
+  const subpackageMapping: Record<string, string> = {}
+  for (const entry of entries) {
+    const belongingSubpackage = computeDependentPackages(
+      entry.dependents,
+      subpackageRoots
+    )
+    if (belongingSubpackage) {
+      const realEntryName = entry.name
+      const relativeEntryName = toSafeOutputPath(
+        belongingSubpackage +
+          path.sep +
+          path.relative(belongingSubpackage, entry.name)
+      )
+      // no ext in mapping
+      subpackageMapping[replaceExt(realEntryName, '')] = replaceExt(
+        relativeEntryName,
+        ''
+      )
+      entry.name = relativeEntryName
+    }
+  }
+  // save subpack mapping info in global variable so the mina-loader can read it
+  // @ts-ignore
+  global.__subpackageMapping = subpackageMapping
+
+  return { entries, errors }
 }
 
 class MinaEntryPluginError extends WebpackError {
@@ -212,7 +268,7 @@ interface MinaEntryWebpackPluginOptions {
 }
 
 module.exports = class MinaEntryWebpackPlugin implements webpack.Plugin {
-  private _errors: Array<any>
+  private _errors: Array<MinaEntryPluginError>
   private _items: Array<any>
   private map: MinaEntryWebpackPluginOptions['map']
   private rules: MinaEntryWebpackPluginOptions['rules']
@@ -253,29 +309,24 @@ module.exports = class MinaEntryWebpackPlugin implements webpack.Plugin {
         entry = entry[entry.length - 1]
       }
 
-      getItems(
+      const { entries, errors } = getItems(
         context!,
         entry! as string,
         this.rules,
         this.extensions,
         this.minaLoaderOptions
-      ).forEach(item => {
-        if ((item as GetItemsFailedResult).error) {
-          return this._errors.push((item as GetItemsFailedResult).error)
-        }
-        if (
-          this._items.some(
-            ({ request }) => request === (item as GetItemsSuccessResult).request
-          )
-        ) {
+      )
+      this._errors.push(...errors)
+      entries.forEach(item => {
+        if (this._items.some(({ request }) => request === item.request)) {
           return
         }
         this._items.push(item)
 
         addEntry(
           context!,
-          this.map(ensurePosix((item as GetItemsSuccessResult).request)),
-          (item as GetItemsSuccessResult).name
+          this.map(ensurePosix(item.request)),
+          item.name
         ).apply(compiler)
       })
     } catch (error) {
