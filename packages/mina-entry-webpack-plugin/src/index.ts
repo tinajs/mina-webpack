@@ -95,7 +95,6 @@ interface GetItemsSuccessResult {
   name: string
   request: string
   resourcePath: string
-  dependents: Array<string>
 }
 
 const MAIN_PACKAGE = 'MAIN_PACKAGE'
@@ -123,11 +122,19 @@ function getItems(
   extensions: Extensions,
   minaLoaderOptions: Record<string, any>
 ) {
+  const rootRequest = path.resolve(rootContext, entryRequest)
   const entries: Array<GetItemsSuccessResult> = []
   const errors: Array<MinaEntryPluginError> = []
   let subpackageRoots: Array<string> = []
+  const dependencies: Record<string, Array<string>> = {}
+  const denendentsPackages: Record<string, Set<string>> = {}
 
-  function search(currentContext: string, originalRequest: string) {
+  function search(
+    currentContext: string,
+    originalRequest: string,
+    parentResourcePath: string,
+    parentSubpackage?: string
+  ) {
     let resourceUrl = getResourceUrlFromRequest(originalRequest)
     let request = urlToRequest(
       isAbsoluteUrl(resourceUrl)
@@ -171,19 +178,37 @@ function getItems(
       toSafeOutputPath
     )(path.relative(rootContext, resourcePath))
 
-    const relativeCurrentContext = path.relative(rootContext, currentContext)
+    // compute subpackage
+    const relativeRequest = replaceExt(name, '')
+    const matchedSubpackageRoot = subpackageRoots.find(root =>
+      relativeRequest.startsWith(`${root}/`)
+    )
+    const currentSubpackage =
+      rootRequest === path.resolve(currentContext, originalRequest)
+        ? undefined
+        : parentSubpackage || matchedSubpackageRoot || MAIN_PACKAGE
+
+    if (currentSubpackage) {
+      denendentsPackages[relativeRequest] =
+        denendentsPackages[relativeRequest] || new Set<string>()
+      denendentsPackages[relativeRequest].add(currentSubpackage)
+    }
+
+    dependencies[relativeRequest] = (
+      dependencies[relativeRequest] || []
+    ).concat(replaceExt(name, ''))
+    // compute subpackage end
+
     const found = entries.find(
       item => (item as GetItemsSuccessResult).request === request
     )
     if (found) {
-      found.dependents.push(relativeCurrentContext)
       return
     }
     entries.push({
       name,
       request,
       resourcePath,
-      dependents: [relativeCurrentContext],
     })
 
     let matchedRule = rules.find(({ pattern }) =>
@@ -205,12 +230,18 @@ function getItems(
         if (req.startsWith('plugin://')) {
           return
         }
-        return search(path.dirname(resourcePath), req)
+        return search(
+          path.dirname(resourcePath),
+          req,
+          resourcePath,
+          currentSubpackage
+        )
       })
     }
   }
 
-  search(rootContext, entryRequest)
+  search(rootContext, entryRequest, rootRequest)
+  console.log(denendentsPackages)
 
   // if a component was only used in the same subpackage
   // it can be moved into that subpackage to reduce the bundle size of main package
@@ -218,11 +249,14 @@ function getItems(
   // we can move it to `packageA/_/_/components/myComponent`
   const subpackageMapping: Record<string, string> = {}
   for (const entry of entries) {
-    const belongingSubpackage = computeDependentPackages(
-      entry.dependents,
-      subpackageRoots
-    )
-    if (belongingSubpackage) {
+    if (replaceExt(entry.name, '') === 'app') {
+      continue
+    }
+    const packagesSet = denendentsPackages[replaceExt(entry.name, '')]
+    console.log(replaceExt(entry.name, ''), packagesSet)
+    if (packagesSet.size === 1 && !packagesSet.has(MAIN_PACKAGE)) {
+      const belongingSubpackage = Array.from(packagesSet)[0]
+
       const realEntryName = entry.name
       const relativeEntryName = toSafeOutputPath(
         belongingSubpackage +
