@@ -83,25 +83,71 @@ function getRequestsFromConfig(config: any) {
   return uniq(requests)
 }
 
-interface GetItemsSuccessResult {
+interface Entry {
   name: string
   request: string
 }
 
-interface GetItemsFailedResult {
-  error: MinaEntryPluginError
+const checkIsClassicComponent = (
+  extensions: Extensions,
+  minaLoaderOptions: Record<string, any>,
+  rootContext: string,
+  request: string
+) => {
+  let resourcePath: string, isClassical: boolean
+  try {
+    try {
+      resourcePath = resolve.sync(request, {
+        basedir: rootContext,
+        extensions: [],
+      })
+      isClassical = false
+    } catch (error) {
+      resourcePath = resolve.sync(request, {
+        basedir: rootContext,
+        extensions: extensions.resolve,
+      })
+      request = `!${minaLoader}?${JSON.stringify(
+        minaLoaderOptions
+      )}!${virtualMinaLoader}?${JSON.stringify({
+        extensions,
+      })}!${resourcePath}`
+      isClassical = true
+    }
+  } catch (error) {
+    throw new MinaEntryPluginError(error)
+  }
+  return { resourcePath, request, isClassical }
 }
 
-type GetItemsResult = Array<GetItemsSuccessResult | GetItemsFailedResult>
+const readConfig = (
+  rules: Array<{ pattern: string; reader: typeof ConfigReader }>,
+  rootContext: string,
+  resourcePath: string,
+  isClassical: boolean
+) => {
+  let matchedRule = rules.find(({ pattern }) =>
+    pattern.match(path.relative(rootContext, resourcePath))
+  )
 
-function getItems(
+  let config = matchedRule
+    ? matchedRule.reader.getConfig(resourcePath)
+    : isClassical
+    ? ClassicalConfigReader.getConfig(resourcePath)
+    : MinaConfigReader.getConfig(resourcePath)
+
+  return config
+}
+
+function getEntries(
   rootContext: string,
   entry: string,
   rules: Array<{ pattern: string; reader: typeof ConfigReader }>,
   extensions: Extensions,
   minaLoaderOptions: Record<string, any>
 ) {
-  let memory: GetItemsResult = []
+  const entries: Array<Entry> = []
+  const errors: Array<MinaEntryPluginError> = []
 
   function search(currentContext: string, originalRequest: string) {
     let resourceUrl = getResourceUrlFromRequest(originalRequest)
@@ -113,30 +159,19 @@ function getItems(
 
     let resourcePath: string, isClassical: boolean
     try {
-      try {
-        resourcePath = resolve.sync(request, {
-          basedir: rootContext,
-          extensions: [],
-        })
-        isClassical = false
-      } catch (error) {
-        resourcePath = resolve.sync(request, {
-          basedir: rootContext,
-          extensions: extensions.resolve,
-        })
-        request = `!${minaLoader}?${JSON.stringify(
-          minaLoaderOptions
-        )}!${virtualMinaLoader}?${JSON.stringify({
-          extensions,
-        })}!${resourcePath}`
-        isClassical = true
-      }
+      const checkResult = checkIsClassicComponent(
+        extensions,
+        minaLoaderOptions,
+        rootContext,
+        request
+      )
+      resourcePath = checkResult.resourcePath
+      isClassical = checkResult.isClassical
+      request = checkResult.request
     } catch (error) {
       // Do not throw an exception when the module does not exist.
       // Just mark it up and move on to the next module.
-      memory.push({
-        error: new MinaEntryPluginError(error),
-      })
+      errors.push(error)
       return
     }
 
@@ -149,29 +184,15 @@ function getItems(
       toSafeOutputPath
     )(path.relative(rootContext, resourcePath))
 
-    const current: GetItemsSuccessResult = {
-      name,
-      request,
-    }
-
-    if (
-      memory.some(
-        item => (item as GetItemsSuccessResult).request === current.request
-      )
-    ) {
+    if (entries.some(item => item.request === request)) {
       return
     }
-    memory.push(current)
+    entries.push({
+      name,
+      request,
+    })
 
-    let matchedRule = rules.find(({ pattern }) =>
-      pattern.match(path.relative(rootContext, resourcePath))
-    )
-
-    let config = matchedRule
-      ? matchedRule.reader.getConfig(resourcePath)
-      : isClassical
-      ? ClassicalConfigReader.getConfig(resourcePath)
-      : MinaConfigReader.getConfig(resourcePath)
+    const config = readConfig(rules, rootContext, resourcePath, isClassical)
 
     let requests = getRequestsFromConfig(config)
     if (requests.length > 0) {
@@ -185,7 +206,7 @@ function getItems(
   }
 
   search(rootContext, entry)
-  return memory
+  return { entries, errors }
 }
 
 class MinaEntryPluginError extends WebpackError {
@@ -253,29 +274,26 @@ module.exports = class MinaEntryWebpackPlugin implements webpack.Plugin {
         entry = entry[entry.length - 1]
       }
 
-      getItems(
+      const { entries, errors } = getEntries(
         context!,
         entry! as string,
         this.rules,
         this.extensions,
         this.minaLoaderOptions
-      ).forEach(item => {
-        if ((item as GetItemsFailedResult).error) {
-          return this._errors.push((item as GetItemsFailedResult).error)
-        }
-        if (
-          this._items.some(
-            ({ request }) => request === (item as GetItemsSuccessResult).request
-          )
-        ) {
+      )
+      errors.forEach(item => {
+        this._errors.push(item.error)
+      })
+      entries.forEach(item => {
+        if (this._items.some(({ request }) => request === item.request)) {
           return
         }
         this._items.push(item)
 
         addEntry(
           context!,
-          this.map(ensurePosix((item as GetItemsSuccessResult).request)),
-          (item as GetItemsSuccessResult).name
+          this.map(ensurePosix(item.request)),
+          item.name
         ).apply(compiler)
       })
     } catch (error) {
