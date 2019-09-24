@@ -6,6 +6,7 @@ import loaderUtils from 'loader-utils'
 import resolveFrom from 'resolve-from'
 import ensurePosix from 'ensure-posix-path'
 import Debug from 'debug'
+import replaceExt from 'replace-ext'
 import * as helpers from '../helpers'
 
 const debug = Debug('loaders:mina')
@@ -124,11 +125,23 @@ const mina: webpack.loader.Loader = function mina() {
 
   const originalRequest = loaderUtils.getRemainingRequest(this)
   const filePath = this.resourcePath
+
+  let relativePath = path.relative(this.rootContext, filePath)
+
+  // move some files into subpackages
+  // .js files are moved in entry plugin but .json/.wxss/.wxml should be handled here
+  // @ts-ignore
+  const subpackageMapping: Record<string, string> = this.subpackageMapping || {}
+  const entryName = replaceExt(helpers.toSafeOutputPath(relativePath), '')
+  if (subpackageMapping[entryName]) {
+    relativePath = subpackageMapping[entryName] + '.mina'
+  }
+
   const dirname = compose(
     ensurePosix,
     helpers.toSafeOutputPath,
     path.dirname
-  )(path.relative(this.rootContext, filePath))
+  )(relativePath)
 
   getBlocks(this, originalRequest)
     .then(blocks =>
