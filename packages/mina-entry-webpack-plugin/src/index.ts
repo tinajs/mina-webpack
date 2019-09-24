@@ -84,40 +84,62 @@ function getRequestsFromConfig(config: any) {
 }
 
 interface Entry {
+  // name: for example `packageA/pages/index.js` or `_/_/another-package/comp.js`
+  // TODO: should we remove `.js` in entry name ?
   name: string
+  // realPath: the full real path of resource
+  realPath: string
+  // request: requst with loaders for SingleEntryPlugin
   request: string
 }
 
-const checkIsClassicComponent = (
-  extensions: Extensions,
-  minaLoaderOptions: Record<string, any>,
+const isMinaRequest = (request: string) => {
+  return path.extname(request) === '.mina'
+}
+
+// rootContext: /path/to/src
+// currentContext: /path/to/src/pages
+// `/components/demo` => `/path/to/src/components/demo` => `../components/demo`
+// keeps `~@scope/package` or `./path/to/comp`
+const resolveAbsoluteUrl = (
   rootContext: string,
-  request: string
+  currentContext: string,
+  originalResourceUrl: string
 ) => {
-  let resourcePath: string, isClassical: boolean
+  if (isAbsoluteUrl(originalResourceUrl)) {
+    return path.relative(
+      currentContext,
+      path.resolve(rootContext, originalResourceUrl.slice(1))
+    )
+  }
+  return originalResourceUrl
+}
+
+const resolveRealPath = (
+  extensions: Extensions,
+  context: string,
+  originalUrl: string
+) => {
+  const originalRequest = urlToRequest(originalUrl)
   try {
-    try {
-      resourcePath = resolve.sync(request, {
-        basedir: rootContext,
+    let resourcePath: string
+    // mina component
+    if (isMinaRequest(originalRequest)) {
+      resourcePath = resolve.sync(originalRequest, {
+        basedir: context,
         extensions: [],
       })
-      isClassical = false
-    } catch (error) {
-      resourcePath = resolve.sync(request, {
-        basedir: rootContext,
+    } else {
+      // classic component
+      resourcePath = resolve.sync(originalRequest, {
+        basedir: context,
         extensions: extensions.resolve,
       })
-      request = `!${minaLoader}?${JSON.stringify(
-        minaLoaderOptions
-      )}!${virtualMinaLoader}?${JSON.stringify({
-        extensions,
-      })}!${resourcePath}`
-      isClassical = true
     }
+    return fs.realpathSync(resourcePath)
   } catch (error) {
     throw new MinaEntryPluginError(error)
   }
-  return { resourcePath, request, isClassical }
 }
 
 const readConfig = (
@@ -150,49 +172,65 @@ function getEntries(
   const errors: Array<MinaEntryPluginError> = []
 
   function search(currentContext: string, originalRequest: string) {
-    let resourceUrl = getResourceUrlFromRequest(originalRequest)
-    let request = urlToRequest(
-      isAbsoluteUrl(resourceUrl)
-        ? resourceUrl.slice(1)
-        : path.relative(rootContext, path.resolve(currentContext, resourceUrl))
+    // `any-loader!./index.mina` => `./index.mina`
+    const originalResourceUrl = getResourceUrlFromRequest(originalRequest)
+    // mina or classic
+    const isClassical = !isMinaRequest(originalResourceUrl)
+    // `/components/demo` => `/path/to/src/components/demo` => `../components/demo`
+    const resourceUrl = resolveAbsoluteUrl(
+      rootContext,
+      currentContext,
+      originalResourceUrl
     )
 
-    let resourcePath: string, isClassical: boolean
+    // resolve symlink
+    let realPath: string
     try {
-      const checkResult = checkIsClassicComponent(
-        extensions,
-        minaLoaderOptions,
-        rootContext,
-        request
-      )
-      resourcePath = checkResult.resourcePath
-      isClassical = checkResult.isClassical
-      request = checkResult.request
+      realPath = resolveRealPath(extensions, currentContext, resourceUrl)
     } catch (error) {
       // Do not throw an exception when the module does not exist.
       // Just mark it up and move on to the next module.
       errors.push(error)
       return
     }
+    // relative path from rootContext, used to generate entry request or name
+    const relativeRealPath = path.relative(rootContext, realPath)
+    const relativeRealRequest = urlToRequest(relativeRealPath)
 
-    resourcePath = fs.realpathSync(resourcePath)
+    // generte request
+    let request: string
+    if (isClassical) {
+      request = `!${minaLoader}?${JSON.stringify(
+        minaLoaderOptions
+      )}!${virtualMinaLoader}?${JSON.stringify({
+        extensions,
+      })}!${relativeRealRequest}`
+    } else {
+      request = relativeRealRequest
+    }
 
-    let name = compose(
+    // entry name for SingleEntryPlugin
+    // `../../path/to/comp` => `_/_/path/to/comp`
+    const name = compose(
       ensurePosix,
+      // FIXME: replace-ext will remove the leading `./` in path
+      // see https://github.com/gulpjs/replace-ext/issues/5
       path => replaceExt(path, '.js'),
       urlToRequest,
       toSafeOutputPath
-    )(path.relative(rootContext, resourcePath))
+    )(relativeRealPath)
 
+    // skip existing entries
     if (entries.some(item => item.request === request)) {
       return
     }
     entries.push({
       name,
+      realPath,
       request,
     })
 
-    const config = readConfig(rules, rootContext, resourcePath, isClassical)
+    const config = readConfig(rules, rootContext, realPath, isClassical)
 
     let requests = getRequestsFromConfig(config)
     if (requests.length > 0) {
@@ -200,12 +238,13 @@ function getEntries(
         if (req.startsWith('plugin://')) {
           return
         }
-        return search(path.dirname(resourcePath), req)
+        return search(path.dirname(realPath), req)
       })
     }
   }
 
   search(rootContext, entry)
+
   return { entries, errors }
 }
 
