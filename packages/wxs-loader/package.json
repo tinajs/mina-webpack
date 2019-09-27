@@ -1,6 +1,6 @@
 {
   "name": "@tinajs/wxs-loader",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "description": "wxs loader for webpack",
   "main": "lib/index.js",
   "files": [
