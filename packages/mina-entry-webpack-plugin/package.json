@@ -16,7 +16,8 @@
     "precommit": "lint-staged",
     "prebuild": "npm run clean",
     "prepare": "npm run build",
-    "build": "tsc -p ."
+    "build": "tsc -p .",
+    "test": "ava test/**/*.test.ts"
   },
   "repository": {
     "url": "tinajs/mina-webpack",
@@ -43,8 +44,10 @@
     "@types/replace-ext": "^0.0.27",
     "@types/resolve": "^0.0.8",
     "@types/webpack": "^4.32.1",
+    "ava": "^2.4.0",
     "lint-staged": "^8.1.4",
     "prettier": "^1.16.4",
+    "ts-node": "^8.4.1",
     "typescript": "^3.5.3",
     "webpack": "^4.29.6"
   },
@@ -65,5 +68,14 @@
     "vue-template-compiler": "^2.6.7",
     "webpack": "^4.39.2"
   },
-  "gitHead": "1be88492c3caad72b677320eb61d5774f2d480cc"
+  "gitHead": "1be88492c3caad72b677320eb61d5774f2d480cc",
+  "ava": {
+    "compileEnhancements": false,
+    "extensions": [
+      "ts"
+    ],
+    "require": [
+      "ts-node/register"
+    ]
+  }
 }
