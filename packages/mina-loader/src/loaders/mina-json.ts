@@ -25,6 +25,7 @@ function resolveFile(
   source: string,
   target: string,
   context: string,
+  subpackageMapping: Record<string, string>,
   workdir: string = './'
 ): string {
   let resolve = (target: string) =>
@@ -46,6 +47,11 @@ function resolveFile(
         : path.resolve(path.dirname(source), target)
     )
   )
+
+  // because entry plugin move some files into subpackages references in `.json` should also update
+  if (subpackageMapping[transformedTarget]) {
+    transformedTarget = subpackageMapping[transformedTarget]
+  }
 
   debug('resolve file in mina-json', {
     source,
@@ -69,10 +75,11 @@ function tryResolveFile(
   source: string,
   target: string,
   context: string,
+  subpackageMapping: Record<string, string>,
   workdir?: string
 ) {
   try {
-    return resolveFile(source, target, context, workdir)
+    return resolveFile(source, target, context, subpackageMapping, workdir)
   } catch (error) {
     if (error.code === 'MODULE_NOT_FOUND') {
       return target
@@ -136,6 +143,11 @@ type MinaJsonConfig = {
 }
 
 const minaJson: webpack.loader.Loader = function minaJson(source) {
+  const loaderContext = this
+  // read subpackageMapping from context
+  const subpackageMapping: Record<string, string> =
+    // @ts-ignore
+    loaderContext.subpackageMapping || {}
   const done = this.async()
   const webpackOptions = loaderUtils.getOptions(this) || {}
   const options = merge(
@@ -176,7 +188,12 @@ const minaJson: webpack.loader.Loader = function minaJson(source) {
         : mapValues.bind(null, pages)
       return Object.assign(config, {
         pages: map((page: string) =>
-          tryResolveFile(this.resourcePath, page, this.rootContext)
+          tryResolveFile(
+            this.resourcePath,
+            page,
+            this.rootContext,
+            subpackageMapping
+          )
         ),
       })
     })
@@ -197,6 +214,7 @@ const minaJson: webpack.loader.Loader = function minaJson(source) {
               this.resourcePath,
               path.join(root, page),
               this.rootContext,
+              subpackageMapping,
               root
             )
           ),
@@ -218,7 +236,13 @@ const minaJson: webpack.loader.Loader = function minaJson(source) {
           }
 
           return (
-            './' + tryResolveFile(this.resourcePath, file, this.rootContext)
+            './' +
+            tryResolveFile(
+              this.resourcePath,
+              file,
+              this.rootContext,
+              subpackageMapping
+            )
           )
         }),
       })
@@ -233,7 +257,12 @@ const minaJson: webpack.loader.Loader = function minaJson(source) {
 
       return Object.assign(config, {
         publicComponents: mapValues(config.publicComponents, (file: string) =>
-          tryResolveFile(this.resourcePath, file, this.rootContext)
+          tryResolveFile(
+            this.resourcePath,
+            file,
+            this.rootContext,
+            subpackageMapping
+          )
         ),
       })
     })
