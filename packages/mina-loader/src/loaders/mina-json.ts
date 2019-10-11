@@ -52,6 +52,13 @@ function resolveFile(
   if (subpackageMapping[transformedTarget]) {
     transformedTarget = subpackageMapping[transformedTarget]
   }
+  // when we moved an mina to a subpackage in during mina-webpack-plugin, this.resourcePath context is
+  // not updated, this would cause resolving target end up getting incorrect calculated path in `.json`.
+  // it’s complicated to update this.resourcePath in the plugin as it’s handled by webpack, so compensate
+  // the change here in the loader.
+  if (subpackageMapping[transformedSource]) {
+    transformedSource = subpackageMapping[transformedSource]
+  }
 
   debug('resolve file in mina-json', {
     source,
