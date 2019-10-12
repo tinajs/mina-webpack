@@ -178,8 +178,6 @@ function getEntries(
   ) {
     // `any-loader!./index.mina` => `./index.mina`
     const originalResourceUrl = getResourceUrlFromRequest(originalRequest)
-    // mina or classic
-    const isClassical = !isMinaRequest(originalResourceUrl)
     // `/components/demo` => `/path/to/src/components/demo` => `../components/demo`
     const resourceUrl = resolveAbsoluteUrl(
       rootContext,
@@ -197,6 +195,9 @@ function getEntries(
       errors.push(error)
       return
     }
+    // mina or classic
+    const isClassical = !isMinaRequest(realPath || originalResourceUrl)
+
     // relative path from rootContext, used to generate entry request or name
     const relativeRealPath = path.relative(rootContext, realPath)
     const relativeRealRequest = urlToRequest(relativeRealPath)
