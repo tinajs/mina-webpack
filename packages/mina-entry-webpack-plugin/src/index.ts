@@ -114,20 +114,26 @@ const resolveRealPath = (
   const originalRequest = urlToRequest(originalUrl)
   try {
     let resourcePath: string
+    let isClassical: boolean
     // mina component
-    if (isMinaRequest(originalRequest)) {
+    try {
       resourcePath = resolve.sync(originalRequest, {
         basedir: context,
         extensions: [],
       })
-    } else {
+      isClassical = false
+    } catch (error) {
       // classic component
       resourcePath = resolve.sync(originalRequest, {
         basedir: context,
         extensions: extensions.resolve,
       })
+      isClassical = true
     }
-    return fs.realpathSync(resourcePath)
+    return {
+      realPath: fs.realpathSync(resourcePath),
+      isClassical,
+    }
   } catch (error) {
     throw new MinaEntryPluginError(error)
   }
@@ -187,16 +193,16 @@ function getEntries(
 
     // resolve symlink
     let realPath: string
+    // mina or classic
+    let isClassical: boolean
     try {
-      realPath = resolveRealPath(extensions, currentContext, resourceUrl)
+      ({ realPath, isClassical } = resolveRealPath(extensions, currentContext, resourceUrl))
     } catch (error) {
       // Do not throw an exception when the module does not exist.
       // Just mark it up and move on to the next module.
       errors.push(error)
       return
     }
-    // mina or classic
-    const isClassical = !isMinaRequest(realPath || originalResourceUrl)
 
     // relative path from rootContext, used to generate entry request or name
     const relativeRealPath = path.relative(rootContext, realPath)
