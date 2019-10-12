@@ -11,7 +11,8 @@
     "declaration": true,
     "sourceMap": true,
     "downlevelIteration": true,
-    "target": "es5",
+    "target": "es6",
+    "module": "commonjs",
     "skipLibCheck": true
   },
   "include": ["./src/**/*"]

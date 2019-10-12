@@ -6,7 +6,8 @@
     "strict": true,
     "allowSyntheticDefaultImports": true,
     "allowJs": true,
-    "target": "es5"
+    "target": "es6",
+    "module": "commonjs"
   },
   "include": ["./src/**/*"]
 }
