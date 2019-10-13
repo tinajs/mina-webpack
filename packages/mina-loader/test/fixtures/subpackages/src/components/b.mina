@@ -1,0 +1,14 @@
+<config>
+{
+  "usingComponents": {
+    "d": "d.mina",
+  }
+}
+</config>
+
+<template>
+  <view>
+    <view>b component</view>
+    <d />
+  </view>
+</template>

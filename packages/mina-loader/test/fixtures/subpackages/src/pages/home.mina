@@ -1,0 +1,17 @@
+<config>
+{
+  "usingComponents": {
+    "logo": "~logo.mina",
+  }
+}
+</config>
+
+<template>
+  <view>
+    <logo />
+  </view>
+</template>
+
+<script>
+Page({})
+</script>

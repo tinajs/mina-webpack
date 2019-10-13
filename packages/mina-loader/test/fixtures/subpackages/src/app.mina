@@ -1,0 +1,28 @@
+<config>
+{
+  "pages": [
+    "pages/home.mina"
+  ],
+	"subPackages": [
+		{
+      "name": "sub1",
+      "root": "sub1",
+      "pages": [
+        "page1.mina",
+        "page2.mina",
+      ]
+    },
+    {
+      "name": "sub2",
+      "root": "sub2",
+      "pages": [
+        "page1.mina",
+      ]
+    },
+	]
+}
+</config>
+
+<script>
+App({})
+</script>
