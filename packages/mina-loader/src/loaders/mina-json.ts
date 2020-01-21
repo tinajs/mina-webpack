@@ -229,7 +229,10 @@ const minaJson: webpack.loader.Loader = function minaJson(source) {
             ),
           }
           if (independent) {
-            temp.independent = true
+            return {
+              ...temp,
+              independent: true,
+            }
           }
 
           return temp
