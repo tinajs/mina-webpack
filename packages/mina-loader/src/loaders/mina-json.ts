@@ -138,6 +138,7 @@ type MinaJsonConfig = {
   tabBar?: TabBarConfig
   subPackages?: {
     root: string
+    independent?: boolean
     pages: string[]
   }[]
   window: WindowConfig
@@ -214,18 +215,25 @@ const minaJson: webpack.loader.Loader = function minaJson(source) {
       }
 
       return Object.assign(config, {
-        subPackages: subPackages.map(({ root, pages }) => ({
-          root,
-          pages: pages.map((page: string) =>
-            tryResolveFile(
-              this.resourcePath,
-              path.join(root, page),
-              this.rootContext,
-              subpackageMapping,
-              root
-            )
-          ),
-        })),
+        subPackages: subPackages.map(({ root, independent, pages }) => {
+          const temp = {
+            root,
+            pages: pages.map((page: string) =>
+              tryResolveFile(
+                this.resourcePath,
+                path.join(root, page),
+                this.rootContext,
+                subpackageMapping,
+                root
+              )
+            ),
+          }
+          if (independent) {
+            temp.independent = true
+          }
+
+          return temp
+        }),
       })
     })
     /**
