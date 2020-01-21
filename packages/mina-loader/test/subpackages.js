@@ -16,6 +16,21 @@ test('subpackages', async t => {
   })
 
   await compile()
+  // app
+  t.deepEqual(JSON.parse(mfs.readFileSync('/app.json', 'utf-8')), {
+    pages: ['pages/home'],
+    subPackages: [
+      {
+        root: 'sub1',
+        pages: ['page1', 'page2'],
+      },
+      {
+        root: 'sub2',
+        pages: ['page1'],
+        independent: true, // support independent
+      },
+    ],
+  })
   // sub1
   t.deepEqual(JSON.parse(mfs.readFileSync('/sub1/page1.json', 'utf-8')), {
     usingComponents: {
