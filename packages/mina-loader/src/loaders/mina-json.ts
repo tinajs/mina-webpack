@@ -215,28 +215,19 @@ const minaJson: webpack.loader.Loader = function minaJson(source) {
       }
 
       return Object.assign(config, {
-        subPackages: subPackages.map(({ root, independent, pages }) => {
-          const temp = {
-            root,
-            pages: pages.map((page: string) =>
-              tryResolveFile(
-                this.resourcePath,
-                path.join(root, page),
-                this.rootContext,
-                subpackageMapping,
-                root
-              )
-            ),
-          }
-          if (independent) {
-            return {
-              ...temp,
-              independent: true,
-            }
-          }
-
-          return temp
-        }),
+        subPackages: subPackages.map(({ root, independent, pages }) => ({
+          root,
+          pages: pages.map((page: string) =>
+            tryResolveFile(
+              this.resourcePath,
+              path.join(root, page),
+              this.rootContext,
+              subpackageMapping,
+              root
+            )
+          ),
+          independent,
+        })),
       })
     })
     /**
