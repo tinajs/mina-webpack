@@ -32,7 +32,6 @@
     "webpack": "^4.29.6"
   },
   "devDependencies": {
-    "@tinajs/mina-loader": "^1.8.1",
     "@types/compose-function": "^0.0.30",
     "@types/fs-extra": "^8.0.0",
     "@types/json5": "^0.0.30",
