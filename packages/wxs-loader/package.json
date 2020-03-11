@@ -34,7 +34,7 @@
     "lint-staged": "^8.1.4",
     "memory-fs": "^0.4.1",
     "prettier": "^1.16.4",
-    "typescript": "^3.3.3333",
+    "typescript": "^3.8.3",
     "webpack": "^4.29.6",
     "webpack-chain": "^5.2.0"
   },
