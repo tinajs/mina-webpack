@@ -43,7 +43,7 @@
     "@types/postcss-url": "^8.0.1",
     "@types/replace-ext": "^0.0.27",
     "@types/resolve": "0.0.8",
-    "ava": "^1.2.1",
+    "ava": "^3.5.0",
     "babel-loader": "^8.0.6",
     "chai": "^4.2.0",
     "front-matter": "^3.0.1",
