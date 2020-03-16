@@ -55,7 +55,7 @@
     "postcss-loader": "^3.0.0",
     "precss": "^4.0.0",
     "prettier": "^1.19.1",
-    "ts-loader": "^5.3.3",
+    "ts-loader": "^6.2.1",
     "typescript": "^3.8.3",
     "webpack": "^4.29.6",
     "webpack-merge": "^4.2.1"
