@@ -58,10 +58,10 @@
     "ts-loader": "^6.2.1",
     "typescript": "^3.8.3",
     "webpack": "^4.29.6",
-    "webpack-merge": "^4.2.1"
+    "webpack-merge": "^4.2.2"
   },
   "peerDependencies": {
-    "webpack": "^4.0.0"
+    "webpack": "^4.42.0"
   },
   "dependencies": {
     "@tinajs/mina-sfc": "^0.2.2",
