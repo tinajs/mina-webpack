@@ -46,7 +46,7 @@
     "@types/webpack": "^4.32.1",
     "ava": "^2.4.0",
     "lint-staged": "^8.1.4",
-    "prettier": "^1.16.4",
+    "prettier": "^1.19.1",
     "ts-node": "^8.4.1",
     "typescript": "^3.8.3",
     "webpack": "^4.29.6"
