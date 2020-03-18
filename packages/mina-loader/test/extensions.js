@@ -34,7 +34,7 @@ test('use custom extensions', async t => {
 
   t.deepEqual(stats.compilation.errors, [], stats.compilation.errors[0])
 
-  t.true(mfs.existsSync('/assets/logo.7bd732.png'))
+  t.true(mfs.existsSync('/assets/logo.72c9db.png'))
   t.true(
     mfs.readFileSync('/fixtures/basic/page.js', 'utf8').includes('onLoad () {')
   )
@@ -50,7 +50,7 @@ test('use custom extensions', async t => {
   )
   t.is(
     mfs.readFileSync('/fixtures/basic/page.html', 'utf8'),
-    '<view>\n  <text class="blue">{{msg}}</text>\n  <image src="../../assets/logo.7bd732.png" />\n</view>'
+    '<view>\n  <text class="blue">{{msg}}</text>\n  <image src="../../assets/logo.72c9db.png" />\n</view>'
   )
   t.is(
     mfs.readFileSync('/fixtures/basic/page.css', 'utf8'),

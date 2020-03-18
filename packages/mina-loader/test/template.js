@@ -43,7 +43,7 @@ test('import template', async t => {
   const stats = await compile()
 
   t.is(
-    mfs.readFileSync('/wxml/message.fd0e28.wxml', 'utf8'),
+    mfs.readFileSync('/wxml/message.86e9ca.wxml', 'utf8'),
     '<!--\n  index: int\n  msg: string\n  time: string\n-->\n<template name="message">\n  <view>\n    <text> {{index}}: {{msg}} </text>\n    <text> Time: {{time}} </text>\n  </view>\n</template>\n'
   )
 
@@ -54,7 +54,7 @@ test('import template', async t => {
   )
   t.is(
     mfs.readFileSync('/fixtures/template/import.wxml', 'utf8'),
-    '<view>\n  <import src="../../wxml/message.fd0e28.wxml"/>\n  <template is="message" data="{{...item}}"/>\n</view>'
+    '<view>\n  <import src="../../wxml/message.86e9ca.wxml"/>\n  <template is="message" data="{{...item}}"/>\n</view>'
   )
   t.is(
     mfs.readFileSync('/fixtures/template/import.wxss', 'utf8'),
@@ -77,10 +77,10 @@ test('include template', async t => {
   })
   const stats = await compile()
 
-  t.true(mfs.existsSync('/assets/logo.97017d.png'))
+  t.true(mfs.existsSync('/assets/logo.349b7b.png'))
   t.is(
-    mfs.readFileSync('/wxml/header.ae94ef.wxml', 'utf8'),
-    '<!-- header.wxml -->\n<view><image src="/assets/logo.97017d.png"></view>\n'
+    mfs.readFileSync('/wxml/header.d14cab.wxml', 'utf8'),
+    '<!-- header.wxml -->\n<view><image src="/assets/logo.349b7b.png"></view>\n'
   )
 
   t.true(
@@ -90,7 +90,7 @@ test('include template', async t => {
   )
   t.is(
     mfs.readFileSync('/fixtures/template/include.wxml', 'utf8'),
-    '<view>\n  <include src="../../wxml/header.ae94ef.wxml"/>\n  <view>body</view>\n</view>'
+    '<view>\n  <include src="../../wxml/header.d14cab.wxml"/>\n  <view>body</view>\n</view>'
   )
   t.is(
     mfs.readFileSync('/fixtures/template/include.wxss', 'utf8'),
@@ -119,11 +119,11 @@ test('use template from different paths', async t => {
 
   t.is(
     mfs.readFileSync('/import.wxml', 'utf8'),
-    '<view>\n  <import src="./wxml/message.fd0e28.wxml"/>\n  <template is="message" data="{{...item}}"/>\n</view>'
+    '<view>\n  <import src="./wxml/message.86e9ca.wxml"/>\n  <template is="message" data="{{...item}}"/>\n</view>'
   )
   t.is(
     mfs.readFileSync('/subdir/page.wxml', 'utf8'),
-    '<view>\n  <import src="../wxml/message.fd0e28.wxml"/>\n</view>'
+    '<view>\n  <import src="../wxml/message.86e9ca.wxml"/>\n</view>'
   )
 
   t.pass()

@@ -36,10 +36,11 @@ test('enforceRelativePath: keep enforce', async t => {
 
   t.is(
     mfs.readFileSync('/fixtures/enforce-relative-path/page.wxml', 'utf8'),
-    ['<view>',
-      '  <image src="../../assets/logo.7bd732.png" />',
-      '  <image src="../../assets/logo.7bd732.png" />',
-      '</view>'
+    [
+      '<view>',
+      '  <image src="../../assets/logo.72c9db.png" />',
+      '  <image src="../../assets/logo.72c9db.png" />',
+      '</view>',
     ].join('\n')
   )
 
@@ -71,10 +72,11 @@ test('enforceRelativePath: use loose mode to allow absolute path', async t => {
 
   t.is(
     mfs.readFileSync('/fixtures/enforce-relative-path/page.wxml', 'utf8'),
-    ['<view>',
-      '  <image src="/assets/logo.7bd732.png" />',
-      '  <image src="/assets/logo.7bd732.png" />',
-      '</view>'
+    [
+      '<view>',
+      '  <image src="/assets/logo.72c9db.png" />',
+      '  <image src="/assets/logo.72c9db.png" />',
+      '</view>',
     ].join('\n')
   )
 

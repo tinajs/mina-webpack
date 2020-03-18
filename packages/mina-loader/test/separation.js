@@ -39,7 +39,7 @@ test('load separated source files', async t => {
 
   t.is(
     mfs.readFileSync('/simple-page.wxml', 'utf8'),
-    '<view>Page <image src="/assets/logo.7bd732.png" /></view>\n'
+    '<view>Page <image src="/assets/logo.72c9db.png" /></view>\n'
   )
   t.is(
     mfs.readFileSync('/simple-page.wxss', 'utf8'),

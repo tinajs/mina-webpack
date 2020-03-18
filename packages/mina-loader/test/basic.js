@@ -18,7 +18,7 @@ test('basic', async t => {
   })
   const stats = await compile()
 
-  t.true(mfs.existsSync('/assets/logo.7bd732.png'))
+  t.true(mfs.existsSync('/assets/logo.72c9db.png'))
 
   t.true(
     mfs.readFileSync('/fixtures/basic/page.js', 'utf8').includes('onLoad () {')
@@ -35,7 +35,7 @@ test('basic', async t => {
   )
   t.is(
     mfs.readFileSync('/fixtures/basic/page.wxml', 'utf8'),
-    '<view>\n  <text class="blue">{{msg}}</text>\n  <image src="../../assets/logo.7bd732.png" />\n</view>'
+    '<view>\n  <text class="blue">{{msg}}</text>\n  <image src="../../assets/logo.72c9db.png" />\n</view>'
   )
   t.is(
     mfs.readFileSync('/fixtures/basic/page.wxss', 'utf8'),
@@ -66,8 +66,8 @@ test('pack multiple files with specified context', async t => {
   })
   const stats = await compile()
 
-  t.true(mfs.existsSync('/assets/logo.7bd732.png'))
-  t.true(mfs.existsSync('/assets/github.7e4717.png'))
+  t.true(mfs.existsSync('/assets/logo.72c9db.png'))
+  t.true(mfs.existsSync('/assets/github.763b70.png'))
 
   t.true(mfs.readFileSync('/page.js', 'utf8').includes('onLoad () {'))
   t.true(mfs.readFileSync('/page.js', 'utf8').includes('Hello from Page!'))
@@ -76,7 +76,7 @@ test('pack multiple files with specified context', async t => {
   )
   t.is(
     mfs.readFileSync('/page.wxml', 'utf8'),
-    '<view>\n  <text class="blue">{{msg}}</text>\n  <image src="./assets/logo.7bd732.png" />\n</view>'
+    '<view>\n  <text class="blue">{{msg}}</text>\n  <image src="./assets/logo.72c9db.png" />\n</view>'
   )
   t.is(
     mfs.readFileSync('/page.wxss', 'utf8'),
@@ -94,7 +94,7 @@ test('pack multiple files with specified context', async t => {
   )
   t.is(
     mfs.readFileSync('/_/extra-resources/github.wxml', 'utf8'),
-    '<image src="../../assets/github.7e4717.png" />'
+    '<image src="../../assets/github.763b70.png" />'
   )
   t.deepEqual(
     JSON.parse(mfs.readFileSync('/_/extra-resources/github.json', 'utf8')),
@@ -141,7 +141,7 @@ test('pack with options', async t => {
   })
   const stats = await compile()
 
-  t.true(mfs.existsSync('/assets/logo.7bd732.png'))
+  t.true(mfs.existsSync('/assets/logo.72c9db.png'))
 
   t.false(
     mfs.readFileSync('/fixtures/basic/page.js', 'utf8').includes('onLoad () {')
@@ -163,7 +163,7 @@ test('pack with options', async t => {
   )
   t.is(
     mfs.readFileSync('/fixtures/basic/page.wxml', 'utf8'),
-    '<view>\n  <text class="blue">{{msg}}</text>\n  <image src="../../assets/logo.7bd732.png" />\n</view>'
+    '<view>\n  <text class="blue">{{msg}}</text>\n  <image src="../../assets/logo.72c9db.png" />\n</view>'
   )
   t.is(
     mfs.readFileSync('/fixtures/basic/page.wxss', 'utf8'),

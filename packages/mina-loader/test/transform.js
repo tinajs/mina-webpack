@@ -25,7 +25,7 @@ test('use translations', async t => {
 
   t.deepEqual(stats.compilation.errors, [], stats.compilation.errors[0])
 
-  t.true(mfs.existsSync('/assets/logo.7bd732.png'))
+  t.true(mfs.existsSync('/assets/logo.72c9db.png'))
 
   t.true(
     mfs
