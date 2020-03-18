@@ -31,6 +31,7 @@ export default (options = {}) => {
               loader: 'file-loader',
               options: {
                 name: 'assets/[name].[hash:6].[ext]',
+                esModule: false,
               },
             },
           },
@@ -41,6 +42,7 @@ export default (options = {}) => {
                 loader: 'file-loader',
                 options: {
                   name: 'wxml/[name].[hash:6].[ext]',
+                  esModule: false,
                 },
               },
               {
