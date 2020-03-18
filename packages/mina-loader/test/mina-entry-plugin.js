@@ -22,8 +22,8 @@ test('basic usage with MinaEntryPlugin', async t => {
   })
   await compile()
 
-  t.true(mfs.existsSync('/assets/logo.7bd732.png'))
-  t.true(mfs.existsSync('/assets/github.7e4717.png'))
+  t.true(mfs.existsSync('/assets/logo.72c9db.png'))
+  t.true(mfs.existsSync('/assets/github.763b70.png'))
 
   t.true(mfs.readFileSync('/page.js', 'utf8').includes('onLoad () {'))
   t.true(mfs.readFileSync('/page.js', 'utf8').includes('Hello from Page!'))
@@ -32,7 +32,7 @@ test('basic usage with MinaEntryPlugin', async t => {
   )
   t.is(
     mfs.readFileSync('/page.wxml', 'utf8'),
-    '<view>\n  <text class="blue">{{msg}}</text>\n  <image src="./assets/logo.7bd732.png" />\n</view>'
+    '<view>\n  <text class="blue">{{msg}}</text>\n  <image src="./assets/logo.72c9db.png" />\n</view>'
   )
   t.is(
     mfs.readFileSync('/page.wxss', 'utf8'),
@@ -50,7 +50,7 @@ test('basic usage with MinaEntryPlugin', async t => {
   )
   t.is(
     mfs.readFileSync('/_/extra-resources/github.wxml', 'utf8'),
-    '<image src="../../assets/github.7e4717.png" />'
+    '<image src="../../assets/github.763b70.png" />'
   )
   t.deepEqual(
     JSON.parse(mfs.readFileSync('/_/extra-resources/github.json', 'utf8')),
@@ -225,7 +225,7 @@ test('pages / usingComponents could be defined as classical component with MinaE
       mfs
         .readFileSync('/page-c.js', 'utf8')
         .includes(
-          'module.exports = __webpack_require__.p + "assets/logo.97017d.png";'
+          'module.exports = __webpack_require__.p + "assets/logo.349b7b.png";'
         )
   )
   t.deepEqual(JSON.parse(mfs.readFileSync('/page-c.json', 'utf8')), {
@@ -235,7 +235,7 @@ test('pages / usingComponents could be defined as classical component with MinaE
   })
   t.is(
     mfs.readFileSync('/page-d.wxml', 'utf8'),
-    '<view>Page D<image src="./assets/logo.97017d.png" /></view>'
+    '<view>Page D<image src="./assets/logo.349b7b.png" /></view>'
   )
   t.deepEqual(JSON.parse(mfs.readFileSync('/page-e.json', 'utf8')), {
     usingComponents: {
@@ -368,11 +368,11 @@ test('pages / usingComponents could use custom extensions with MinaEntryPlugin',
   )
   t.is(
     mfs.readFileSync('/page-h.ttml', 'utf8'),
-    '<view>Page H<image src="./assets/logo.97017d.png" /></view>'
+    '<view>Page H<image src="./assets/logo.349b7b.png" /></view>'
   )
   t.is(
     mfs.readFileSync('/page-i.ttml', 'utf8'),
-    '<view>Page I<image src="./assets/logo.97017d.png" /></view>'
+    '<view>Page I<image src="./assets/logo.349b7b.png" /></view>'
   )
   t.true(
     mfs.readFileSync('/page-i.js', 'utf8').includes("'Page I'") &&
@@ -380,7 +380,7 @@ test('pages / usingComponents could use custom extensions with MinaEntryPlugin',
       mfs
         .readFileSync('/page-i.js', 'utf8')
         .includes(
-          'module.exports = __webpack_require__.p + "assets/logo.97017d.png";'
+          'module.exports = __webpack_require__.p + "assets/logo.349b7b.png";'
         )
   )
 

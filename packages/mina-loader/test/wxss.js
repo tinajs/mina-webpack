@@ -152,7 +152,7 @@ test('disable base64 inlined by url in wxss ', async t => {
 
   t.is(
     mfs.readFileSync('/fixtures/wxss/page.wxss', 'utf8'),
-    `text.blue {\n  color: #00f;\n  background: url(https://cdn.url/assets/logo.7bd732.png);\n}`
+    `text.blue {\n  color: #00f;\n  background: url(https://cdn.url/assets/logo.72c9db.png);\n}`
   )
 
   t.pass()

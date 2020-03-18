@@ -46,7 +46,7 @@
     "ava": "^1.2.1",
     "babel-loader": "^8.0.6",
     "chai": "^4.2.0",
-    "file-loader": "^5.1.0",
+    "file-loader": "^6.0.0",
     "front-matter": "^3.0.1",
     "json-loader": "^0.5.7",
     "less": "^3.11.1",
