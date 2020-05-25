@@ -62,7 +62,7 @@
     "minimatch": "^3.0.4",
     "p-any": "^2.1.0",
     "p-props": "^1.2.0",
-    "replace-ext": "^1.0.0",
+    "replace-ext": "^2.0.0",
     "resolve": "^1.10.0",
     "resolve-from": "^5.0.0",
     "vue-template-compiler": "^2.6.7",

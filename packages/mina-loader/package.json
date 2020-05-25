@@ -81,7 +81,7 @@
     "postcss": "^7.0.27",
     "postcss-url": "^8.0.0",
     "raw-loader": "^1.0.0",
-    "replace-ext": "^1.0.0",
+    "replace-ext": "^2.0.0",
     "resolve": "^1.10.0",
     "resolve-from": "^5.0.0",
     "style-loader": "^0.23.1",

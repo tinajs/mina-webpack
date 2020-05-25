@@ -1,3 +1,5 @@
+import path from 'path'
+
 export function toSafeOutputPath(original: string) {
   return (
     (original || '')
@@ -18,4 +20,18 @@ export function values(object: any) {
 
 export function uniq<T>(array: Array<T>) {
   return [...new Set(array)]
+}
+
+// copied from https://github.com/gulpjs/replace-ext/blob/1638b870b68ee6fe781be03bd29fbf5487b83236/index.js#L27-L30
+const startsWithSingleDot = (filePath: string) => {
+  var first2chars = filePath.slice(0, 2)
+  return first2chars === '.' + path.sep || first2chars === './'
+}
+
+export const removeSingleDot = (filePath: string) => {
+  if (startsWithSingleDot(filePath)) {
+    return filePath.slice(2)
+  }
+
+  return filePath
 }
