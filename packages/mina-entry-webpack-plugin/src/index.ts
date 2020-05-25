@@ -23,6 +23,7 @@ import {
   uniq,
   toSafeOutputPath,
   getResourceUrlFromRequest,
+  removeSingleDot,
 } from './helpers'
 import { Entry, moveIntoSubpackage } from './helpers/entry'
 
@@ -196,7 +197,11 @@ function getEntries(
     // mina or classic
     let isClassical: boolean
     try {
-      ({ realPath, isClassical } = resolveRealPath(extensions, currentContext, resourceUrl))
+      ;({ realPath, isClassical } = resolveRealPath(
+        extensions,
+        currentContext,
+        resourceUrl
+      ))
     } catch (error) {
       // Do not throw an exception when the module does not exist.
       // Just mark it up and move on to the next module.
@@ -224,9 +229,8 @@ function getEntries(
     // `../../path/to/comp` => `_/_/path/to/comp`
     const name = compose(
       ensurePosix,
-      // FIXME: replace-ext will remove the leading `./` in path
-      // see https://github.com/gulpjs/replace-ext/issues/5
-      path => replaceExt(path, '.js'),
+      (path: string) => replaceExt(path, '.js'),
+      removeSingleDot,
       urlToRequest,
       toSafeOutputPath
     )(relativeRealPath)
