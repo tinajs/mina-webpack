@@ -17,6 +17,8 @@ import * as helpers from '../helpers'
 import { RESOLVABLE_EXTENSIONS } from '../constants'
 import webpack from 'webpack'
 
+const pluginPrefixReg = /^(plugin|dynamicLib):\/\//;
+
 function stripExt(path: string): string {
   return replaceExt(path, '')
 }
@@ -240,7 +242,7 @@ const minaJson: webpack.loader.Loader = function minaJson(source) {
 
       return Object.assign(config, {
         usingComponents: mapValues(config.usingComponents, (file: string) => {
-          if (file.startsWith('plugin://')) {
+          if (pluginPrefixReg.test(file)) {
             return file
           }
 
