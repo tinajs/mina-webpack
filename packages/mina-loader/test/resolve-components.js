@@ -26,6 +26,7 @@ test('resolve components', async t => {
       logo: './../_/_node_modules_/logo.mina/dist/logo',
       tab: './../_/_node_modules_/tab/tab',
       plugin: 'plugin://foobar/component',
+      dynamicLib: 'dynamicLib://swan-sitemap-lib/component',
     },
   })
 

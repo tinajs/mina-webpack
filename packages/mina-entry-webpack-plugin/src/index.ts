@@ -46,6 +46,8 @@ const DEFAULT_EXTENSIONS: Extensions = {
   resolve: ['.js', '.wxml', '.json', '.wxss'],
 }
 
+const pluginPrefixReg = /^(plugin|dynamicLib):\/\//;
+
 function isAbsoluteUrl(url: string) {
   return !!url.startsWith('/')
 }
@@ -260,7 +262,7 @@ function getEntries(
     }
     if (requests.length > 0) {
       requests.forEach(req => {
-        if (req.startsWith('plugin://')) {
+        if (pluginPrefixReg.test(req)) {
           return
         }
         return search(path.dirname(realPath), req, entry)
