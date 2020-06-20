@@ -6,7 +6,7 @@
     "foobar": "/components/foobar.mina",
     "classical": "../components/classical",
     "i-button": "~iview-weapp/dist/button/index",
-    "v-button": "~vant-weapp/dist/button/index",
+    "van-button": "~@vant/weapp/lib/button/index",
   }
 }
 </config>
@@ -35,7 +35,7 @@ image {
     <foobar />
     <classical />
     <i-button type="primary">iview button</i-button>
-    <v-button type="primary">vant button</v-button>
+    <van-button type="primary">vant button</van-button>
   </view>
 </template>
 
