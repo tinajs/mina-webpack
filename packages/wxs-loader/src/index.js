@@ -5,6 +5,7 @@ const loadModule = require('./helpers/load-module')
 const relative = require('./helpers/relative')
 const resolve = require('./helpers/resolve')
 const visit = require('./helpers/visit')
+const toSafeOutputPath = require('./helpers/to-safe-output-path')
 
 module.exports = function loader(source) {
   const done = this.async()
@@ -19,11 +20,11 @@ module.exports = function loader(source) {
   )
   const publicPath = getPublicPath({}, this)
   const interpolateName = (content = 'PLACEHOLDER') =>
-    utils.interpolateName(this, options.name, {
+    toSafeOutputPath(utils.interpolateName(this, options.name, {
       content,
       context: options.context,
       regExp: options.regExp,
-    })
+    }))
 
   let dependencies = new Map()
 
