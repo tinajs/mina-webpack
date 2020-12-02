@@ -1,6 +1,7 @@
 # dev
 .DS_Store
 node_modules
+/packages/*/lib
 !/packages/mina-loader/test/fixtures/resolve-components/node_modules
 npm-debug.log
 lerna-debug.log
