@@ -33,6 +33,5 @@
     "@types/debug": "^4.1.5",
     "@types/webpack": "^4.32.1",
     "@types/webpack-sources": "^0.1.5"
-  },
-  "gitHead": "1be88492c3caad72b677320eb61d5774f2d480cc"
+  }
 }

@@ -87,6 +87,5 @@
       "../mina-entry-webpack-plugin/**/*.js",
       "../mina-runtime-webpack-plugin/**/*.js"
     ]
-  },
-  "gitHead": "1be88492c3caad72b677320eb61d5774f2d480cc"
+  }
 }
