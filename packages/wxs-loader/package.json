@@ -29,6 +29,7 @@
   "homepage": "https://github.com/tinajs/mina-webpack/tree/master/packages/mina-loader#readme",
   "devDependencies": {
     "@types/node": "^11.9.6",
+    "ava": "^1.2.1",
     "file-loader": "^3.0.1",
     "memory-fs": "^0.4.1",
     "webpack-chain": "^5.2.0"

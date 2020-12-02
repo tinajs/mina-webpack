@@ -43,6 +43,7 @@
     "@types/replace-ext": "^0.0.27",
     "@types/resolve": "^0.0.8",
     "@types/webpack": "^4.32.1",
+    "ava": "^2.4.0",
     "ts-node": "^8.4.1"
   },
   "dependencies": {

@@ -15,7 +15,6 @@
   },
   "devDependencies": {
     "@types/node": "^11.9.6",
-    "ava": "^2.4.0",
     "husky": "^4.2.3",
     "lerna": "^3.22.1",
     "lint-staged": "^8.1.4",
