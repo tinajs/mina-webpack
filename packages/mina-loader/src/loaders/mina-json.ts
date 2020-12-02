@@ -17,7 +17,7 @@ import * as helpers from '../helpers'
 import { RESOLVABLE_EXTENSIONS } from '../constants'
 import webpack from 'webpack'
 
-const pluginPrefixReg = /^(plugin|dynamicLib):\/\//;
+const pluginPrefixReg = /(^(plugin|dynamicLib):\/\/)|(^weui-miniprogram\/)/;
 
 function stripExt(path: string): string {
   return replaceExt(path, '')

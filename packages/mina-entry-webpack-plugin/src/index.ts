@@ -46,7 +46,7 @@ const DEFAULT_EXTENSIONS: Extensions = {
   resolve: ['.js', '.wxml', '.json', '.wxss'],
 }
 
-const pluginPrefixReg = /^(plugin|dynamicLib):\/\//;
+const pluginPrefixReg = /(^(plugin|dynamicLib):\/\/)|(^weui-miniprogram\/)/;
 
 function isAbsoluteUrl(url: string) {
   return !!url.startsWith('/')
