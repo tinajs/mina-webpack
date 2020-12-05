@@ -1,17 +1,26 @@
 {
+  "name": "mina-webpack",
   "private": true,
+  "workspaces": [
+    "packages/*",
+    "example"
+  ],
+  "scripts": {
+    "build": "lerna run build --parallel --scope '@tinajs/*'"
+  },
   "config": {
     "commitizen": {
       "path": "cz-conventional-changelog"
     }
   },
   "devDependencies": {
+    "@types/node": "^11.9.6",
     "husky": "^4.2.3",
-    "lerna": "^3.20.2"
-  },
-  "scripts": {},
-  "dependencies": {
-    "debug": "^4.1.1"
+    "lerna": "^3.22.1",
+    "lint-staged": "^8.1.4",
+    "prettier": "^1.19.1",
+    "typescript": "^3.8.3",
+    "webpack": "^4.29.6"
   },
   "husky": {
     "hooks": {
