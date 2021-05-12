@@ -78,7 +78,7 @@
     "object-path": "^0.11.4",
     "p-all": "^1.0.0",
     "p-map": "^2.0.0",
-    "postcss": "^7.0.27",
+    "postcss": "^8.2.10",
     "postcss-url": "^8.0.0",
     "raw-loader": "^1.0.0",
     "replace-ext": "^2.0.0",
