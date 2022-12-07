@@ -51,7 +51,7 @@
     "json-loader": "^0.5.7",
     "less": "^3.11.1",
     "less-loader": "^5.0.0",
-    "lint-staged": "^8.1.4",
+    "lint-staged": "^13.1.0",
     "memory-fs": "^0.4.1",
     "postcss-loader": "^3.0.0",
     "precss": "^4.0.0",
