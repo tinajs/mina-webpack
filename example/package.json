@@ -16,7 +16,7 @@
   "dependencies": {
     "@tinajs/tina-logo.mina": "^0.2.1",
     "@vant/weapp": "^1.3.2",
-    "cowsay": "^1.2.1",
+    "cowsay": "^1.5.0",
     "es6-promise": "^4.2.4",
     "iview-weapp": "^2.0.0"
   },
