@@ -59,7 +59,7 @@
     "json5": "^2.1.0",
     "loader-utils": "^1.2.3",
     "lodash": "^4.17.11",
-    "minimatch": "^3.0.4",
+    "minimatch": "^10.2.1",
     "p-any": "^2.1.0",
     "p-props": "^1.2.0",
     "replace-ext": "^2.0.0",
