@@ -7,7 +7,7 @@
   },
   "devDependencies": {
     "husky": "^4.2.3",
-    "lerna": "^6.4.1"
+    "lerna": "^9.0.7"
   },
   "scripts": {},
   "dependencies": {
